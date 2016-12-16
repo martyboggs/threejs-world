@@ -1,6 +1,6 @@
-name: Martin Broder
-description: I don't know
-url: https://martyboggs.github.io
+name: Three.js World
+description: The place fo three.js tutorials and showcases
+url: http://www.threejsworld.com
 timezone: America/Los_Angeles
-repository: martyboggs/martyboggs.github.io
+repository: martyboggs/threejs-world
 permalink: /:categories/:title
