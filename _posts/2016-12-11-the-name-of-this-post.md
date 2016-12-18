@@ -3,7 +3,7 @@ layout: post
 title: The Name of This post
 image: rocket.png
 category: Tutorials
-tags: [pizza, babies, curds, gophers, speed, country, plastic]
+tags: [beginner, featured]
 author: Jimmy Jorgenson
 ---
 

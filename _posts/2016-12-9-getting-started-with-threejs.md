@@ -3,7 +3,7 @@ layout: post
 image: rocket.png
 title: Getting Started with Three.js
 category: Tutorials
-tags: [tutorial, getting started]
+tags: [guide, beginner]
 ---
 
 ## Intro

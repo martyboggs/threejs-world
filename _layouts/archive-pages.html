@@ -7,23 +7,14 @@
 <div id="content-wrapper">
 	<section class="s1">
 		<div class="page-header padding flex-business">
-			<h1>Posts tagged with {{ titleDown }}</h1>
+			<h1>{{page.title}}</h1>
 		</div>
 
 		<div class="archive-inner">
 			<img class="blog-image" src="/images/archive-tag.jpg">
 			<div class="boxes">
-				{% for post in site.posts %}
-					{% assign found = false %}
-					{% for tag in post.tags %}
-						{% if tag == titleDown %}
-							{% assign found = true %}
-							{% break %}
-						{% endif %}
-					{% endfor %}
-					{% if found %}
-						{% include box.html %}
-					{% endif %}
+				{% for post in site[titleDown] %}
+					{% include box.html %}
 				{% endfor %}
 			</div>
 		</div>

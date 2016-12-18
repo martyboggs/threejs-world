@@ -12,5 +12,8 @@ collections:
   tags:
     permalink: /tag/:name
     output: true
+  archive_pages:
+    permalink: /all/:name
+    output: true
   models:
     output: true
