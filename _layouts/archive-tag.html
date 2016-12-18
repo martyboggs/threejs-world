@@ -1,0 +1,32 @@
+---
+---
+{% include head.html %}
+{% include header.html %}
+{% assign titleDown = page.title | downcase %}
+
+<div id="content-wrapper">
+	<section class="s1">
+		<div class="page-header padding flex-business">
+			<h1>Posts tagged with {{ titleDown }}</h1>
+		</div>
+
+		<div class="archive-inner">
+			<img class="blog-image" src="/images/archive-tag.jpg">
+			{% for post in site.posts %}
+				{% assign found = false %}
+				{% for tag in post.tags %}
+					{% if tag == titleDown %}
+						{% assign found = true %}
+						{% break %}
+					{% endif %}
+				{% endfor %}
+				{% if found %}
+					{% include box.html %}
+				{% endif %}
+			{% endfor %}
+		</div>
+	</section>
+</div>
+{% include social.html %}
+{% include scripts.html %}
+{% include footer.html %}

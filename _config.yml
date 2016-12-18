@@ -1,6 +1,16 @@
 name: Three.js World
 description: The place fo three.js tutorials and showcases
 url: http://www.threejsworld.com
+three_version: r83
 timezone: America/Los_Angeles
 repository: martyboggs/threejs-world
 permalink: /:categories/:title
+collections:
+  categories:
+    permalink: /category/:name
+    output: true
+  tags:
+    permalink: /tag/:name
+    output: true
+  models:
+    output: true

@@ -13,13 +13,7 @@ if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and 
 
 function handleVisibilityChange() {
 	if (document[hidden]) {
-		for (var i = 0; i < mboggs.cubes.length; i += 1) {
-			if (mboggs.cubes[i].tween) mboggs.cubes[i].tween.stop();
-			mboggs.cubes[i].position.y = 2.8;
-		}
 	} else {
-		globalI = 0;
-		animateCube(mboggs.cubes[0]);
 	}
 }
 

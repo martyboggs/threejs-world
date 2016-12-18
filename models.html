@@ -1,5 +1,4 @@
 ---
-title: Title
 ---
 <!DOCTYPE html>
 <html lang="en" xml:lang="en" xmlns= "http://www.w3.org/1999/xhtml" class="wf-loading">
@@ -41,10 +40,26 @@ title: Title
 			<h2 class="margin-bottom">dooby dop baaaaahh</h2>
 			<div class="boxes">
 				{% for post in site.posts %}
-					{% include box.html %}
+					<a class="box" href="{{ post.url }}">
+						<div class="bg" style="background: url('/images/{{ post.image }}') center center / cover;"></div>
+						<div class="text">
+							<h3>{{ post.title }}</h3>
+							<h5>{{ post.category }}</h5>
+							<p>{{ post.excerpt | strip_html }}</p>
+						</div>
+						<button class="btn">Read it</button>
+					</a>
 				{% endfor %}
 				{% for post in site.posts %}
-					{% include box.html %}
+					<a class="box" href="{{ post.url }}">
+						<div class="bg" style="background: url('/images/{{ post.image }}') center center / cover;"></div>
+						<div class="text">
+							<h3>{{ post.title }}</h3>
+							<h5>{{ post.category }}</h5>
+							<p>{{ post.excerpt | strip_html }}</p>
+						</div>
+						<button class="btn">Read it</button>
+					</a>
 				{% endfor %}
 			</div>
 		</div>
@@ -52,10 +67,8 @@ title: Title
 
 </div>
 {% include footer.html %}
-{% include social.html %}
-{% include scripts.html %}
 
-<script src="js/main.js"></script>
+<script src="js/init.js"></script>
 </body>
 
 </html>
