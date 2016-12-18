@@ -6,7 +6,11 @@
 
 <div id="content-wrapper">
 	<div class="page-header padding flex-business">
-		<h1>Posts tagged with {{ titleDown }}</h1>
+		<h1>
+			{% if titleDown == 'featured' %}Featured Posts
+			{% else %}Posts tagged with {{ titleDown }}
+			{% endif %}
+		</h1>
 	</div>
 	<div class="archive-inner">
 		<div class="boxes">
