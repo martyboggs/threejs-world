@@ -4,6 +4,7 @@ three_version: r83
 timezone: America/Los_Angeles
 repository: martyboggs/threejs-world
 permalink: /:categories/:title
+excerpt_separator: <!--more-->
 collections:
   categories:
     permalink: /category/:name

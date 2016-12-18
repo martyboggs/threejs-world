@@ -5,19 +5,16 @@
 {% assign titleDown = page.title | downcase %}
 
 <div id="content-wrapper">
-	<section class="s1">
-		<div class="page-header padding flex-business">
-			<h1>{{page.title}}</h1>
+	<div class="page-header padding flex-business">
+		<h1>{{page.title}}</h1>
+	</div>
+	<div class="archive-inner">
+		<div class="boxes">
+			{% for post in site[titleDown] %}
+				{% include box.html %}
+			{% endfor %}
 		</div>
-
-		<div class="archive-inner">
-			<div class="boxes">
-				{% for post in site[titleDown] %}
-					{% include box.html %}
-				{% endfor %}
-			</div>
-		</div>
-	</section>
+	</div>
 </div>
 {% include social.html %}
 {% include scripts.html %}

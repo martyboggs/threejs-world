@@ -4,23 +4,19 @@
 {% include header.html %}
 
 <div id="content-wrapper">
-	<section class="s1">
-		<div class="page-header padding flex-business">
-			<h1>{{ page.title }}</h1>
-		</div>
-
-		<div class="tags">
-			{% for tag in page.tags %}
-				<div class="tag">{{tag}}</div>
-			{% endfor %}
-		</div>
-
-		<div class="blog-inner">
-			<canvas class="model"></canvas>
-			{{ content }}
-			<p class="author">by {{page.author}}</p>
-		</div>
-	</section>
+	<div class="page-header padding flex-business">
+		<h1>{{ page.title }}</h1>
+	</div>
+	<div class="tags">
+		{% for tag in page.tags %}
+			<div class="tag">{{tag}}</div>
+		{% endfor %}
+	</div>
+	<div class="blog-inner">
+		<canvas class="model"></canvas>
+		{{ content }}
+		<p class="author">by {{page.author}}</p>
+	</div>
 </div>
 {% include social.html %}
 {% include scripts.html %}
