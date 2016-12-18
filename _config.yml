@@ -12,7 +12,7 @@ collections:
   tags:
     permalink: /tag/:name
     output: true
-  archive_pages:
+  archive_collection:
     permalink: /all/:name
     output: true
   models:

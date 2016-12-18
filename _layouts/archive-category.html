@@ -6,11 +6,11 @@
 <div id="content-wrapper">
 	<section class="s1">
 		<div class="page-header padding flex-business">
-			<h1>Posts in the {{page.title}} Category</h1>
+			<h1>{{page.title}} Category</h1>
 		</div>
 
 		<div class="archive-inner">
-			<!--<img class="blog-image" src="/images/archive-archive.jpg">-->
+			<!--<img class="blog-image" src="{{site.url}}/images/archive-archive.jpg">-->
 			<div class="boxes">
 				{% for post in site.posts %}
 					{% if post.category == page.title %}

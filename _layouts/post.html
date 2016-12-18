@@ -10,16 +10,16 @@
 		</div>
 
 		<div class="tags">
-			<a class="category" href="/category/{{page.category}}"><i class="fa fa-hand-lizard"></i>{{page.category}}</a>
+			<a class="category" href="{{site.url}}/category/{{page.category}}"><i class="fa fa-hand-lizard"></i>{{page.category}}</a>
 		</div>
 		<div class="tags">
 			{% for tag in page.tags %}
-				<a class="tag" href="/tag/{{tag}}"><i class="fa fa-handshake-o"></i>{{tag}}</a>
+				<a class="tag" href="{{site.url}}/tag/{{tag}}"><i class="fa fa-handshake-o"></i>{{tag}}</a>
 			{% endfor %}
 		</div>
 
 		<div class="blog-inner">
-			<img class="blog-image" src="/images/{{page.image}}">
+			<img class="blog-image" src="{{site.url}}/images/{{page.image}}">
 			<p class="date">Last updated {{page.date | date: '%B %-d, %Y'}}</p>
 			{{ content }}
 			<p class="author">by {{page.author}}</p>

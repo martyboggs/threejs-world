@@ -7,10 +7,7 @@ tags: [guide, beginner]
 ---
 
 ## Intro
-Using three.js is a great way to incorporate 3D graphics into your websites, webapps, games and art projects. So you can finally make that 3D spinning logo you always wanted! It makes working with WebGL easy. This guide will get you started with the basics and explain what you can do with a little experience.
-
-
-GET /repos/:owner/:repo/releases/latest
+Using three.js is a great way to incorporate 3D graphics into your browser whether it's on a website, webapp, game or art project. It makes working with WebGL easy. This guide will get you started with the basics and explain what you can do with a little experience.
 
 ```html
 <!DOCTYPE html>
@@ -67,3 +64,4 @@ Materials
 
 Browser Compatibility
 
+You can finally make that 3D spinning logo you always wanted!
