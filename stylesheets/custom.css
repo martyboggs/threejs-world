@@ -1,0 +1,12 @@
+/*141 53*/
+
+.box h3 {
+	font-size: 15px;
+}
+.box .text {
+	transition: all 0.2s;
+	height: 136px;
+}
+.box:hover .text {
+	height: calc(136px + 88px);
+}

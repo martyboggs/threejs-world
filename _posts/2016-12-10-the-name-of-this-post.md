@@ -1,6 +1,6 @@
 ---
 layout: post
-title: The Name of This post
+title: The Name of This Post
 image: rocket.png
 ---
 

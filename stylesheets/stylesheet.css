@@ -516,6 +516,15 @@ header .bg {
 	background: white;
 }
 
+.blog-inner .date {
+	font-size: 10px;
+	color: #b3b3b3;
+}
+
+.blog-inner h2 {
+	font-size: calc(2vw + 20px);
+}
+
 .archive-inner {
 	max-width: 1000px;
 	margin: 0 auto;
@@ -572,7 +581,7 @@ h1,
 h2,
 p,
 a {
-	transition: opacity 0.5s;
+	transition: opacity 0.2s;
 }
 
 header h1 {
@@ -636,15 +645,20 @@ section {
 }
 .box .bg {
 	height: 141px;
+	margin-bottom: 15px;
 	transition: all 0.2s;
 }
 .box .text {
+	font-size: 14px;
 	padding: 0 15px;
+	color: #666;
 }
 .box p {
+	margin-bottom: 15px;
+}
+.box .body {
 	visibility: none;
 	opacity: 0;
-	font-size: 14px;
 }
 .box button {
 	visibility: none;
@@ -806,7 +820,7 @@ h3 {
 	font-family: 'Raleway', 'Helvetica Neue', Helvetica, Arial, serif;
 	font-size: 18px;
 	font-weight: bold;
-	margin-top: 24px;
+	margin-top: 0;
 	margin-bottom: 8px;
 	color: #474747;
 	text-indent: 3px;
@@ -824,6 +838,7 @@ h4 {
 h5 {
 	font-family: 'Raleway', 'Helvetica Neue', Helvetica, Arial, serif;
 	font-size: 14px;
+	margin-top: 0;
 	margin-bottom: 8px;
 	color: #474747;
 	text-indent: 3px;
