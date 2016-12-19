@@ -9,6 +9,7 @@ tags: [guide, beginner]
 ## Intro
 Using three.js is a great way to incorporate 3D graphics into your browser whether it's on a<!--more--> website, webapp, game or art project. It makes working with WebGL easy. This guide will get you started with the basics and explain what you can do with a little experience.
 
+
 ```html
 <!DOCTYPE html>
 <html>
@@ -21,6 +22,7 @@ Using three.js is a great way to incorporate 3D graphics into your browser wheth
 		</style>
 	</head>
 	<body>
+		<canvas class=""></canvas>
 		<script src="js/three.js"></script>
 		<script>
 			// Our Javascript will go here.

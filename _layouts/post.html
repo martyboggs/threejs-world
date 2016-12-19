@@ -20,6 +20,7 @@
 		<p class="date">Last updated {{page.date | date: '%B %-d, %Y'}}</p>
 		{{ content }}
 		<p class="author">by {{page.author}}</p>
+		{% include disqus.html %}
 	</div>
 </div>
 {% include social.html %}
