@@ -1,23 +1,37 @@
 ---
-title: Title
+title: Three.js World
 ---
 {% include head.html %}
 {% include header.html %}
-<div id="content-wrapper">
-	<section class="s1 flex-business">
-		<canvas class="game"></canvas>
+<div class="home" id="content-wrapper">
+	<section class="s1 flex-business padding">
+		<h2>#beginner</h2>
+		<div class="boxes">
+			{% for post in site.tags.beginner %}
+				{% include box.html %}
+			{% endfor %}
+		</div>
 	</section>
 
 	<section class="s2">
 		<div class="fade-white-top min-height flex-business padding">
-			<h2></h2>
-			<h4></h4>
+			<h2>Express Yourself in All Three Dimensions</h2>
+			<div class="boxes">
+				{% for post in site.posts %}
+					{% include box.html %}
+				{% endfor %}
+			</div>
 		</div>
 	</section>
 
 	<section class="s3">
 		<div class="min-height flex-business flex-container padding">
-			<h2 style="color: white" class="margin-bottom"></h2>
+			<h2>Express Yourself in All Three Dimensions</h2>
+			<div class="boxes">
+				{% for post in site.posts %}
+					{% include box.html %}
+				{% endfor %}
+			</div>
 		</div>
 	</section>
 
@@ -29,12 +43,9 @@ title: Title
 
 	<section class="s5">
 		<div class="min-height flex-business flex-container padding">
-			<h2>Express Yourself in All Three Dimensions</h2>
+			<h2>Tutorials</h2>
 			<div class="boxes">
-				{% for post in site.posts %}
-					{% include box.html %}
-				{% endfor %}
-				{% for post in site.posts %}
+				{% for post in site.categories.Tutorials %}
 					{% include box.html %}
 				{% endfor %}
 			</div>

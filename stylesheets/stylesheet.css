@@ -462,7 +462,7 @@ header a:focus {
 	color: white;
 }
 header a:hover {
-	color: gray;
+	color: #444444;
 }
 
 header .bg {
@@ -499,6 +499,10 @@ header .bg {
 
 .min-height {
 	min-height: 500px;
+}
+
+.home h2 {
+	text-align: center;
 }
 
 .s5 h2 {
@@ -649,10 +653,8 @@ section {
 	margin-bottom: 15px;
 	transition: all 0.2s;
 }
-.box .text {
-	font-size: 14px;
-	padding: 0 15px;
-	color: #666;
+.box h3 {
+	font-size: 15px;
 }
 .box p {
 	margin-bottom: 15px;
@@ -667,6 +669,13 @@ section {
 	margin: 0 15px 15px 15px;
 	margin-top: auto;
 }
+.box .text {
+	font-size: 14px;
+	padding: 0 15px;
+	color: #666;
+	transition: all 0.2s;
+	height: 136px;
+}
 
 .box:hover {
 	transform: scale(1.05);
@@ -674,6 +683,9 @@ section {
 }
 .box:hover .bg {
 	height: 50px;
+}
+.box:hover .text {
+	height: calc(136px + 88px);
 }
 .box:hover p {
 	visibility: visible;

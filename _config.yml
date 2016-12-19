@@ -6,10 +6,10 @@ repository: martyboggs/threejs-world
 permalink: /:categories/:title
 excerpt_separator: <!--more-->
 collections:
-  categories:
+  archive_category:
     permalink: /category/:name
     output: true
-  tags:
+  archive_tag:
     permalink: /tag/:name
     output: true
   archive_collection:
