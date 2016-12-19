@@ -221,7 +221,6 @@ PLATFORMS
 DEPENDENCIES
   github-pages (= 110)
   jekyll-admin
-  json
   wdm (>= 0.1.0)
 
 BUNDLED WITH
