@@ -2,13 +2,15 @@
 title: Getting Started With Three.js
 layout: post
 image: rocket.png
+example: ex1-1
 category: Tutorials
 tags:
 - guide
 - beginner
 ---
 
-Using three.js is a great way to incorporate 3D graphics into your browser whether it's on a<!--more--> website, webapp, game or art project. It makes working with WebGL easy. This guide will get you started with the basics and explain what you can do with a little experience.
+Using three.js is a great way to incorporate 3D graphics into your browser whether it's on a<!--more--> website, webapp, game or art project. It makes working with WebGL easy. In this guide, we'll create a scene with a cube.
+
 
 ## Template
 Set up your HTML template with a canvas element and the three.js library. The css will stretch the canvas to fill the screen and we'll set the camera to accommodate this later.
@@ -20,12 +22,11 @@ Set up your HTML template with a canvas element and the three.js library. The cs
 		<meta charset=utf-8>
 		<title>Three.js World App</title>
 		<style>
-			body { margin: 0; }
-			canvas { width: 100%; height: 100% }
+			canvas.{{canvas.page}} {width: 660px; height: 330px;}
 		</style>
 	</head>
 	<body>
-		<canvas class="getting-started"></canvas>
+		<canvas class="{{canvas.page}}"></canvas>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/{{site.three_version}}/three.js"></script>
 		<script>
 			// Our JavaScript will go here.
@@ -50,13 +51,13 @@ var camera = new THREE.PerspectiveCamera(
 camera.position.z = 5;
 
 var renderer = new THREE.WebGLRenderer({
-	canvas: document.getElementsByClassName('getting-started')[0],
+	canvas: document.getElementsByClassName('ex1-1')[0],
 	alpha: true
 });
 renderer.setSize(window.innerWidth, window.innerHeight);
 
 var ambientLight = new THREE.AmbientLight('#444')
-var directionalLight = new THREE.DirectionalLight(0xffffff, 1),
+var directionalLight = new THREE.DirectionalLight(0xffffff, 1);
 directionalLight.position.set(0, 20, 14);
 scene.add(ambientLight, directionalLight);
 
@@ -75,7 +76,7 @@ Now, let's add a cube to the scene. To create a cube mesh, we need a geometry co
 Below, I've chosen box geometry with length, width and height set to 1 unit and a LambertMaterial to make the cube a little reflective. We use the `add` function to add the mesh to the scene just like how we added the light objects.
 
 ```javascript
-var geometry = new THREE.BoxGeometry(1, 1, 1);
+var geometry = new THREE.BoxGeometry(2, 1, 1);
 var material = new THREE.MeshLambertMaterial({color: 'blue'});
 var cube = new THREE.Mesh(geometry, material);
 scene.add(cube);
@@ -85,5 +86,3 @@ scene.add(cube);
 Modeling
 
 Browser Compatibility
-
-You can finally make that 3D spinning logo you always wanted!

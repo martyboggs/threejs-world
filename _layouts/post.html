@@ -16,13 +16,24 @@
 		{% endfor %}
 	</div>
 	<div class="blog-inner">
-		<img class="blog-image margin-bottom" src="/images/{{page.image}}">
-		<p class="date margin-bottom">Last updated: {{page.date | date: '%B %-d, %Y'}}<br>Three.js Version: {{site.three_version}}</p>
+		{% if !page.example %}
+			<img class="blog-image margin-bottom" src="/images/{{page.image}}">
+		{% endif %}
+		<p class="date">Last updated: {{page.date | date: '%B %-d, %Y'}}<br>Three.js Version: {{site.three_version}}</p>
+		{% if page.example %}
+		<canvas class="{{page.example}}"></canvas>
+		{% endif %}
 		{{ content }}
 		<p class="author">by {{page.author}}</p>
 		{% include disqus.html %}
 	</div>
 </div>
+<script>
+console.log('twice')
+</script>
 {% include social.html %}
 {% include scripts.html %}
+{% if page.example %}
+	<script src="/js/examples/{{page.example}}.js"></script>
+{% endif %}
 {% include footer.html %}
