@@ -7,23 +7,22 @@
 	<div class="page-header padding flex-business">
 		<h1>{{page.title}}</h1>
 	</div>
-	<div class="tags">
-		<a class="category" href="/category/{{page.category}}"><i class="fa fa-users"></i>{{page.category}}</a>
-	</div>
-	<div class="tags">
+	<div class="post-meta">
+		<a class="category" href="/category/{{page.category}}"></i>{{page.category}}</a>
 		{% for tag in page.tags %}
-			<a class="tag" href="/tag/{{tag}}"><i class="fa fa-handshake-o"></i>{{tag}}</a>
+			<a class="tag" href="/tag/{{tag}}"><i class="fa fa-tag"></i>{{tag}}</a>
 		{% endfor %}
 	</div>
 	<div class="blog-inner">
-		{% if !page.example %}
+		{% if page.example == '' %}
 			<img class="blog-image margin-bottom" src="/images/{{page.image}}">
 		{% endif %}
 		<p class="date">Last updated: {{page.date | date: '%B %-d, %Y'}}<br>Three.js Version: {{site.three_version}}</p>
 		{% if page.example %}
-		<canvas class="{{page.example}}"></canvas>
+		<div id="canvases"></div>
 		{% endif %}
 		{{ content }}
+		{% include post-cta.html %}
 		<p class="author">by {{page.author}}</p>
 		{% include disqus.html %}
 	</div>

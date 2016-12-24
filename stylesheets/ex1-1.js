@@ -2,21 +2,23 @@
 	var scene = new THREE.Scene();
 
 	var camera = new THREE.PerspectiveCamera(
-		75, 660 / 330, 0.1, 1000
+		75, window.innerWidth / window.innerHeight, 0.1, 1000
 	);
 	camera.position.z = 2;
 
 	var renderer = new THREE.WebGLRenderer({
+		canvas: document.getElementsByClassName('ex1-1')[0],
 		alpha: true
 	});
 	renderer.setSize(660, 330);
-	document.getElementById('canvases').appendChild(renderer.domElement);
 
+	var ambientLight = new THREE.AmbientLight('#444')
 	var directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-	directionalLight.position.set(0, 2, 2);
-	scene.add(directionalLight);
+	directionalLight.position.set(0, 20, 14);
+	scene.add(ambientLight, directionalLight);
+
 	var geometry = new THREE.BoxGeometry(2.5, 1, 1);
-	var material = new THREE.MeshLambertMaterial({color: '#285cd0'});
+	var material = new THREE.MeshLambertMaterial({color: 'blue'});
 	var cube = new THREE.Mesh(geometry, material);
 	scene.add(cube);
 
