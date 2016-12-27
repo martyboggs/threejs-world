@@ -4,11 +4,11 @@
 {% include header.html %}
 {% assign titleDown = page.title | downcase %}
 
-<div id="content-wrapper">
+<div id="content-wrapper" class="archive-tag">
 	<div class="page-header padding flex-business">
 		<h1>
 			{% if titleDown == 'featured' %}Featured Posts
-			{% else %}Posts tagged with {{ titleDown }}
+			{% else %}Posts tagged with {{titleDown}}
 			{% endif %}
 		</h1>
 	</div>

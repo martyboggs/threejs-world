@@ -3,15 +3,17 @@ layout: post
 title: Build a Star Wars Droid in Three.js
 example: ex1-2
 image: bb8one.png
-category: Tutorials
-tags: [intermediate, featured]
 author: Marty Boggs
+category: Tutorials
+tags:
+-  beginner
+-  featured
 ---
 
 I just saw Rogue One, so this next example features a Star Wars like droid. BB-8 may be your only hope...
 <!--more-->
 
-This tutorial will show you how to put spheres in your project and how to create UV maps that wrap over them. To get started, we'll use this [basic template](/threejs-world-blank-template.html) that I use in a lot of posts. You can right-click and save the template to follow along.
+This tutorial will show you how to put spheres in your project and how to create UV maps that wrap over them. To get started, we'll use this <a href="/threejs-world-blank-template.html" download="threejs-world-{{page.example}}.html">basic template</a> that I use in a lot of posts. Open the template to follow along.
 
 To get images onto the canvas, they need to be loaded in using a TextureLoader which can be instantiated once and then reused.
 
@@ -41,9 +43,9 @@ scene.add(head);
 
 For our droid's body, an equirectangular projection image won't work. Drawing the orange circles on the sides would be easy enough, but the top and bottom circles wouldn't look right as these areas get distorted by the mapping.
 
-A better method is to use a **cube map** and then morph it into a sphere. A cube map combines six flat images for each side of a cube.
+A better method is to use a **cube map** and then morph it into a sphere. A cube map combines six flat images, one for each side of a cube. We'll reuse the same image for all six sides.
 
-In the BoxGeometry instance, we'll need to make split the cube into 8 x 8 x 8 sections so we're able to morph it. That's what the three other arguments do.
+For the BoxGeometry function call, we'll need to split the cube into 8 x 8 x 8 sections so we're able to morph it. That's what the three other arguments do.
 
 <img src="/images/bb8one.png">
 

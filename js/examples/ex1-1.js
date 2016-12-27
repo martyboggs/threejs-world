@@ -2,7 +2,7 @@
 	var scene = new THREE.Scene();
 
 	var camera = new THREE.PerspectiveCamera(
-		75, 660 / 330, 0.1, 1000
+		75, 2, 0.1, 1000
 	);
 	camera.position.z = 2;
 

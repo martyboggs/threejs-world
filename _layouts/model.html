@@ -3,9 +3,9 @@
 {% include head.html %}
 {% include header.html %}
 
-<div id="content-wrapper">
+<div id="content-wrapper" class="model">
 	<div class="page-header padding flex-business">
-		<h1>{{ page.title }}</h1>
+		<h1>{{page.title}}</h1>
 	</div>
 	<div class="tags">
 		{% for tag in page.tags %}
@@ -13,11 +13,64 @@
 		{% endfor %}
 	</div>
 	<div class="blog-inner">
-		<canvas class="model"></canvas>
-		{{ content }}
-		<p class="author">by {{page.author}}</p>
+		<div id="canvases"></div>
+		{% include scripts.html %}
+		<script>
+		var scene = new THREE.Scene();
+		var camera = new THREE.PerspectiveCamera(
+			75, 2, 0.1, 1000
+		);
+		camera.position.set(0, 1.8, 4);
+		var renderer = new THREE.WebGLRenderer({
+			alpha: true
+		});
+		renderer.setSize(660, 330);
+		document.getElementById('canvases').appendChild(renderer.domElement);
+
+		var ambientLight = new THREE.AmbientLight(0xffffff, 1);
+		var pointLight = new THREE.PointLight(0xffffff, 1, 10, 2);
+		pointLight.position.set(0, 1.4, 3.4);
+		scene.add(pointLight, ambientLight);
+
+		var mixer = false;
+		var clock = new THREE.Clock();
+		mesh = new THREE.Object3D();
+		new THREE.JSONLoader().load('/js/models/{{page.title | slugify}}.json', function (geometry, materials) {
+			if (!materials) { // simple
+				mesh = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({color: '#9e6039'}));
+			} else if (!geometry.bones) { // has materials
+				mesh = new THREE.Mesh(geometry, new THREE.MultiMaterial(materials));
+			} else { // has materials and skinning/skeleton
+				materials.forEach(function (material) {
+					material.skinning = true;
+				});
+				mesh = new THREE.SkinnedMesh(geometry, new THREE.MultiMaterial(materials));
+			}
+			console.log(mesh);
+			if (geometry.animations) { // if animations
+				mixer = new THREE.AnimationMixer(mesh);
+				var dance = mixer.clipAction(geometry.animations[0]);
+				dance.play();
+			}
+			scene.add(mesh);
+		});
+
+		camera.position.set(0, {{page.cameraY}}, {{page.cameraZ}});
+
+		function render() {
+			mesh.rotation.y += 0.01;
+			if (mixer) {
+				var delta = clock.getDelta();
+				mixer.update(delta);
+			}
+			requestAnimationFrame(render);
+			renderer.render(scene, camera);
+		}
+		render();
+		</script>
+		<a href="/js/models/{{page.title | slugify}}.json" download="{{page.title | slugify}}.json">Download</a>
+		{{content}}
 	</div>
 </div>
 {% include social.html %}
-{% include scripts.html %}
 {% include footer.html %}

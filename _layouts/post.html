@@ -3,12 +3,12 @@
 {% include head.html %}
 {% include header.html %}
 
-<div id="content-wrapper">
+<div id="content-wrapper" class="post">
 	<div class="page-header padding flex-business">
 		<h1>{{page.title}}</h1>
 	</div>
 	<div class="post-meta">
-		<a class="category" href="/category/{{page.category}}"></i>{{page.category}}</a>
+		<div class="category">Filed under: <a href="/category/{{page.category}}"></i>{{page.category}}</a></div>
 		{% for tag in page.tags %}
 			<a class="tag" href="/tag/{{tag}}"><i class="fa fa-tag"></i>{{tag}}</a>
 		{% endfor %}
@@ -21,17 +21,16 @@
 		{% if page.example %}
 		<div id="canvases"></div>
 		{% endif %}
-		{{ content }}
-		{% include post-cta.html %}
+		{{content}}
+		<p><a target="_blank" href="/js/examples/{{page.example}}.js"><i class="fa fa-file"></i>Get the code from this article</a></p>
 		<p class="author">by {{page.author}}</p>
+		{% include scripts.html %}
+		{% include email-form.html %}
+		{% include related.html %}
 		{% include disqus.html %}
 	</div>
 </div>
-<script>
-console.log('twice')
-</script>
 {% include social.html %}
-{% include scripts.html %}
 {% if page.example %}
 	<script src="/js/examples/{{page.example}}.js"></script>
 {% endif %}

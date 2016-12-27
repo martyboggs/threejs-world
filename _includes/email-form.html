@@ -1,0 +1,48 @@
+<div>
+	<p>Enter your name and email to be notified when new tutorials and 3D models are available:</p>
+	<form id="email-form">
+	<input type="text" name="name" placeholder="name">
+	<input type="email" name="email" placeholder="email">
+	<input type="submit" value="Send">
+	</form>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
+<script>
+$('#email-form').submit(function (e) {
+	e.preventDefault();
+	if (!$('#email-form [name=name]').val() ||
+	!$('#email-form [name=name]').val()) return;
+	addToList(
+		$('#email-form [name=name]').val(),
+		$('#email-form [name=email]').val()
+	);
+});
+
+// Initialize Firebase
+var config = {
+	apiKey: "AIzaSyBE3d-dtcSiKQWywUieJfWW89UZudqi7rA",
+	authDomain: "threejs-world.firebaseapp.com",
+	databaseURL: "https://threejs-world.firebaseio.com",
+	storageBucket: "threejs-world.appspot.com",
+	messagingSenderId: "164735968688"
+};
+firebase.initializeApp(config);
+var database = firebase.database();
+var list = database.ref('email-list-posts');
+function addToList(name, email) {
+	list.orderByChild('email').equalTo(email).once('value', function (snapshot) {
+		if (snapshot.val() === null) {
+			var newEntry = list.push();
+			newEntry.set({
+				name: name,
+				email: email
+			});
+		} else {
+			alert('already added');
+			// cookie?
+		}
+	});
+}
+
+</script>

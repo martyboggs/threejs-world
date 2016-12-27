@@ -21,7 +21,6 @@
 	"DbgIndex" : 0,
 	"DbgName" : "engineer_red",
 	"blending" : "NormalBlending",
-	"colorAmbient" : [0.0, 0.0, 0.0],
 	"colorDiffuse" : [1, 1, 1],
 	"colorSpecular" : [0.1, 0.1, 0.1],
 	"mapDiffuse" : "engineer_red.jpg",
@@ -29,7 +28,7 @@
 	"depthWrite" : true,
 	"shading" : "Phong",
 	"specularCoef" : 10,
-	"transparency" : 1.0,
+	"opacity" : 1.0,
 	"transparent" : false,
 	"vertexColors" : false
 	},
@@ -39,7 +38,6 @@
 	"DbgIndex" : 1,
 	"DbgName" : "engineer_head",
 	"blending" : "NormalBlending",
-	"colorAmbient" : [0.0, 0.0, 0.0],
 	"colorDiffuse" : [1, 1, 1],
 	"colorSpecular" : [0.1, 0.1, 0.1],
 	"mapDiffuse" : "engineer_head.jpg",
@@ -47,7 +45,7 @@
 	"depthWrite" : true,
 	"shading" : "Phong",
 	"specularCoef" : 50,
-	"transparency" : 1.0,
+	"opacity" : 1.0,
 	"transparent" : false,
 	"vertexColors" : false
 	}],

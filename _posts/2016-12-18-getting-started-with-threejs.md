@@ -13,20 +13,17 @@ Using three.js is a great way to incorporate 3D graphics into your browser wheth
 
 
 ## Template
-Set up your HTML template with a canvas element and the three.js library.
+Set up your HTML template. I've added a target div with an id called "canvases" which is where I'll add the canvas element in the next step.
 
 ```html
 <!DOCTYPE html>
 <html>
 	<head>
 		<meta charset=utf-8>
-		<title>Three.js World {{page.example}}</title>
-		<style>
-			canvas.{{page.example}} {width: 660px; height: 330px;}
-		</style>
+		<title>Three.js World</title>
 	</head>
 	<body>
-		<canvas class="{{page.example}}"></canvas>
+		<div id="canvases"></div>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/{{site.three_version}}/three.js"></script>
 		<script>
 			// Our JavaScript will go here.
@@ -51,10 +48,10 @@ var camera = new THREE.PerspectiveCamera(
 camera.position.z = 2;
 
 var renderer = new THREE.WebGLRenderer({
-	canvas: document.getElementsByClassName('ex1-1')[0],
 	alpha: true
 });
 renderer.setSize(660, 330);
+document.getElementById('canvases').appendChild(renderer.domElement);
 
 var directionalLight = new THREE.DirectionalLight(0xffffff, 1);
 directionalLight.position.set(0, 2, 2);
