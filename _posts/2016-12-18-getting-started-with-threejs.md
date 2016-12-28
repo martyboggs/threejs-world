@@ -1,8 +1,8 @@
 ---
-title: Getting Started With Three.js
+title: Getting Started with three.js
 layout: post
 image: rocket.png
-example: ex1-1
+example: ex1
 category: Tutorials
 tags:
 - guide

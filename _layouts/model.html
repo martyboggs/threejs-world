@@ -3,6 +3,8 @@
 {% include head.html %}
 {% include header.html %}
 
+{% assign slug = page.title | slugify %}
+
 <div id="content-wrapper" class="model">
 	<div class="page-header padding flex-business">
 		<h1>{{page.title}}</h1>
@@ -35,7 +37,7 @@
 		var mixer = false;
 		var clock = new THREE.Clock();
 		mesh = new THREE.Object3D();
-		new THREE.JSONLoader().load('/js/models/{{page.title | slugify}}.json', function (geometry, materials) {
+		new THREE.JSONLoader().load('/js/models/{{slug}}/{{slug}}.json', function (geometry, materials) {
 			if (!materials) { // simple
 				mesh = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({color: '#9e6039'}));
 			} else if (!geometry.bones) { // has materials
@@ -46,7 +48,6 @@
 				});
 				mesh = new THREE.SkinnedMesh(geometry, new THREE.MultiMaterial(materials));
 			}
-			console.log(mesh);
 			if (geometry.animations) { // if animations
 				mixer = new THREE.AnimationMixer(mesh);
 				var dance = mixer.clipAction(geometry.animations[0]);
@@ -68,9 +69,12 @@
 		}
 		render();
 		</script>
-		<a href="/js/models/{{page.title | slugify}}.json" download="{{page.title | slugify}}.json">Download</a>
+		<a href="/js/models/{{slug}}/{{slug}}.zip" download="{{slug}}.zip">Download</a><br>
+		Skeleton: {% if page.skeleton %}{{'Yes'}}{% else %}{{'No'}}{% endif %}<br>
+		Animation: {% if page.animations > 0 %}{{page.animations}}{% else %}None{% endif %}<br>
+		Images: {% if page.images > 0 %}{{page.images}}{% else %}None{% endif %}<br>
+		License: {% if page.license %}<a target="_blank" rel="nofollow" href="{{page.license}}">{{page.license}}</a>{% else %}Public Domain{% endif %}
 		{{content}}
 	</div>
 </div>
-{% include social.html %}
 {% include footer.html %}

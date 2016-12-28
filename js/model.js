@@ -1,3 +1,4 @@
+console.log('font loaded twice?');
 WebFont.load({
 	google: {
 		families: ['Raleway:200,400', 'Bree Serif']

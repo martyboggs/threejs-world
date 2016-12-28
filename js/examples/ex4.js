@@ -18,22 +18,37 @@
 
 	var mesh = new THREE.Object3D();
 	var jsonLoader = new THREE.JSONLoader();
-	jsonLoader.load('/js/models/paperweight/paperweight.json',
+	jsonLoader.load('/js/models/hugbot/hugbot.json',
 		function (geometry, materials) {
-			mesh = new THREE.Mesh(geometry,
-				new THREE.MeshLambertMaterial({
-					color: '#9e6039',
-					transparent: true,
-					opacity: 0.9
-				}));
+			for (var i = 0; i < materials; i += 1) {
+				materials[i].skinning = true;
+			}
+			mesh = new THREE.SkinnedMesh(geometry,
+			new THREE.MeshLambertMaterial({
+				color: '#9e6039',
+				transparent: true,
+				opacity: 0.9
+			}));
+			// new THREE.MultiMaterial(materials)
 			scene.add(mesh);
+
+			console.log(mesh);
 		}
 	);
 
-	camera.position.set(0, 1.8, 4);
+	camera.position.set(0, 3, 7);
 
 	function render() {
-		mesh.rotation.y += 0.01;
+		// mesh.rotation.y += 0.01;
+
+		if (mesh.skeleton) {
+			for (var i = 0; i < mesh.skeleton.bones.length; i += 1) {
+				mesh.skeleton.bones[i].rotation.x += 0.01;
+				mesh.skeleton.bones[i].rotation.y += 0.01;
+				mesh.skeleton.bones[i].rotation.z += 0.01;
+			}
+		}
+
 		requestAnimationFrame(render);
 		renderer.render(scene, camera);
 	}

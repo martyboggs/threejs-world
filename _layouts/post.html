@@ -22,15 +22,14 @@
 		<div id="canvases"></div>
 		{% endif %}
 		{{content}}
-		<p><a target="_blank" href="/js/examples/{{page.example}}.js"><i class="fa fa-file"></i>Get the code from this article</a></p>
-		<p class="author">by {{page.author}}</p>
+		<p><a target="_blank" href="/js/examples/{{page.example}}.js"><i class="fa fa-file"></i>Get the code from this article (opens in a new tab)</a></p>
+		<p class="author">This article was brought to you by {{page.author}}</p>
 		{% include scripts.html %}
 		{% include email-form.html %}
 		{% include related.html %}
 		{% include disqus.html %}
 	</div>
 </div>
-{% include social.html %}
 {% if page.example %}
 	<script src="/js/examples/{{page.example}}.js"></script>
 {% endif %}

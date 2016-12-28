@@ -1,9 +1,10 @@
-<div>
+<div class="email-cta">
+	<h2><i class="fa fa-envelope"></i> Get Email Updates</h2>
 	<p>Enter your name and email to be notified when new tutorials and 3D models are available:</p>
 	<form id="email-form">
-	<input type="text" name="name" placeholder="name">
-	<input type="email" name="email" placeholder="email">
-	<input type="submit" value="Send">
+		<input type="text" name="name" placeholder="name" required>
+		<input type="email" name="email" placeholder="email" required>
+		<input type="submit" value="Sign Up">
 	</form>
 </div>
 
@@ -12,7 +13,7 @@
 $('#email-form').submit(function (e) {
 	e.preventDefault();
 	if (!$('#email-form [name=name]').val() ||
-	!$('#email-form [name=name]').val()) return;
+	!$('#email-form [name=email]').val()) return;
 	addToList(
 		$('#email-form [name=name]').val(),
 		$('#email-form [name=email]').val()
