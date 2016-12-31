@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: page
 title: About
 ---
 This site is run by Marty Boggs.

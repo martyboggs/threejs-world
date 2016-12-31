@@ -1,18 +1,65 @@
 ---
 ---
-{% include head.html %}
-{% include header.html %}
 
-<div id="content-wrapper" class="page page-{{page.title | slugify}}">
-	<div class="page-header padding flex-business">
-		<h1>{{page.title}}</h1>
-	</div>
-	<div class="blog-inner">
-		{% if page.example == '' %}
-			<img class="blog-image margin-bottom" src="/images/{{page.image}}">
-		{% endif %}
-		{{content}}
-		{% include scripts.html %}
-	</div>
-</div>
-{% include footer.html %}
+<!DOCTYPE html>
+<html lang="en" xml:lang="en" xmlns= "http://www.w3.org/1999/xhtml" class="wf-loading">
+<head>
+	<!--[if lt IE 9]>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+	<![endif]-->
+	<meta charset='utf-8'>
+	<meta name="google" content="notranslate">
+	<meta http-equiv="Content-Language" content="en">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+	<!--<meta name="apple-mobile-web-app-capable" content="yes">-->
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	<!--<meta name="mobile-web-app-capable" content="yes">-->
+	<link rel="icon" sizes="192x192" href="/images/icons/launcher-icon-4x.png">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/pygment_trac.css" media="screen">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print">
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/monokai.css">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/dat.gui.css">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/slick.css">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/slick-theme.css">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/stylesheet.css">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/custom.css">
+	<link rel="canonical" href="{{site.url}}{{page.url}}" />
+	<meta itemprop="name" content="{{site.title}}">
+	<meta property="og:title" content="{{site.title}}">
+	<meta property="og:url" content="{{site.url}}">
+	<meta property="og:site_name" content="{{site.title}}">
+	<meta name="description" content="{{site.description}}">
+	<meta itemprop="description" content="{{site.description}}">
+	<script type="application/ld+json">
+	{"@context": "http://schema.org",
+	"@type": "WebPage",
+	"headline": "{{page.title}}",
+	"url": "{{site.url}}{{page.url}}"}
+	</script>
+	<title>{{page.title}}</title>
+</head>
+
+<body>
+	<header>
+		<div class="bg"></div>
+		<div class="inner flex-container">
+			<a href="/"><h1>Three<span class="accent-color">.</span>js <span class="accent-color">World</span></h1></a>
+			<a href="/category/tutorials">Tutorials</a>
+			<a href="/tag/featured">Featured</a>
+			<a href="/all/models">Free 3D Models</a>
+			<a href="/about">About</a>
+			{% include social.html %}
+		</div>
+	</header>
+
+	{{content}}
+
+	<footer>
+	{% for category in archive_category %}
+		{{category | jsonify}}
+	{% endfor %}
+	</footer>
+</body>
+</html>
