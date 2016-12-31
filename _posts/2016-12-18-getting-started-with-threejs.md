@@ -1,6 +1,6 @@
 ---
-title: Getting Started with three.js
 layout: post
+title: Getting Started with three.js
 image: rocket.png
 example: ex1
 category: Tutorials

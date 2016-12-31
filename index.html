@@ -4,8 +4,8 @@ title: Three.js World
 {% include head.html %}
 {% include header.html %}
 <div class="home" id="content-wrapper">
-	<section class="s1 flex-business padding">
-		<h2>#beginner</h2>
+	<section class="s1 padding">
+		<h2><i class="fa fa-tag"></i>beginner</h2>
 		<div class="boxes">
 			{% for post in site.tags.beginner %}
 				{% include box.html %}
@@ -14,7 +14,7 @@ title: Three.js World
 	</section>
 
 	<section class="s2">
-		<div class="fade-white-top min-height flex-business padding">
+		<div class="fade-white-top min-height padding">
 			<h2>Express Yourself in All Three Dimensions</h2>
 			<div class="boxes">
 				{% for post in site.posts %}
@@ -25,7 +25,7 @@ title: Three.js World
 	</section>
 
 	<section class="s3">
-		<div class="min-height flex-business flex-container padding">
+		<div class="min-height padding">
 			<h2>Express Yourself in All Three Dimensions</h2>
 			<div class="boxes">
 				{% for post in site.posts %}
@@ -36,13 +36,13 @@ title: Three.js World
 	</section>
 
 	<section class="s4">
-		<div class="min-height flex-business padding">
+		<div class="min-height padding flex-business">
 			<img src="/images/rocket.png">
 		</div>
 	</section>
 
 	<section class="s5">
-		<div class="min-height flex-business flex-container padding">
+		<div class="min-height padding">
 			<h2>Tutorials</h2>
 			<div class="boxes">
 				{% for post in site.categories.Tutorials %}
@@ -55,8 +55,6 @@ title: Three.js World
 </div>
 {% include footer.html %}
 {% include scripts.html %}
-
-<script src="js/main.js"></script>
 </body>
 
 </html>

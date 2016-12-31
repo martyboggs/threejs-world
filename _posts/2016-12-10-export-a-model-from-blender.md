@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Export a Model from Blender or the Free 3D Models Area
+title: Export a Model from Blender
 image: rocket.png
 example: ex3
 author: Marty Boggs
