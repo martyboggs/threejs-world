@@ -5,12 +5,14 @@ layout: default
 {% assign titleDown = page.title | downcase %}
 
 <div id="content-wrapper" class="archive-tag">
-	<div class="page-header padding flex-business">
+	<div class="page-header">
+		{% include social.html %}
 		<h1>
 			{% if titleDown == 'featured' %}Featured Posts
 			{% else %}Posts tagged with {{titleDown}}
 			{% endif %}
 		</h1>
+		{% include social.html %}
 	</div>
 	<div class="archive-inner">
 		<div class="boxes">

@@ -3,8 +3,10 @@ layout: default
 ---
 
 <div id="content-wrapper" class="page page-{{page.title | slugify}}">
-	<div class="page-header padding flex-business">
+	<div class="page-header">
+		{% include social.html %}
 		<h1>{{page.title}}</h1>
+		{% include social.html %}
 	</div>
 	<div class="blog-inner">
 		{% if page.example == '' %}
