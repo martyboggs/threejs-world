@@ -2,7 +2,9 @@
 layout: default
 ---
 
-{% include structured-data.html %}
+{% if jekyll.production %}
+	{% include structured-data.html %}
+{% endif %}
 <div id="content-wrapper" class="post">
 	<div class="page-header">
 		{% include social.html %}

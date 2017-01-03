@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Working With Materials In three.js
+title: Working with Materials in three.js
 example: ex6
 author: Marty Boggs
 category: Tutorials
