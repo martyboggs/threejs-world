@@ -7,6 +7,7 @@ author: Marty Boggs
 category: Tutorials
 tags:
 -  advanced
+-  rigging
 -  featured
 ---
 Meet Hugbot. A robot designed for expressing affection. It can be yours for 9000 dollars US or by

@@ -4,7 +4,6 @@ title: Getting Started with three.js
 example: ex1
 category: Tutorials
 tags:
-- guide
 - beginner
 ---
 

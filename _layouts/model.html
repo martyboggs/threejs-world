@@ -51,8 +51,8 @@ layout: default
 			}
 			if (geometry.animations) { // if animations
 				mixer = new THREE.AnimationMixer(mesh);
-				var dance = mixer.clipAction(geometry.animations[0]);
-				dance.play();
+				var animation = mixer.clipAction(geometry.animations[0]);
+				animation.play();
 			}
 			scene.add(mesh);
 		});
@@ -71,10 +71,11 @@ layout: default
 		render();
 		</script>
 		<a href="/js/models/{{slug}}/{{slug}}.zip" download="{{slug}}.zip">Download</a><br>
-		Skeleton: {% if page.skeleton %}{{'Yes'}}{% else %}{{'No'}}{% endif %}<br>
-		Animation: {% if page.animations > 0 %}{{page.animations}}{% else %}None{% endif %}<br>
+		Materials: {% if page.materials > 0 %}{{page.materials}}{% else %}None{% endif %}<br>
 		Images: {% if page.images > 0 %}{{page.images}}{% else %}None{% endif %}<br>
-		License: {% if page.license %}<a target="_blank" rel="nofollow" href="{{page.license}}">click to view</a>{% else %}Public Domain{% endif %}
+		Skeleton: {% if page.skeleton == true %}Yes{% else %}No{% endif %}<br>
+		Animation: {% if page.animations > 0 %}{{page.animations}}{% else %}None{% endif %}<br>
+		License: {% if page.license != nil %}<a target="_blank" rel="nofollow" href="{{page.license}}">click to view</a>{% else %}Public Domain{% endif %}
 		{{content}}
 	</div>
 </div>

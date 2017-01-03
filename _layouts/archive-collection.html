@@ -14,16 +14,6 @@ layout: default
 		{{content}}
 	</div>
 	{% include scripts.html %}
-	{% if titleDown == 'posts' %}
-		<div class="canvases" id="canvases">
-			{% for file in site.static_files %}
-				{% if file.path contains '/js/examples' %}
-					<script src="{{file.path}}"></script>
-				{% endif %}
-			{% endfor %}
-		</div>
-	{% endif %}
-
 	<div class="archive-inner">
 		<div class="boxes">
 			{% for post in site[titleDown] %}

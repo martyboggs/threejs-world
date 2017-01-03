@@ -30,7 +30,7 @@ var config = {
 };
 firebase.initializeApp(config);
 var database = firebase.database();
-var list = database.ref('email-list-posts');
+var list = database.ref('threejsworld/email-list-posts');
 function addToList(name, email) {
 	list.orderByChild('email').equalTo(email).once('value', function (snapshot) {
 		if (snapshot.val() === null) {

@@ -6,6 +6,18 @@
 		<p>{% for tag in post.tags %}
 			{{tag}},
 		{% endfor %}</p>
-		<p class="body">{{post.excerpt | strip_html}} ...</p>
+		{% if titleDown == 'models' %}
+			Materials: {% if post.materials > 0 %}{{post.materials}}{% else %}None{% endif %}<br>
+			Images: {% if post.images > 0 %}{{post.images}}{% else %}None{% endif %}<br>
+			Skeleton: {% if post.skeleton == true %}Yes{% else %}No{% endif %}<br>
+		{% endif %}
+		<p class="body">
+			{% if titleDown == 'models' %}
+				Animation: {% if post.animations > 0 %}{{post.animations}}{% else %}None{% endif %}<br>
+				License: {% if post.license != nil %}Click to view{% else %}Public Domain{% endif %}
+			{% else %}
+				{{post.excerpt | strip_html}} ...
+			{% endif %}
+		</p>
 	</div>
 </a>

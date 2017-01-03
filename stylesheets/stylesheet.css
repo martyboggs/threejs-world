@@ -434,7 +434,8 @@ footer a:hover {
 
 canvas {
 	user-select: none;
-	transition: all 1s;
+	/*transition: all 1s;*/
+	outline: none;
 }
 
 p {
@@ -526,7 +527,6 @@ section h2 {
 }
 
 .archive-inner {
-	max-width: 1170px;
 	margin: 0 auto;
 }
 @media (max-width: 1199px) {
@@ -607,7 +607,16 @@ section h2 {
 	padding: 2px 10px;
 }
 
+.email-cta input[type=submit] {
+	background: #ff7f07;
+	color: white;
+	padding: 10px;
+	font-family: 'Roboto', sans-serif;
+	font-weight: 700;
+}
+
 input[type=submit] {
+	outline: none;
 	box-sizing: initial;
 }
 
@@ -621,7 +630,8 @@ img {
 .wf-loading h2,
 .wf-loading p,
 .wf-loading a,
-.wf-loading .boxes {
+.wf-loading .boxes,
+.wf-loading canvas {
 	opacity: 0;
 }
 
@@ -629,8 +639,17 @@ h1,
 h2,
 p,
 a,
-.boxes {
+.boxes,
+canvas {
 	transition: opacity 0.2s;
+}
+
+.home .canvases {
+	display: flex;
+	justify-content: center;
+}
+.home .canvases canvas {
+	width: 240px !important;
 }
 
 header {
@@ -714,7 +733,7 @@ section {
 }
 
 .padding {
-	padding: 40px calc(50% - 585px);
+	padding: 40px calc(50% - 600px);
 }
 
 .s1,
@@ -724,8 +743,12 @@ section {
 	background: url('/images/ignasi_pattern_s.jpg');
 }
 
+.s3 .box {
+	background: white;
+}
+
 .boxes {
-	max-width: 1170px;
+	max-width: 1200px;
 	width: 100%;
 	margin: 0 auto;
 }

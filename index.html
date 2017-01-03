@@ -5,18 +5,24 @@ title: Three.js World
 
 <div class="home" id="content-wrapper">
 
-	<section class="s1 padding">
-		<h2></h2>
-		<div class="boxes">
-			{% for post in site.posts %}
-				{% include box.html %}
+	{% include scripts.html %}
+	<section class="s1">
+		<div class="padding flex-business">
+			<div class="canvases" id="canvases"></div>
+			{% for file in site.static_files %}
+				{% if file.path contains '/js/examples' and file.path != '/js/examples/ex5.js' %}
+					<script src="{{file.path}}"></script>
+				{% endif %}
 			{% endfor %}
 		</div>
 	</section>
 
-	<section class="s2">
-		<div class="padding flex-business">
-			<img src="/images/rocket.png">
+	<section class="s2 padding">
+		<h2>Featured</h2>
+		<div class="boxes">
+			{% for post in site.posts %}
+				{% include box.html %}
+			{% endfor %}
 		</div>
 	</section>
 
@@ -39,4 +45,3 @@ title: Three.js World
 	</section>
 
 </div>
-{% include scripts.html %}

@@ -17,12 +17,17 @@ WebFont.load({
 	}
 });
 
+setInterval(function () {
+	var width = $('.canvases canvas').first().width();
+	$('.canvases canvas').height(width / 2);
+}, 100);
+
 $(function () {
 	$('.boxes').slick({
 		slidesToShow: 5,
 		slidesToScroll: 2,
 		autoplay: true,
-		autoplaySpeed: 2000,
+		autoplaySpeed: 5000,
 		arrows: false,
 		infinite: true,
 		dots: true,
@@ -55,3 +60,20 @@ $(function () {
 		]
 	});
 });
+
+/*
+		preserveDrawingBuffer: true
+*/
+/*
+		if (saveImage === 0) {
+			saveImage = 1;
+			setTimeout(function () {
+				saveImage = 2;
+			}, 3000);
+		} else if (saveImage === 2) {
+			saveImage = 3;
+			$(document.body).prepend('<a href="' + renderer.domElement.toDataURL() + '" download="d.png">download image</a>');
+		}
+	}
+	var saveImage = 0;
+*/
