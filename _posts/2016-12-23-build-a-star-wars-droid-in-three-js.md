@@ -2,7 +2,6 @@
 layout: post
 title: Build a Star Wars Droid in three.js
 example: ex2
-image: bb8one.png
 author: Marty Boggs
 category: Tutorials
 tags:

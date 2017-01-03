@@ -1,0 +1,31 @@
+{% assign level = '' %}
+{% for tag in page.tags %}
+	{% if tag == 'beginner' %}
+		{% assign level = 'Beginner' %}
+	{% elsif tag == 'advanced' %}
+		{% assign level = 'Advanced' %}
+	{% endif %}
+{% endfor %}
+<script type="application/ld+json">
+{ "@context": "http://schema.org",
+ "@type": "TechArticle",
+ "headline": "{{page.title}}",
+ "dependencies": "For everyone",
+ "proficiencyLevel": "{{level}}",
+ "alternativeHeadline": "",
+ "image": "{{site.url}}/images/{{page.example}}.jpg",
+ "author": "{{page.author}}",
+ "award": "",
+ "editor": "{{page.author}}",
+ "genre": "{{page.category}}",
+ "keywords": "{{page.tags | join: ' '}}",
+ "wordcount": "{{content | number_of_words}}",
+ "publisher": "{{site.title}}",
+ "url": "{{site.url}}/{{page.url}}",
+ "datePublished": "{{page.date | date: '%Y-%m-%d'}}",
+ "dateCreated": "{{page.date | date: '%Y-%m-%d'}}",
+ "dateModified": "{{page.date | date: '%Y-%m-%d'}}",
+ "description": "Lots of three.js info",
+ "articleBody": "{{content | strip_newlines | strip_html}}"
+ }
+</script>

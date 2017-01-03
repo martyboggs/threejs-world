@@ -2,7 +2,6 @@
 layout: post
 title: Inverse Kinematics in three.js
 example: ex5
-image: bb8one.png
 author: Marty Boggs
 category: Tutorials
 tags:

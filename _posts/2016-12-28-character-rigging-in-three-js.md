@@ -2,7 +2,6 @@
 layout: post
 title: Character Rigging in three.js
 example: ex4
-image: bb8one.png
 author: Marty Boggs
 category: Tutorials
 tags:
