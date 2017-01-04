@@ -18,8 +18,8 @@ WebFont.load({
 });
 
 setInterval(function () {
-	var width = $('.canvases canvas').first().width();
-	$('.canvases canvas').height(width / 2);
+	var width = $('#canvases canvas').first().width();
+	$('#canvases canvas').height(width / 2);
 }, 100);
 
 $(function () {

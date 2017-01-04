@@ -8,7 +8,7 @@ title: Three.js World
 	{% include scripts.html %}
 	<section class="s1">
 		<div class="padding flex-business">
-			<div class="canvases" id="canvases"></div>
+			<div id="canvases"></div>
 			{% for file in site.static_files %}
 				{% if file.path contains '/js/examples' and file.path != '/js/examples/ex5.js' %}
 					<script src="{{file.path}}"></script>

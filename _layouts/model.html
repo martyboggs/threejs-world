@@ -75,7 +75,7 @@ layout: default
 		Images: {% if page.images > 0 %}{{page.images}}{% else %}None{% endif %}<br>
 		Skeleton: {% if page.skeleton == true %}Yes{% else %}No{% endif %}<br>
 		Animation: {% if page.animations > 0 %}{{page.animations}}{% else %}None{% endif %}<br>
-		License: {% if page.license != nil %}<a target="_blank" rel="nofollow" href="{{page.license}}">click to view</a>{% else %}Public Domain{% endif %}
+		License: {% if page.license != nil %}<a target="_blank" rel="nofollow" href="{{page.license}}">click to view <i class="fa fa-external-link"></i></a>{% else %}Public Domain{% endif %}
 		{{content}}
 	</div>
 </div>

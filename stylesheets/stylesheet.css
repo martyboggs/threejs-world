@@ -644,11 +644,14 @@ canvas {
 	transition: opacity 0.2s;
 }
 
-.home .canvases {
+.home #canvases {
 	display: flex;
 	justify-content: center;
 }
-.home .canvases canvas {
+#canvases canvas {
+	width: 100% !important;
+}
+.home #canvases canvas {
 	width: 240px !important;
 }
 
