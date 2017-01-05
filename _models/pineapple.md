@@ -1,5 +1,7 @@
 ---
 layout: model
-cameraY: 1.8
-cameraZ: 4
+example: pineapple
+cameraY: 3
+cameraZ: 5
+materials: 2
 ---

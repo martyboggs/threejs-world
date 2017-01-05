@@ -10,7 +10,11 @@ title: Three.js World
 		<div class="padding flex-business">
 			<div id="canvases"></div>
 			{% for file in site.static_files %}
-				{% if file.path contains '/js/examples' and file.path != '/js/examples/ex5.js' %}
+				{% if file.path == '/js/examples/ex1.js' or
+				file.path == '/js/examples/ex2.js' or
+				file.path == '/js/examples/ex3.js' or
+				file.path == '/js/examples/ex4.js' or
+				file.path == '/js/examples/ex5.js'  %}
 					<script src="{{file.path}}"></script>
 				{% endif %}
 			{% endfor %}

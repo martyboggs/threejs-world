@@ -419,12 +419,43 @@ body {
 }
 
 footer {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 	margin-top: 40px;
 	height: 149px;
 	background: #333;
-	justify-content: flex-end;
 }
+footer > *:first-child {
+	margin-left: calc(50% - 600px);
+}
+footer > div:last-of-type {
+	margin-right: calc(50% - 400px);
+}
+@media (max-width: 1200px) {
+	footer > *:first-child {
+		margin-left: 15px;
+	}
+	footer > div:last-of-type {
+		margin-right: 180px;
+	}
+}
+/*
+180 1200 = 1020
+15 320 = 305
+*/
+@media (max-width: 991px) {
+	footer > div:last-of-type {
+		margin-right: calc(10.3vw + 4px);
+	}
+}
+/*@media (max-width: 705px) {
+	footer > div:last-of-type {
+		margin-right: 15px;
+	}
+}*/
 footer a {
+	display: block;
 	color: #666;
 }
 footer a:hover {
@@ -665,26 +696,34 @@ header .bg {
 	position: absolute;
 	z-index: -1;
 }
-header h1 {
+header h1,
+footer h1 {
 	font-family: 'Bree Serif', serif;
 	letter-spacing: -1px;
 	font-size: calc(2vw + 20px);
 	font-weight: normal;
-	/*color: #fff;*/
 	line-height: 1;
 	margin-top: 0;
 	margin-bottom: 0;
 	text-align: center;
 }
+footer h1 {
+	color: #fff;
+}
 header h1,
+footer h1,
 header span {
 	transition: color 0.2s;
 }
-header h1:hover {
-	color: orange;
+header h1:hover,
+footer h1:hover {
+	color: #ff7f07;
 }
 header h1:hover span {
 	color: #333;
+}
+footer h1:hover span {
+	color: white;
 }
 header .inner > a {
 	border-bottom: 1px solid #2879d0;
