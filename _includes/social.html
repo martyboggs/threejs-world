@@ -1,41 +1,74 @@
 <section class="share-this-post">
 	<div class="share-page">
-
 		<a
-		{% if jekyll.production %}
+		{% if site.github != nil %}
 			onclick="ga('send', 'event', { eventCategory: 'Social Icons', eventAction: 'Share', eventLabel: 'Twitter'});"
 		{% endif %}
-		class="icon-twitter" href="https://twitter.com/share?text={{page.title}}&amp;url={{site.url}}{{page.url}}" rel="nofollow" target="_blank" title="Share on Twitter"><i class="fa fa-twitter"></i></a>
+		class="icon-twitter" href="https://twitter.com/share?text={{page.title}}&amp;url={{site.url}}{{page.url}}" rel="nofollow" target="_blank" title="Share on Twitter"><i class="fa fa-twitter"></i><span class="shares">0</span></a>
 
 		<a
-		{% if jekyll.production %}
+		{% if site.github != nil %}
 			onclick="ga('send', 'event', { eventCategory: 'Social Icons', eventAction: 'Share', eventLabel: 'Facebook'});"
 		{% endif %}
-		class="icon-facebook" href="https://facebook.com/sharer.php?u={{site.url}}{{page.url}}" rel="nofollow" target="_blank" title="Share on Facebook"><i class="fa fa-facebook"></i></a>
+		class="icon-facebook" href="https://facebook.com/sharer.php?u={{site.url}}{{page.url}}" rel="nofollow" target="_blank" title="Share on Facebook"><i class="fa fa-facebook"></i><span class="shares">0</span></a>
 
 		<a
-		{% if jekyll.production %}
+		{% if site.github != nil %}
 			onclick="ga('send', 'event', { eventCategory: 'Social Icons', eventAction: 'Share', eventLabel: 'GPlus'});"
 		{% endif %}
-		class="icon-gplus" href="https://plus.google.com/share?url={{site.url}}{{page.url}}" rel="nofollow" target="_blank" title="Share on Google+"><i class="fa fa-google-plus"></i></a>
+		class="icon-gplus" href="https://plus.google.com/share?url={{site.url}}{{page.url}}" rel="nofollow" target="_blank" title="Share on Google+"><i class="fa fa-google-plus"></i><span class="shares">0</span></a>
 
 <!--		<a
-		{% if jekyll.production %}
+		{% if site.github != nil %}
 			onclick="ga('send', 'event', { eventCategory: 'Social Icons', eventAction: 'Share', eventLabel: 'Reddit'});"
 		{% endif %}
-		class="icon-reddit" href="http://reddit.com/submit?title=Release%20Notes:%20November%2E&amp;url={{site.url}}{{page.url}}" target="_blank" rel="nofollow" title="Share on Reddit"></a>-->
+		class="icon-reddit" href="http://reddit.com/submit?title=Release%20Notes:%20November%2E&amp;url={{site.url}}{{page.url}}" target="_blank" rel="nofollow" title="Share on Reddit"><span class="shares">0</span></a>-->
 
 		<a
-		{% if jekyll.production %}
+		{% if site.github != nil %}
 			onclick="ga('send', 'event', { eventCategory: 'Social Icons', eventAction: 'Share', eventLabel: 'Stumble'});"
 		{% endif %}
-		class="icon-stumbleupon" href="http://www.stumbleupon.com/submit?url={{site.url}}{{page.url}}&title={{page.title}}" target="_blank" rel="nofollow" title="Share on StumbleUpon"><i class="fa fa-stumbleupon"></i></a>
+		class="icon-stumbleupon" href="http://www.stumbleupon.com/submit?url={{site.url}}{{page.url}}&title={{page.title}}" target="_blank" rel="nofollow" title="Share on StumbleUpon"><i class="fa fa-stumbleupon"></i><span class="shares">0</span></a>
 
 		<a
-		{% if jekyll.production %}
+		{% if site.github != nil %}
 			onclick="ga('send', 'event', { eventCategory: 'Social Icons', eventAction: 'Share', eventLabel: 'Email'});"
 		{% endif %}
-		class="icon-email" href="mailto:?subject=Three.js World&amp;body=Check out this article I found on the Three.js World blog {{site.url}}{{page.url}}." title="Share via Email"><i class="fa fa-envelope"></i></a>
+		class="icon-email" href="mailto:?subject={{site.title}}&amp;body=Check out this article I found on the {{site.title}} blog {{site.url}}{{page.url}}." title="Share via Email"><i class="fa fa-envelope"></i><span class="shares">0</span></a>
 	</div>
-
 </section>
+
+{% if page.layout == 'post' %}
+	{% assign id = page.example %}
+{% else %}
+	{% assign id = page.title | slugify %}
+{% endif %}
+
+
+<script>
+$(function () {
+	var shareRef = database.ref('{{site.title | slugify}}/shares');
+	shareRef.child('{{id}}').on('value', function (snap) {
+		var shares = snap.val();
+		for (var source in shares) {
+			$('.' + source + ' .shares').text(shares[source]);
+		}
+		$('.share-placeholder').width($('.share-this-post').width());
+	});
+	$('.share-placeholder').width($('.share-this-post').width());
+
+	$('.share-this-post .share-page a').click(function (e) {
+		{% if site.github == nil %}return false;{% endif %}
+		var that = this;
+		shareRef.child('{{id}}').transaction(function (shares) {
+			if (!shares) var shares = {};
+			if (shares[that.className]) {
+				shares[that.className] += 1;
+			} else {
+				shares[that.className] = 1;
+			}
+			return shares;
+		});
+	});
+}());
+</script>

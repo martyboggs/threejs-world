@@ -9,7 +9,7 @@ layout: default
 	<div class="page-header">
 		{% include social.html %}
 		<h1>{{page.title}}</h1>
-		{% include social.html %}
+		<div class="share-placeholder"></div>
 	</div>
 	<div class="post-meta">
 		<p class="category">Filed under: <a href="/category/{{page.category}}"></i>{{page.category}}</a></p>
@@ -28,7 +28,6 @@ layout: default
 		{{content}}
 		<p><a target="_blank" href="/js/examples/{{page.example}}.js"><i class="fa fa-file"></i>Get the code from this article <i class="fa fa-external-link"></i></a></p>
 		<p class="author">This article was brought to you by {{page.author}}</p>
-		{% include scripts.html %}
 		{% include email-form.html %}
 		{% include related.html %}
 		{% include disqus.html %}

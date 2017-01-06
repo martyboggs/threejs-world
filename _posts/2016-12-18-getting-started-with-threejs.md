@@ -3,6 +3,7 @@ layout: post
 title: Getting Started with three.js
 example: ex1
 category: Tutorials
+author: Marty Boggs
 tags:
 -  beginner
 ---

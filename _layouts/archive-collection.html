@@ -8,12 +8,11 @@ layout: default
 	<div class="page-header">
 		{% include social.html %}
 		<h1>{{page.title}}</h1>
-		{% include social.html %}
+		<div class="share-placeholder"></div>
 	</div>
 	<div class="blog-inner">
 		{{content}}
 	</div>
-	{% include scripts.html %}
 	<div class="archive-inner">
 		<div class="boxes">
 			{% for post in site[titleDown] %}

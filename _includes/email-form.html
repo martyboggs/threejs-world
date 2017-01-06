@@ -8,43 +8,35 @@
 	</form>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
 <script>
 $('#email-form').submit(function (e) {
 	e.preventDefault();
-	if (!$('#email-form [name=name]').val() ||
-	!$('#email-form [name=email]').val()) return;
 	addToList(
 		$('#email-form [name=name]').val(),
 		$('#email-form [name=email]').val()
 	);
 });
 
-// Initialize Firebase
-var config = {
-	apiKey: "AIzaSyBE3d-dtcSiKQWywUieJfWW89UZudqi7rA",
-	authDomain: "threejs-world.firebaseapp.com",
-	databaseURL: "https://threejs-world.firebaseio.com",
-	storageBucket: "threejs-world.appspot.com",
-	messagingSenderId: "164735968688"
-};
-firebase.initializeApp(config);
-var database = firebase.database();
-var list = database.ref('threejsworld/email-list-posts');
+var list = database.ref('{{site.title | slugify}}/email-list-posts');
 function addToList(name, email) {
 	list.orderByChild('email').equalTo(email).once('value', function (snapshot) {
+		$('#email-form [name=name]').val('');
+		$('#email-form [name=email]').val('');
+		$('#email-form [name=name]').focus();
 		if (snapshot.val() === null) {
 			var newEntry = list.push();
 			newEntry.set({
 				name: name,
 				email: email
 			});
-			
+			$('#email-form input[type=submit]').css({background: '#2879d0'}).val('You are subscribed.');
 		} else {
-			// alert('already added');
-			// cookie?
+			$('#email-form input[type=submit]').css({background: 'red'}).val('Already added.');
+			setTimeout(function () {
+				$('#email-form input[type=submit]').css({background: '#ff7f07'}).val('Sign Up');
+			}, 2000);
+			// TODO: cookie?
 		}
 	});
 }
-
 </script>

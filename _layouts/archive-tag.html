@@ -9,10 +9,10 @@ layout: default
 		{% include social.html %}
 		<h1>
 			{% if titleDown == 'featured' %}Featured Posts
-			{% else %}Posts tagged with {{titleDown}}
+			{% else %}<i class="fa fa-tag"></i> {{titleDown}}
 			{% endif %}
 		</h1>
-		{% include social.html %}
+		<div class="share-placeholder"></div>
 	</div>
 	<div class="archive-inner">
 		<div class="boxes">
@@ -31,4 +31,3 @@ layout: default
 		</div>
 	</div>
 </div>
-{% include scripts.html %}
