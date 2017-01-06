@@ -584,12 +584,15 @@ section h2 {
 }
 @media (max-width: 1200px) {
 	.share-this-post {
-		margin: 0 15px !important;
+		margin-left: 15px !important;
+	}
+	.share-placeholder {
+		margin-right: 15px;
 	}
 }
 @media (max-width: 1199px) {
 	.share-this-post {
-		left: 15px;
+		left: 15px !important;
 	}
 }
 .share-this-post a {
@@ -888,7 +891,8 @@ i {
 }
 .page-header h1 {
 	max-width: 1000px;
-	margin: 0 15px
+	margin: 0 15px;
+	text-align: center;
 }
 .page-header p.author {
 	margin-bottom: 0;
