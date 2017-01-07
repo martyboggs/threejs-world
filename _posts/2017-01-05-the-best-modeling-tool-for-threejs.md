@@ -10,10 +10,7 @@ tags:
 -  advanced
 ---
 
-I find Oimo more accurate than cannon, but each has its downsides. For example, Oimo only supports cubes and spheres whereas cannon supports other types of meshes as well.
-
-Ok - Oimo seem to have a problem with taking the mass into account when applying a force
-
+Blender, 3ds Max, Maya, Lightwave, Modo
 
 <!--more--> [Free 3D Models page](/all/models).
 

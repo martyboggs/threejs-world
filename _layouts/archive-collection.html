@@ -15,7 +15,7 @@ layout: default
 	</div>
 	<div class="archive-inner">
 		<div class="boxes">
-			{% for post in site[titleDown] %}
+			{% for post in site[titleDown] limit: 6 %}
 				{% include box.html %}
 			{% endfor %}
 		</div>

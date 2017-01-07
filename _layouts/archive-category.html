@@ -10,10 +10,9 @@ layout: default
 	</div>
 	<div class="archive-inner">
 		<div class="boxes">
-			{% for post in site.posts %}
-				{% if post.category == page.title %}
-					{% include box.html %}
-				{% endif %}
+			{% assign posts = site.posts | where: 'category', page.title %}
+			{% for post in posts limit: 6 %}
+				{% include box.html %}
 			{% endfor %}
 		</div>
 	</div>

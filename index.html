@@ -23,7 +23,7 @@ example: index
 	<section class="s2 padding">
 		<h2>Featured</h2>
 		<div class="boxes">
-			{% for post in site.posts %}
+			{% for post in site.posts limit: 6 %}
 				{% include box.html %}
 			{% endfor %}
 		</div>
@@ -32,7 +32,7 @@ example: index
 	<section class="s3 padding">
 		<h2><i class="fa fa-tag"></i>beginner</h2>
 		<div class="boxes">
-			{% for post in site.tags.beginner %}
+			{% for post in site.tags.beginner limit: 6 %}
 				{% include box.html %}
 			{% endfor %}
 		</div>
@@ -41,7 +41,7 @@ example: index
 	<section class="s4 padding">
 		<h2>Tutorials</h2>
 		<div class="boxes">
-			{% for post in site.categories.Tutorials %}
+			{% for post in site.categories.Tutorials limit: 6 %}
 				{% include box.html %}
 			{% endfor %}
 		</div>

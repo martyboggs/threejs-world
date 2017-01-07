@@ -965,6 +965,9 @@ ul, ol, dl {
 .blog-inner a {
 	font-weight: 700;
 }
+.blog-inner .boxes-container {
+	margin: 0 -14px;
+}
 
 /* COMMON STYLES */
 

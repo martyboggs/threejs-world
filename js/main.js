@@ -22,41 +22,32 @@ setInterval(function () {
 }, 100);
 
 $(function () {
-	$('.boxes').slick({
-		slidesToShow: 5,
-		slidesToScroll: 2,
-		autoplay: true,
-		autoplaySpeed: 5000,
-		arrows: false,
-		infinite: true,
-		dots: true,
-		responsive: [
-			{
-				breakpoint: 1324,
-				settings: {
-					slidesToShow: 4
-				}
-			},
-			{
-				breakpoint: 1124,
-				settings: {
-					slidesToShow: 3
-				}
-			},
-			{
-				breakpoint: 700,
-				settings: {
-					slidesToShow: 2
-				}
-			},
-			{
-				breakpoint: 480,
-				settings: {
-					slidesToShow: 1,
-					slidesToScroll: 1
-				}
-			}
-		]
+	$('.boxes').each(function () {
+		var breakpoints = [1324, 1124, 700, 480];
+		var mostSlides = 5;
+		if ($(this).parent().hasClass('boxes-container')) {
+			mostSlides = 3;
+		}
+		var slides = mostSlides;
+		console.log(slides);
+		var responsive = [];
+		for (var i = 0; i < 4; i += 1) {
+			responsive.push({breakpoint: breakpoints[i], settings: {
+				slidesToShow: slides > 1 ? slides : 1
+			}});
+			slides -= 1;
+		}
+		console.log(responsive);
+		$(this).slick({
+			slidesToShow: mostSlides,
+			slidesToScroll: 2,
+			autoplay: true,
+			autoplaySpeed: 5000,
+			arrows: false,
+			infinite: true,
+			dots: true,
+			responsive: responsive
+		});
 	});
 });
 
