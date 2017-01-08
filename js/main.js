@@ -29,7 +29,6 @@ $(function () {
 			mostSlides = 3;
 		}
 		var slides = mostSlides;
-		console.log(slides);
 		var responsive = [];
 		for (var i = 0; i < 4; i += 1) {
 			responsive.push({breakpoint: breakpoints[i], settings: {
@@ -37,7 +36,6 @@ $(function () {
 			}});
 			slides -= 1;
 		}
-		console.log(responsive);
 		$(this).slick({
 			slidesToShow: mostSlides,
 			slidesToScroll: 2,
