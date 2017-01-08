@@ -4,11 +4,13 @@ title: AR in three.js with Aruco Markers
 example: ex7
 author: Marty Boggs
 category: Tutorials
-published: true
+published: false
 tags:
 -  featured
 -  advanced
 ---
+
+See example here: <a href="https://martyboggs.github.io/aruco-marker-example" target="_blank"></a>
 
 chrome requires https for html5 video
 
