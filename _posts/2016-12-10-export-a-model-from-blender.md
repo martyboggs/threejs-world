@@ -10,7 +10,7 @@ tags:
 ---
 This is a futuristic paperweight I designed in Blender, a 3D modeling tool. I did some modeling in<!--more--> college, but it didn't help with this kind of modeling :/ This model is available to download on the [Free 3D Models page](/all/models).
 
-To export your own models from Blender to .json files, you'll need to install <a rel="nofollow" target="_blank" href="https://github.com/mrdoob/three.js/tree/master/utils/exporters/blender">the three.js blender exporter tool <i class="fa fa-external-link"></i></a>. Instructions can be found at the link and involve copying a folder to your Blender install and activating the addon in the program. Once you install the exporter, the export to three.js option will be available.
+To export your own models from Blender to JSON files, you'll need to install <a rel="nofollow" target="_blank" href="https://github.com/mrdoob/three.js/tree/master/utils/exporters/blender">the three.js blender exporter tool <i class="fa fa-external-link"></i></a>. Instructions can be found at the link and involve copying a folder to your Blender install and activating the addon in the program. Once you install the exporter, the export to three.js option will be available.
 
 There are a few things you should know about exporting models using this exporter.
 
@@ -30,7 +30,7 @@ After going to file->export->Three.js(.json) a window opens with many options. F
 
 ## Slap It on the Canvas
 
-Ok, now that you have your .json file we can get it into the browser. To get started, we'll use this <a href="/threejs-world-blank-template.html" download="threejs-world-{{page.example}}.html">basic template</a> that I use in a lot of posts. Open the template to follow along.
+Ok, now that you have your JSON file we can get it into the browser. To get started, we'll use this <a href="/threejs-world-blank-template.html" download="threejs-world-{{page.example}}.html">basic template <i class="fa fa-download"></i></a> that I use in a lot of posts. Open the template to follow along.
 
 ```javascript
 var mesh = new THREE.Object3D();

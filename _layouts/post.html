@@ -26,8 +26,10 @@ layout: default
 		<div id="canvases"></div>
 		{% endif %}
 		{{content}}
-		<p><a target="_blank" href="/js/examples/{{page.example}}.js"><i class="fa fa-file"></i>Get the code from this article <i class="fa fa-external-link"></i></a></p>
-		<p class="author">This article was brought to you by {{page.author}}</p>
+		{% if page.example != 'ex7' %}
+			<p><a target="_blank" href="/js/examples/{{page.example}}.js"><i class="fa fa-file"></i>Get the code from this article <i class="fa fa-external-link"></i></a></p>
+		{% endif %}
+		<p class="author">This article was brought to you by {{page.author}}. To find out about new articles, subscribe below.</p>
 		{% include email-form.html %}
 		{% include related.html %}
 		{% include disqus.html %}

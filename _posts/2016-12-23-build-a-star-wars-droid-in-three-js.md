@@ -12,7 +12,7 @@ tags:
 I just saw Rogue One, so this next example features a Star Wars like droid. BB-8 may be your only hope...
 <!--more-->
 
-This tutorial will show you how to put spheres in your project and how to create UV maps that wrap over them. To get started, we'll use this <a href="/threejs-world-blank-template.html" download="threejs-world-{{page.example}}.html">basic template</a> that I use in a lot of posts. Open the template to follow along.
+This tutorial will show you how to put spheres in your project and how to create UV maps that wrap over them. To get started, we'll use this <a href="/threejs-world-blank-template.html" download="threejs-world-{{page.example}}.html">basic template <i class="fa fa-download"></i></a> that I use in a lot of posts. Open the template to follow along.
 
 To get images onto the canvas, they need to be loaded in using a TextureLoader which can be instantiated once and then reused.
 

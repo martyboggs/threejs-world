@@ -4,41 +4,31 @@ title: AR in three.js with Aruco Markers
 example: ex7
 author: Marty Boggs
 category: Tutorials
-published: false
 tags:
 -  featured
 -  advanced
 ---
 
-See example here: <a href="https://martyboggs.github.io/aruco-marker-example" target="_blank"></a>
+You'll need two devices or a printer to see this example. First, print out or load this image with a different device.<br>
+<a href="https://martyboggs.github.io/aruco-marker-example/images/aruco.jpg" target="_blank">Aruco marker <i class="fa fa-external-link"></i></a>
+<!--more-->
 
-chrome requires https for html5 video
-
-I find Oimo more accurate than cannon, but each has its downsides. For example, Oimo only supports cubes and spheres whereas cannon supports other types of meshes as well.
-
-Ok - Oimo seem to have a problem with taking the mass into account when applying a force
+Then, open the example and point your camera at the aruco marker.<br>
+<a href="https://martyboggs.github.io/aruco-marker-example" target="_blank">Aruco Marker Example with three.js <i class="fa fa-external-link"></i></a>
 
 
-<!--more--> [Free 3D Models page](/all/models).
 
-Ok, now that you have your .json file we can get it into the browser. To get started, we'll use this <a href="/threejs-world-blank-template.html" download="threejs-world-{{page.example}}.html">basic template</a> that I use in a lot of posts. Open the template to follow along.
 
-```javascript
-var mesh = new THREE.Object3D();
-var jsonLoader = new THREE.JSONLoader();
-jsonLoader.load('/js/models/bowling-pin.json',
-	function (geometry, materials) {
-		mesh = new THREE.Mesh(geometry,
-			new THREE.MultiMaterial(materials));
-		scene.add(mesh);
-	}
-);
+## Let's See the Code
 
-camera.position.set(0, 1.8, 4);
-```
+Chrome requires websites to have an SSL certificate to display a video feed.
 
-You can add this to the render function to give the model some rotation.
+adapter.js a polyfill to make improve cross-browser compatibility.
 
-```javascript
-mesh.rotation.y += 0.01;
-```
+js-aruco library
+
+threejs and video code to bring it all together
+
+
+<!--Ok, now that you have your JSON file we can get it into the browser. To get started, we'll use this <a href="/threejs-world-blank-template.html" download="threejs-world-{{page.example}}.html">basic template <i class="fa fa-download"></i></a> that I use in a lot of posts. Open the template to follow along.
+-->

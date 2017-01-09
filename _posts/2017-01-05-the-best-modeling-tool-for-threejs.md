@@ -15,7 +15,7 @@ Blender, 3ds Max, Maya, Lightwave, Modo
 
 <!--more--> [Free 3D Models page](/all/models).
 
-Ok, now that you have your .json file we can get it into the browser. To get started, we'll use this <a href="/threejs-world-blank-template.html" download="threejs-world-{{page.example}}.html">basic template</a> that I use in a lot of posts. Open the template to follow along.
+Ok, now that you have your JSON file we can get it into the browser. To get started, we'll use this <a href="/threejs-world-blank-template.html" download="threejs-world-{{page.example}}.html">basic template <i class="fa fa-download"></i></a> that I use in a lot of posts. Open the template to follow along.
 
 ```javascript
 var mesh = new THREE.Object3D();

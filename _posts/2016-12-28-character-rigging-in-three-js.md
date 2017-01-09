@@ -13,11 +13,11 @@ Meet Hugbot. A robot designed for expressing affection. It can be yours for 9000
 <!--more-->
 downloading it from the [Free 3D Models](/models/hugbot) area and following this tutorial.
 
-To get started, we'll use this <a href="/threejs-world-blank-template.html" download="threejs-world-{{page.example}}.html">basic template</a> that I use in a lot of posts. Open the template to follow along.
+To get started, we'll use this <a href="/threejs-world-blank-template.html" download="threejs-world-{{page.example}}.html">basic template <i class="fa fa-download"></i></a> that I use in a lot of posts. Open the template to follow along.
 
-Next, we'll import Hugbot with a `JSONLoader`. The Hugbot model was made in Blender with armatures or bones which form a skeleton. The skeleton can then be manipulated to move the model's vertices around.
+We'll import Hugbot with a `JSONLoader`. The Hugbot model was made in Blender with armatures or bones which form a skeleton. The skeleton can then be manipulated to move the model's vertices around.
 
-To make this process work with your own rigged models, make sure you export with "bones" and "skinning" checked.
+To make this process work with your own rigged models, make sure you export with "bones" and "skinning" along with the rest of your model. You might want to check out my <a href="/tutorials/export-a-model-from-blender">post about exporting from Blender</a>.
 
 Also, use the `SkinnedMesh` class which will add a skeleton array to the mesh and read the "mesh skin weighting." This information tells the renderer how much to stretch the mesh for each bone in question.
 

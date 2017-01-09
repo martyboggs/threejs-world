@@ -8,9 +8,15 @@ tags:
 -  featured
 -  beginner
 ---
-<!--more--> [Free 3D Models page](/all/models).
 
-Ok, now that you have your .json file we can get it into the browser. To get started, we'll use this <a href="/threejs-world-blank-template.html" download="threejs-world-{{page.example}}.html">basic template</a> that I use in a lot of posts. Open the template to follow along.
+Let's import this sweet [bowling pin](/models/bowling-pin) into three.js! I created it
+<!--more-->
+in Blender where I assigned two materials to the faces of the model: a magenta material for the stripes and a white material for the rest.
+
+In Blender, I chose Lambert materials and assigned diffuse colors. All this information is included in the JSON file as long as `Shading->Face Materials` is checked before you export.
+
+## Import Your JSON File
+Ok, now that you have your JSON file we can get it into the browser. To get started, we'll use this <a href="/threejs-world-blank-template.html" download="threejs-world-{{page.example}}.html">basic template <i class="fa fa-download"></i></a> that I use in a lot of posts. Open the template to follow along.
 
 ```javascript
 var mesh = new THREE.Object3D();
@@ -26,8 +32,27 @@ jsonLoader.load('/js/models/bowling-pin.json',
 camera.position.set(0, 1.8, 4);
 ```
 
-You can add this to the render function to give the model some rotation.
+The key here is to use the THREE.MultiMaterial class which takes one or more materials and figures out how to display them.
 
-```javascript
-mesh.rotation.y += 0.01;
-```
+>**Note:** In later versions of three.js, THREE.MultiMaterial class should be used instead of THREE.MeshFaceMaterial. You might see this in your console: "THREE.MeshFaceMaterial has been renamed to THREE.MultiMaterial"
+
+## Be a Material Girl
+Beside face materials, three.js can import many other material types:
+
+* fresnel, lambert, phong
+* blending (add, subtract, multiply, etc.)
+* channels
+* toon
+* soft body
+* wave (sine, compound)
+* anisotropy
+* custom shaders
+* map channels
+  * UV maps
+  * [cube maps](/tutorials/build-a-star-wars-droid-in-three-js)
+  * bump maps
+  * displacement maps
+  * normal maps
+  * env maps (environment mapping, reflection mapping, refraction mapping)
+  * ao maps (ambient occlusion maps)
+  * parallax maps
