@@ -23,7 +23,7 @@ Ok, now that you have your JSON file we can get it into the browser. To get star
 ```javascript
 var mesh = new THREE.Object3D();
 var jsonLoader = new THREE.JSONLoader();
-jsonLoader.load('/js/models/bowling-pin.json',
+jsonLoader.load('/js/models/bowling-pin/bowling-pin.json',
 	function (geometry, materials) {
 		mesh = new THREE.Mesh(geometry,
 			new THREE.MultiMaterial(materials));
