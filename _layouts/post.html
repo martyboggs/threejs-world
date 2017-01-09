@@ -14,7 +14,7 @@ layout: default
 	<div class="post-meta">
 		<p class="category">Filed under: <a href="/category/{{page.category}}"></i>{{page.category}}</a></p>
 		{% for tag in page.tags %}
-			<a class="tag" href="/tag/{{tag}}"><i class="fa fa-tag"></i>{{tag}}</a>
+			<a class="tag" href="/tag/{{tag | slugify}}"><i class="fa fa-tag"></i>{{tag}}</a>
 		{% endfor %}
 	</div>
 	<div class="blog-inner">

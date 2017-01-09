@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Export a Model from Blender
+description: This is a futuristic paperweight I designed in Blender, a 3D modeling tool. I did some modeling in college, but it didn't help with this kind of modeling :/ This model is available to download on the Free 3D Models page.
 example: ex3
 author: Marty Boggs
 category: Tutorials

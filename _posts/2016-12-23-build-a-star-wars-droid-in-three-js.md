@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Build a Star Wars Droid in three.js
+description: I just saw Rogue One, so this next example features a Star Wars like droid. BB-8 may be your only hope.
 example: ex2
 author: Marty Boggs
 category: Tutorials

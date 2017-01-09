@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Eliminate Errors in three.js
+description: Let's solve some common errors you might come across in three.js.
 example: ex6
 author: Marty Boggs
 published: false
@@ -9,6 +10,8 @@ tags:
 -  featured
 -  advanced
 ---
+
+Let's solve some common errors you might come across in three.js.
 
 Error creating WebGL context.
 Uncaught TypeError: Cannot read property 'getExtension' of null

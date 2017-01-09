@@ -1,4 +1,4 @@
 User-agent: *
-Disallow:
+Disallow: /about
 
 Sitemap: http://www.threejsworld.com/sitemap.xml

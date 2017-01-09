@@ -1,6 +1,7 @@
 ---
 layout: post
 title: The Best Modeling Tool for three.js
+description: Blender, 3ds Max, Maya, Lightwave, Modo
 example: ex6
 author: Marty Boggs
 category: Tutorials

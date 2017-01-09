@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Character Rigging in three.js
+description: Meet Hugbot. A robot designed for expressing affection. It can be yours for 9000 dollars US or by downloading it from the Free 3D Models. The Hugbot model was made in Blender with armatures or bones which form a skeleton. The skeleton can then be manipulated to move the model's vertices around.
 example: ex4
 author: Marty Boggs
 category: Tutorials
