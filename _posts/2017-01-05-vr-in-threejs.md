@@ -5,6 +5,7 @@ description: Today we're going to make a Google Cardboard game with video and so
 example: ex6
 author: Marty Boggs
 category: Tutorials
+published: false
 tags:
 -  featured
 -  emerging tech
