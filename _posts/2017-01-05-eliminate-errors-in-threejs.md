@@ -50,7 +50,8 @@ RENDER WARNING: texture bound to texture unit 0 is not renderable. It maybe non-
 
 WebGL: too many errors, no more errors will be reported to the console for this context.
 
-
+// THREE.WebGLRenderer: TypeError: _canvas.getContext is not a function
+// Cannot read property 'getExtension' of undefined
 
 BABYLON.SmartCollection is not a constructor
 
