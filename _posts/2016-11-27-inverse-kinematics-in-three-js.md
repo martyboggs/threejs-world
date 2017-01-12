@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Inverse Kinematics in three.js
-description: Inverse kinematics aren't supported by three.js at this time. There are some libraries that can perform calculations in two dimensions, but because these calculations can be expensive, I recommend another way.
+description: Inverse kinematics (or IK) aren't supported by three.js at this time. There are some libraries that can perform calculations in two dimensions, but because these calculations can be expensive, I recommend another way.
 example: ex4
 author: Marty Boggs
 category: Tutorials

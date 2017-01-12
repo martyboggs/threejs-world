@@ -40,7 +40,6 @@ The key here is to use the THREE.MultiMaterial class which takes one or more mat
 ## Be a Material Girl
 Beside face materials, three.js can import many other material types:
 
-* fresnel, lambert, phong
 * blending (add, subtract, multiply, etc.)
 * channels
 * toon
@@ -49,11 +48,19 @@ Beside face materials, three.js can import many other material types:
 * anisotropy
 * custom shaders
 * map channels
-  * UV maps
-  * [cube maps](/tutorials/build-a-star-wars-droid-in-three-js)
-  * bump maps
-  * displacement maps
-  * normal maps
-  * env maps (environment mapping, reflection mapping, refraction mapping)
-  * ao maps (ambient occlusion maps)
-  * parallax maps
+* [cube maps](/tutorials/build-a-star-wars-droid-in-three-js)
+* fresnel, lambert, phong
+* Physically based rendering (PBR) MeshStandardMaterial
+* Mapping
+  * UV map
+  * alpha map
+  * bump map
+  * normal map
+  * displacement map
+  * rough map
+  * metal map
+  * env map (environment mapping, reflection mapping, refraction mapping)
+  * light map
+  * ao map (ambient occlusion map)
+  * emissive map
+  * parallax map
