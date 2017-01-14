@@ -611,7 +611,7 @@ section h2 {
 	font-weight: 700;
 }
 .email-cta {
-	background: url('/images/email-bg-dark.jpg') top center;
+	background: url('/images/email-bg-dark.jpg') center top;
 	background-attachment: fixed;
 	padding: 30px;
 	margin-bottom: 30px;
@@ -815,7 +815,7 @@ section {
 }
 
 .box {
-	background: #dfdfdf;
+	background: #eaeaea;
 	margin: 0 15px 37px 15px;
 	transition: all 0.3s;
 	overflow: hidden;
@@ -844,7 +844,7 @@ section {
 }
 .box .text {
 	font-size: 14px;
-	padding: 0 15px;
+	padding: 0 15px 5px 15px;
 	color: #666;
 	transition: all 0.2s;
 	height: 136px;

@@ -10,7 +10,9 @@ tags:
 -  animation
 ---
 
-I saw this article on medium and I remembered I need to write about animation.
+Saw this article on medium and I remembered I need to write about animation.
+
+<a href="https://medium.com/@lachlantweedie/animation-in-three-js-using-tween-js-with-examples" target="_blank" rel="nofollow">via Animation in Three.js using Tween.js with examples <i class="fa fa-external-link"></i></a>
 
 >Why Tween.js?
 >Tween.js animates within the Three.js render loop. This improves overall performance of your WebGL application and helps keep a high frame rate.
@@ -20,7 +22,7 @@ I saw this article on medium and I remembered I need to write about animation.
 
 Tween.js really is a great tool to use with three.js. It keeps an array of the tweens that are running and discards them when they are complete.
 
-Very complex animations are possible thanks to the implementation. Tween any property: position, rotation scale of objects cameras entire scenes... Choose from many easing functions including your favorite wacky ones.
+Very complex animations are possible thanks to the implementation. Tween any property: position, rotation scale, objects, cameras, lights... Choose from many easing functions including your favorite wacky ones. I'm looking at you, bounce!
 
 ## Make a Tween
 
@@ -48,14 +50,13 @@ function render() {
 render();
 ```
 
-As you can see it's very easy to chain your options and create a tween in a single line of code!
+As you can see it's very easy to **chain your options** and create a tween in a single line of code!
 
-Delay your tween or repeat it. There are also callbacks: onUpdate and onComplete at your disposal.
+**Delay** your tween or **repeat** it. There are also callbacks: **onUpdate** and **onComplete** at your disposal.
 
-Relative tweens can be performed by making the destination a string with units. '10px' will move 10 pixels and stop. Repeats will start from this position and move ANOTHER 10 pixels. Gravy!
+**Relative tweens** can be performed by making the destination a string with units. '+10' will move 10 pixels from its current position and stop. Repeats will start from this position and move ANOTHER 10 pixels. **Gravy!**
 
-To do more than one tween, use the onComplete to start a new tween or use an array in the destination object. How Tween.js moves between these tweens can be customized too.
+To do more than one tween, use the onComplete to start a new tween or use an **array in the destination object**. How Tween.js moves between these tweens can be customized too.
 
 Now get out there and move something, show me whatcha made! Cheese! I mean, Cheers!
 
-<a href="https://medium.com/@lachlantweedie/animation-in-three-js-using-tween-js-with-examples" target="_blank" rel="nofollow">via Animation in Three.js using Tween.js with examples <i class="fa fa-external-link"></i></a>

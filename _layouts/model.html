@@ -48,6 +48,12 @@ layout: default
 				});
 				mesh = new THREE.SkinnedMesh(geometry, new THREE.MultiMaterial(materials));
 			}
+			mesh.traverse(function (child) {
+				if (child instanceof THREE.Mesh) {
+					child.geometry.computeVertexNormals();
+				}
+			});
+
 			if (geometry.animations) { // if animations
 				mixer = new THREE.AnimationMixer(mesh);
 				var animation = mixer.clipAction(geometry.animations[0]);
