@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Eliminate Errors in three.js
+title: Eliminatings Errors&#58; What in the World is an OES_texture_float?
 description: Let's solve some common errors you might come across in three.js.
 example: ex6
 author: Marty Boggs
@@ -49,6 +49,9 @@ THREE.WebGLRenderer: Attempt to load unsupported compressed texture format in .s
 RENDER WARNING: texture bound to texture unit 0 is not renderable. It maybe non-power-of-2 and have incompatible texture filtering.
 
 WebGL: too many errors, no more errors will be reported to the console for this context.
+
+THREE.WebGLProgram: gl.getProgramInfoLog()
+C:\fakepath(453,1): warning X4000: use of potentially uninitialized variable (_webgl_fe583eca65e10ae1_float4)
 
 // THREE.WebGLRenderer: TypeError: _canvas.getContext is not a function
 // Cannot read property 'getExtension' of undefined

@@ -484,8 +484,8 @@ a:hover {
 
 .post-meta {
 	display: flex;
-	flex-wrap: wrap;
 	align-items: center;
+	justify-content: space-between;
 	max-width: 660px;
 	margin: 0 auto 20px auto;
 }
@@ -495,6 +495,9 @@ a:hover {
 .category a {
 	font-weight: 700;
 	align-self: flex-start;
+}
+.tags {
+	text-align: right;
 }
 .tag {
 	font-size: 16px;
@@ -609,6 +612,7 @@ section h2 {
 	margin-left: 2px;
 	font-size: 10px;
 	font-weight: 700;
+	display: none;
 }
 .email-cta {
 	background: url('/images/email-bg-dark.jpg') center top;
@@ -833,21 +837,23 @@ section {
 	margin-bottom: 15px;
 }
 .box .body {
-	visibility: none;
+	visibility: hidden;
 	opacity: 0;
 }
 .box button {
-	visibility: none;
+	visibility: hidden;
 	opacity: 0;
 	margin: 0 15px 15px 15px;
 	margin-top: auto;
 }
 .box .text {
 	font-size: 14px;
-	padding: 0 15px 5px 15px;
+	padding: 0 15px;
 	color: #666;
 	transition: all 0.2s;
 	height: 136px;
+	overflow: hidden;
+	margin-bottom: 5px;
 }
 
 .box:hover {
