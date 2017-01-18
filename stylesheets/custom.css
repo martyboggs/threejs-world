@@ -37,7 +37,8 @@
 	pointer-events: none;
 }
 
-#score {
+#score,
+#deaths {
 	display: inline-block;
 	margin-right: 10px;
 }

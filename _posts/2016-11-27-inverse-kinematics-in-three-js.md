@@ -7,7 +7,7 @@ author: Marty Boggs
 category: Tutorials
 tags:
 -  advanced
--  featured
+-  animation
 ---
 
 Inverse kinematics aren't supported by three.js at this time. There are some libraries that

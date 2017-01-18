@@ -21,7 +21,8 @@ market and jobs
 		<div class="padding flex-business">
 			<div id="canvases"></div>
 			{% for file in site.static_files %}
-				{% if file.path == '/js/examples/ex1.js' or
+				{% if
+				file.path == '/js/examples/ex6.js' or
 				file.path == '/js/examples/ex2.js' or
 				file.path == '/js/examples/ex3.js' or
 				file.path == '/js/examples/ex4.js' or
@@ -35,7 +36,7 @@ market and jobs
 	<section class="s2 padding">
 		<h2>Featured</h2>
 		<div class="boxes">
-			{% for post in site.posts limit: 6 %}
+			{% for post in site.tags.featured limit: 6 %}
 				{% include box.html %}
 			{% endfor %}
 		</div>

@@ -8,6 +8,7 @@ category: Tutorials
 guest: true
 tags:
 -  shadows
+-  featured
 ---
 See this great article on lights, cameras and shadows from CJ Gammon:
 
