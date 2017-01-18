@@ -254,12 +254,12 @@
 			camera.position.y += velY;
 		}
 		// floor
-		// if (!won && camera.position.y < -99.5) {
-		// 	collided = true;
-		// 	camera.position.y = -99.5;
-		// 	onGround = true;
-		// 	dead = true;
-		// }
+		if (!won && camera.position.y < -99.5) {
+			collided = true;
+			camera.position.y = -99.5;
+			onGround = true;
+			dead = true;
+		}
 		if (onGround && !keyboard.pressed('e')) {
 			jumpAllowed = true;
 		}
@@ -282,7 +282,7 @@
 		if (deadTimer === 0) {
 			dead = false;
 			deadTimer = 120;
-			// camera.position.set(5.5, 6, 1);
+			camera.position.set(5.5, 6, 1);
 			deathsAdd(1);
 		}
 
