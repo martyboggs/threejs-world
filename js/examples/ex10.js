@@ -1,6 +1,6 @@
 (function () {
 	var scene = new THREE.Scene();
-	var camera = new THREE.PerspectiveCamera(75, 2, 0.001, 1000);
+	var camera = new THREE.PerspectiveCamera(75, 2, 0.001, 500);
 	var renderer = new THREE.WebGLRenderer({alpha: true});
 	renderer.setSize(660, 330);
 	renderer.shadowMap.enabled = true;
@@ -12,17 +12,16 @@
 	light1.shadow.camera.top = 200;
 	light1.shadow.camera.near = 1;
 	light1.shadow.camera.far = 1000;
-	light1.shadow.mapSize.width = 1048;
-	light1.shadow.mapSize.height = 6048;
+	light1.shadow.mapSize.width = 4048;
+	light1.shadow.mapSize.height = 4048;
 	light1.position.set(-74, 103, 80);
 	scene.add(light1);
 	var light3 = new THREE.PointLight(0xffffff, 1, 0, Math.PI);
-	light3.castShadow = true;
 	light3.position.set(-38, 300, 82);
 	scene.add(light3);
 	var light2 = new THREE.AmbientLight(0xffffff, 0.5);
 	scene.add(light2);
-	scene.fog = new THREE.FogExp2('#a0bdff', 0.02);
+	scene.fog = new THREE.FogExp2('#a0bdff', 0.018);
 	renderer.setClearColor(scene.fog.color);
 
 	var pauseScreen = document.createElement('div');
@@ -78,7 +77,7 @@
 	var lastPos = Object.assign({}, camera.position);
 	var platformMaterial = new THREE.MeshLambertMaterial({color: 'violet'});
 	var ropeMaterial = new THREE.MeshLambertMaterial({color: 'yellow'});
-	var coinMaterial = new THREE.MeshPhongMaterial({color: 'gold', specular: 'white', shininess: 100, envMap: coinBg, reflectivity: 0.2});
+	var coinMaterial = new THREE.MeshPhongMaterial({color: 'gold', specular: 'white', shininess: 100, envMap: coinBg, reflectivity: 0.2, combine: THREE.MixOperation});
 	var coins = [];
 	var keyboard = new THREEx.KeyboardState();
 	var velY = 0;
@@ -93,6 +92,18 @@
 	var dead = false;
 	var deadTimer = 120;
 	var hitHead = false;
+
+	var composer = new THREE.EffectComposer( renderer );
+	composer.addPass( new THREE.RenderPass( scene, camera ) );
+
+	// var effect = new THREE.ShaderPass( THREE.DotScreenShader );
+	// effect.uniforms[ 'scale' ].value = 1;
+	// composer.addPass( effect );
+
+	var effect = new THREE.ShaderPass( THREE.RGBShiftShader );
+	effect.uniforms[ 'amount' ].value = 0.15;
+	effect.renderToScreen = true;
+	composer.addPass( effect );
 
 	// set up objects
 	var platforms = [
@@ -147,15 +158,23 @@
 	scene.add(sceneBg);
 
 	var endingTexture = new THREE.TextureLoader().load('/images/ending.png');
-	var ending = new THREE.Mesh(new THREE.BoxGeometry(22, 5000, 22), new THREE.MeshBasicMaterial({map: endingTexture, side: THREE.BackSide, transparent: true}));
+	var ending = new THREE.Mesh(new THREE.BoxGeometry(52, 5000, 52), new THREE.MeshBasicMaterial({map: endingTexture, side: THREE.BackSide, transparent: true}));
 	endingTexture.wrapS = endingTexture.wrapT = THREE.RepeatWrapping;
-	endingTexture.repeat.set(5, 125);
+	endingTexture.repeat.set(7, 100);
 	ending.position.set(0, -2602, 0);
 	scene.add(ending);
+
+	var endingTexture2 = new THREE.TextureLoader().load('/images/ending.png');
+	endingTexture2.wrapS = endingTexture2.wrapT = THREE.RepeatWrapping;
+	endingTexture2.repeat.set(7, 42);
+	var ending2 = new THREE.Mesh(new THREE.BoxGeometry(68, 5000, 68), new THREE.MeshBasicMaterial({map: endingTexture2, side: THREE.BackSide}));
+	ending2.position.set(0, -2602, 0);
+	scene.add(ending2);
 
 	var outsideTexture = new THREE.TextureLoader().load('/images/ending.png');
 	var outside = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), new THREE.MeshBasicMaterial({map: outsideTexture}));
 	outsideTexture.repeat.set(1, .2);
+	outside.visible = false;
 	scene.add(outside);
 	var outsideAngle = 0;
 
@@ -272,9 +291,10 @@
 			coins[i].rotation.z += 0.04;
 		}
 		// win
-		if (camera.position.y > 226) {
+		if (camera.position.y > 226 && !won) {
 			won = true;
 			holdingRope = false;
+			outside.visible = true;
 		}
 		if (dead) {
 			deadTimer -= 1;
@@ -286,8 +306,12 @@
 			deathsAdd(1);
 		}
 
-		outside.position.set(22 * Math.sin(outsideAngle), camera.position.y, 22 * Math.cos(outsideAngle));
-		outsideAngle += 0.01;
+		if (won) {
+			outside.position.set(22 * Math.sin(outsideAngle), camera.position.y, 22 * Math.cos(outsideAngle));
+			outsideAngle += 0.01;
+
+			ending2.rotation.y += 0.01;
+		}
 
 		// after manipulation, run checks (before render)
 
@@ -382,7 +406,12 @@
 		}
 		lastPos = Object.assign({}, camera.position);
 		requestAnimationFrame(render);
-		renderer.render(scene, camera);
+
+		if (keyboard.pressed('w')) {
+			renderer.render(scene, camera);
+		} else {
+			composer.render();
+		}
 	}
 	render();
 

@@ -16,6 +16,14 @@ tags:
 ---
 <br>
 <br>
+<script src="http://threejs.org/examples/js/shaders/CopyShader.js"></script>
+<script src="http://threejs.org/examples/js/shaders/DotScreenShader.js"></script>
+<script src="http://threejs.org/examples/js/shaders/RGBShiftShader.js"></script>
+<script src="http://threejs.org/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="http://threejs.org/examples/js/postprocessing/RenderPass.js"></script>
+<script src="http://threejs.org/examples/js/postprocessing/MaskPass.js"></script>
+<script src="http://threejs.org/examples/js/postprocessing/ShaderPass.js"></script>
+
 <!-- 			// // platforms have static bounding boxes.. need to be generated once?
 			// firstBB = new THREE.Box3().setFromObject(firstObject);
 			// secondBB = new THREE.Box3().setFromObject(secondObject);
