@@ -969,6 +969,7 @@ ul, ol, dl {
 	display: block;
 	margin: 0 auto;
 }
+.home p a,
 .blog-inner a {
 	font-weight: 700;
 }
