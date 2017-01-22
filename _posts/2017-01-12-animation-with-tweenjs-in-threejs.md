@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Animation with Tween.js in three.js
+title: Animation with Tween.js in ThreeJS
 description: Tween.js really is a great tool to use with three.js. It keeps an array of the tweens that are running and discards them when they are complete.
 example: ex9
 author: Marty Boggs

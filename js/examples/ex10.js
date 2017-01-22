@@ -24,6 +24,38 @@
 	scene.fog = new THREE.FogExp2('#a0bdff', 0.018);
 	renderer.setClearColor(scene.fog.color);
 
+	// Create worker
+	var worker = new Worker('js/examples/ex10-worker.js');
+	worker.postMessage = worker.webkitPostMessage || worker.postMessage;
+	var sendTime; // Time when we sent last message
+	worker.onmessage = function (e) {
+
+		oimoInfo = e.data.perf;
+
+		// Get fresh data from the worker
+		minfo = e.data.minfo;
+
+		// Update rendering meshes
+		var n = 0, mesh;
+
+		for (var i = 0; i < meshes.length; i += 1) {
+			mesh = meshes[i];
+			n = i*8;
+			mesh.position.set(minfo[n+0], minfo[n+1], minfo[n+2]);
+			mesh.quaternion.set(minfo[n+3], minfo[n+4], minfo[n+5], minfo[n+6]);
+		}
+
+		// If the worker was faster than the time step (dt seconds), we want to delay the next timestep
+		var delay = dt * 1000 - (Date.now() - sendTime);
+		if (delay < 0) { delay = 0; }
+		setTimeout(sendDataToWorker, delay);
+	}
+
+	function sendDataToWorker(){
+		sendTime = Date.now();
+		worker.postMessage({minfo : minfo}, [minfo.buffer]);
+	}
+
 	var pauseScreen = document.createElement('div');
 	pauseScreen.className = pauseScreen.id = 'overlay';
 	pauseScreen.innerHTML = '<h1>Three.js World</h1><h3>CLIMBER</h3><hr>click to play';
@@ -53,7 +85,7 @@
 		}
 	}
 
-	var coinBg = new THREE.CubeTextureLoader().setPath('/images/').load([
+	var coinBg = new THREE.CubeTextureLoader().setPath('images/').load([
 		'pineapple2.jpg', // left
 		'pineapple2.jpg', // left
 		'pineapple2.jpg', // left
@@ -67,10 +99,10 @@
 	camera.position.z = -7;
 	camera.rotation.order = 'ZYX';
 	var sounds = {
-		jump: new Howl({src: ['/js/examples/jump.wav']}),
-		coin: new Howl({src: ['/js/examples/coin.wav']}),
-		hit: new Howl({src: ['/js/examples/hit.wav']}),
-		climb: new Howl({src: ['/js/examples/climb.wav'], loop: true, sounding: false}),
+		jump: new Howl({src: ['sounds/jump.wav']}),
+		coin: new Howl({src: ['sounds/coin.wav']}),
+		hit: new Howl({src: ['sounds/hit.wav']}),
+		climb: new Howl({src: ['sounds/climb.wav'], loop: true, sounding: false}),
 	};
 	sounds.hit.sounding = 0;
 	var q = new THREE.Quaternion(); // create once and reuse
@@ -93,22 +125,22 @@
 	var deadTimer = 120;
 	var hitHead = false;
 
-	var composer = new THREE.EffectComposer( renderer );
-	composer.addPass( new THREE.RenderPass( scene, camera ) );
+	// var composer = new THREE.EffectComposer( renderer );
+	// composer.addPass( new THREE.RenderPass( scene, camera ) );
 
 	// var effect = new THREE.ShaderPass( THREE.DotScreenShader );
 	// effect.uniforms[ 'scale' ].value = 1;
 	// composer.addPass( effect );
 
-	var effect = new THREE.ShaderPass( THREE.RGBShiftShader );
-	effect.uniforms[ 'amount' ].value = 0.15;
-	effect.renderToScreen = true;
-	composer.addPass( effect );
+	// var effect = new THREE.ShaderPass( THREE.RGBShiftShader );
+	// effect.uniforms[ 'amount' ].value = 0.15;
+	// effect.renderToScreen = true;
+	// composer.addPass( effect );
 
 	// set up objects
 	var platforms = [
 		{x: 5.5,  y: 0,   z: 1,    rope: 0,   width: 5,  depth: 10}, // just above ground level
-		{x: 8.5,  y: 10,  z: -8.5, rope: 5,   width: 4,  depth: 3}, // isolated
+		{x: 8.5,  y: 10,  z: -8.5, rope: 0,   width: 4,  depth: 3}, // isolated
 		{x: 5,    y: 19,  z: 8,    rope: 15,  width: 4,  depth: 4},
 		{x: -6,   y: 25,  z: 8,    rope: 0,   width: 8,  depth: 2}, // no rope
 		{x: 4,    y: 38,  z: 5,    rope: 25,  width: 10, depth: 4}, // WIDE
@@ -122,26 +154,28 @@
 		{x: -3,   y: 55,  z: 0,    rope: 0,   width: 2,  depth: 2}, // staircase
 		{x: -9,   y: 50,  z: 5,    rope: 20,  width: 2,  depth: 10}, // isolated
 		{x: -4,   y: 70,  z: -4,   rope: 15,  width: 12, depth: 11}, // rope = deadend, big platform
-		{x: -8,   y: 75,  z: 9,    rope: 18,  width: 2,  depth: 2}, //
+		{x: -8,   y: 75,  z: 9,    rope: 20,  width: 2,  depth: 2}, //
 		{x: -9,   y: 72,  z: 6,    rope: 10,  width: 2,  depth: 2}, //
-		{x: 5,    y: 74,  z: -6,   rope: 4,   width: 2,  depth: 2}, // climbing
-		{x: 9,    y: 77,  z: -2.5, rope: 4,   width: 2,  depth: 15}, // climbing
-		{x: 7,    y: 80,  z: 8,    rope: 4,   width: 4,  depth: 4}, // climbing
+		{x: 5,    y: 74,  z: -6,   rope: 0,   width: 2,  depth: 2}, // climbing
+		{x: 9,    y: 77,  z: -2.5, rope: 0,   width: 2,  depth: 15}, // climbing
+		{x: 7,    y: 80,  z: 8,    rope: 0,   width: 4,  depth: 4}, // climbing
 		{x: -6,   y: 80,  z: -2,   rope: 0,   width: 4,  depth: 4}, // jumping
-		{x: 4,    y: 84,  z: -8,   rope: 4,   width: 4,  depth: 4}, // jumping
+		{x: 4,    y: 84,  z: -8,   rope: 0,   width: 4,  depth: 4}, // jumping
 		{x: -8,   y: 87,  z: -7.5, rope: 0,   width: 4,  depth: 3}, // jumping
 		{x: 3,    y: 90,  z: -4,   rope: 0,   width: 4,  depth: 4}, // jumping
 		{x: -8,   y: 93,  z: 2.5,  rope: 0,   width: 4,  depth: 3}, // jumping
 		{x: 3,    y: 96,  z: -6,   rope: 0,   width: 4,  depth: 4}, // jumping
 		{x: -8,   y: 99,  z: -5.5, rope: 0,   width: 4,  depth: 3}, // jumping
-		{x: 0.5,  y: 229, z: 0,    rope: 126, width: 2,  depth: 4}
+		{x: 0.5,  y: 229, z: 0,    rope: 125, width: 2,  depth: 4}
 	];
-	var sceneBgTexture = new THREE.TextureLoader().load('/images/pineapple2.jpg');
+
+
+	var sceneBgTexture = new THREE.TextureLoader().load('images/pineapple2.jpg');
 	sceneBgTexture.wrapS = sceneBgTexture.wrapT = THREE.RepeatWrapping;
 	sceneBgTexture.repeat.set(4, 30);
 	var sceneBgMaterial = new THREE.MeshBasicMaterial({map: sceneBgTexture, side: THREE.BackSide});
 
-	var sceneBgTexture2 = new THREE.TextureLoader().load('/images/ground.jpg');
+	var sceneBgTexture2 = new THREE.TextureLoader().load('images/ground.jpg');
 	sceneBgTexture2.wrapS = sceneBgTexture2.wrapT = THREE.RepeatWrapping;
 	sceneBgTexture2.repeat.set(1000, 1000);
 	var sceneBgMaterial2 = new THREE.MeshBasicMaterial({map: sceneBgTexture2, side: THREE.BackSide});
@@ -157,38 +191,52 @@
 	sceneBg.position.set(0, 100, 0);
 	scene.add(sceneBg);
 
-	var endingTexture = new THREE.TextureLoader().load('/images/ending.png');
+	var endingTexture = new THREE.TextureLoader().load('images/ending.png');
 	var ending = new THREE.Mesh(new THREE.BoxGeometry(52, 5000, 52), new THREE.MeshBasicMaterial({map: endingTexture, side: THREE.BackSide, transparent: true}));
 	endingTexture.wrapS = endingTexture.wrapT = THREE.RepeatWrapping;
 	endingTexture.repeat.set(7, 100);
 	ending.position.set(0, -2602, 0);
 	scene.add(ending);
 
-	var endingTexture2 = new THREE.TextureLoader().load('/images/ending.png');
+	var endingTexture2 = new THREE.TextureLoader().load('images/ending.png');
 	endingTexture2.wrapS = endingTexture2.wrapT = THREE.RepeatWrapping;
 	endingTexture2.repeat.set(7, 42);
 	var ending2 = new THREE.Mesh(new THREE.BoxGeometry(68, 5000, 68), new THREE.MeshBasicMaterial({map: endingTexture2, side: THREE.BackSide}));
 	ending2.position.set(0, -2602, 0);
 	scene.add(ending2);
 
-	var outsideTexture = new THREE.TextureLoader().load('/images/ending.png');
+	var outsideTexture = new THREE.TextureLoader().load('images/ending.png');
 	var outside = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), new THREE.MeshBasicMaterial({map: outsideTexture}));
 	outsideTexture.repeat.set(1, .2);
 	outside.visible = false;
 	scene.add(outside);
 	var outsideAngle = 0;
+	var meshes = [];
+
+// meshes[0] is bottom
+// meshes[1] is top
+// meshes[27] is at the bottom, but belongs at the very top, wtf
+
 
 	for (var i = 0; i < platforms.length; i += 1) {
 		var platform = new THREE.Mesh(new THREE.BoxGeometry(platforms[i].width, 1, platforms[i].depth), platformMaterial);
 		platform.position.set(platforms[i].x, platforms[i].y, platforms[i].z);
 		platform.receiveShadow = true;
 		platform.castShadow = true;
+		platform.name = 'p' + i;
 		scene.add(platform);
+		meshes.push(platform);
+
 		if (platforms[i].rope) {
-			var rope = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, platforms[i].rope), ropeMaterial);
-			rope.position.set(platforms[i].x, platforms[i].y - platforms[i].rope / 2 - 0.5, platforms[i].z);
-			scene.add(rope);
+			for (var j = 0; j < platforms[i].rope / 5; j += 1) {
+				var rope = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 5), ropeMaterial);
+				rope.position.set(platforms[i].x, platforms[i].y - 0.5 - 2.5 - 5 * j, platforms[i].z);
+				rope.name = 'p' + i + 'r' + j;
+				scene.add(rope);
+				meshes.push(rope);
+			}
 		}
+		// coins
 		for (var j = 0; j < 3; j += 1) {
 			var coin = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.4, 0.05, 20), coinMaterial);
 			coin.geometry.computeVertexNormals();
@@ -207,11 +255,26 @@
 			coins.push(coin);
 		}
 	}
+
+	// start oimo loop
+	// parameters
+	var dt = 1/60;
+	var ToRad = Math.PI / 180;
+	var info = document.getElementById("info");
+	var fps = 0, time, time_prev = 0, fpsint = 0;
+	var minfo = new Float32Array(meshes.length * 8);
+	var oimoInfo = 0;
+	worker.postMessage({
+		platforms: platforms,
+		dt: dt,
+		oimoUrl: document.location.href.replace(/\/[^/]*$/,"/") + "js/lib/oimo.js",
+		minfo: minfo
+	}, [minfo.buffer]);
+
 	// mouse
 	function moveCallback(e) {
 		// pitch
 		camera.rotation.x -= 0.01 * e.movementY;
-
 		// yaw
 		q.setFromAxisAngle(new THREE.Vector3(0, 1, 0), -0.01 * e.movementX);
 		camera.quaternion.premultiply(q);
@@ -293,6 +356,7 @@
 		// win
 		if (camera.position.y > 226 && !won) {
 			won = true;
+			worker = null;
 			holdingRope = false;
 			outside.visible = true;
 		}
@@ -342,7 +406,7 @@
 					break;
 				}
 			}
-			// ropes collisions
+			// rope collisions
 			holdingRope = false;
 			for (var i = 0; i < platforms.length; i += 1) {
 				if (
@@ -353,6 +417,7 @@
 					camera.position.z > platforms[i].z - 0.4 &&
 					camera.position.z < platforms[i].z + 0.4
 				) {
+					ropeSegment = platforms[i].y
 					holdingRope = true;
 					onGround = false;
 					velY = 0;
@@ -407,11 +472,12 @@
 		lastPos = Object.assign({}, camera.position);
 		requestAnimationFrame(render);
 
-		if (keyboard.pressed('w')) {
+		// if (keyboard.pressed('w')) {
 			renderer.render(scene, camera);
-		} else {
-			composer.render();
-		}
+		// } else {
+		// 	composer.render();
+		// }
+		displayInfo();
 	}
 	render();
 
@@ -446,4 +512,25 @@
 		deaths += num;
 		document.getElementById('deaths').innerHTML = deaths;
 	}
+	function displayInfo(){
+		time = Date.now();
+		if (time - 1000 > time_prev) {
+			time_prev = time; fpsint = fps; fps = 0;
+		} fps++;
+
+		var info =[
+			"Oimo.js DEV.1.1.1a<br><br>",
+			"Physics: " + oimoInfo +" fps<br>",
+			"Render: " + fpsint +" fps<br>"
+		].join("\n");
+		document.getElementById("info").innerHTML = info;
+	}
+	function orientCylinder(cylinder, pointX, pointY) {
+		var direction = new THREE.Vector3().subVectors( pointY, pointX );
+		var arrow = new THREE.ArrowHelper( direction, pointX );
+		cylinder.scale.y = direction.length() / 5;
+		cylinder.rotation = arrow.rotation.clone();
+		cylinder.position = new THREE.Vector3().addVectors( pointX, direction.multiplyScalar(0.5) );
+	}
+
 }());

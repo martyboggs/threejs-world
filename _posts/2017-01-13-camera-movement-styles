@@ -1,10 +1,11 @@
 ---
 layout: post
-title: Camera Movement Styles
+title: Camera Movement Styles in ThreeJS
 description:
 example: ex9
 author: Marty Boggs
 category: Tutorials
+published: false
 tags:
 -  beginner
 -  animation

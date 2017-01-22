@@ -1,6 +1,6 @@
 ---
 layout: post
-title: AR in three.js with Aruco Markers
+title: AR in ThreeJS with Aruco Markers
 example: ex7
 author: Marty Boggs
 category: Tutorials

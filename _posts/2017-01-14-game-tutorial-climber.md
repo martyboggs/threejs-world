@@ -4,7 +4,6 @@ title: Game Tutorial&#58; CLIMBER
 description:
 example: ex10
 author: Marty Boggs
-category: Tutorials
 tags:
 -  game
 -  animation
@@ -16,6 +15,7 @@ tags:
 ---
 <br>
 <br>
+<div id="info"></div>
 <script src="http://threejs.org/examples/js/shaders/CopyShader.js"></script>
 <script src="http://threejs.org/examples/js/shaders/DotScreenShader.js"></script>
 <script src="http://threejs.org/examples/js/shaders/RGBShiftShader.js"></script>
@@ -23,7 +23,6 @@ tags:
 <script src="http://threejs.org/examples/js/postprocessing/RenderPass.js"></script>
 <script src="http://threejs.org/examples/js/postprocessing/MaskPass.js"></script>
 <script src="http://threejs.org/examples/js/postprocessing/ShaderPass.js"></script>
-
 <!-- 			// // platforms have static bounding boxes.. need to be generated once?
 			// firstBB = new THREE.Box3().setFromObject(firstObject);
 			// secondBB = new THREE.Box3().setFromObject(secondObject);
