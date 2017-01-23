@@ -969,8 +969,7 @@ ul, ol, dl {
 	display: block;
 	margin: 0 auto;
 }
-.home p a,
-.blog-inner a {
+.bold-links a {
 	font-weight: 700;
 }
 .blog-inner .boxes-container {

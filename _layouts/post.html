@@ -12,25 +12,27 @@ layout: default
 		<div class="share-placeholder"></div>
 	</div>
 	<div class="post-meta">
-		<p class="category">Filed&nbsp;under:&nbsp;<a href="/category/{{page.category}}"></i>{{page.category}}</a></p>
+		<p class="category">Filed&nbsp;under:&nbsp;<a href="{{site.url}}/category/{{page.category}}"></i>{{page.category}}</a></p>
 		<div class="tags">
 			{% for tag in page.tags %}
-				<a class="tag" href="/tag/{{tag | slugify}}"><i class="fa fa-tag"></i>{{tag}}</a>
+				<a class="tag" href="{{site.url}}/tag/{{tag | slugify}}"><i class="fa fa-tag"></i>{{tag}}</a>
 			{% endfor %}
 		</div>
 	</div>
 	<div class="blog-inner">
 		{% if page.example == '' %}
-			<img class="blog-image margin-bottom" src="/images/{{page.image}}">
+			<img class="blog-image margin-bottom" src="{{site.url}}/images/{{page.image}}">
 		{% endif %}
 		<p class="date">Last updated: {{page.date | date: '%B %-d, %Y'}}<br>Three.js Version: {{site.three_version}}</p>
 		{% if page.example %}
 		<div id="canvases"></div>
 		{% endif %}
-		{{content}}
+		<div class="bold-links">
+			{{content}}
+		</div>
 		{% if page.guest == nil %}
 			{% if page.example != 'ex7' %}
-				<p><a target="_blank" href="/js/examples/{{page.example}}.js"><i class="fa fa-file"></i>Get the code from this article <i class="fa fa-external-link"></i></a></p>
+				<p><a target="_blank" href="{{site.url}}/js/examples/{{page.example}}.js"><i class="fa fa-file"></i>Get the code from this article <i class="fa fa-external-link"></i></a></p>
 			{% endif %}
 			<p class="author">This article was brought to you by {{page.author}}. To find out about new articles, subscribe below.</p>
 		{% endif %}
@@ -39,4 +41,4 @@ layout: default
 		{% include disqus.html %}
 	</div>
 </div>
-<script src="/js/examples/{{page.example}}.js"></script>
+<script src="{{site.url}}/js/examples/{{page.example}}.js"></script>

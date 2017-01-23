@@ -16,7 +16,7 @@ in Blender where I assigned two materials to the faces of the model: a magenta m
 In Blender, I chose Lambert materials and assigned diffuse colors. All this information is included in the JSON file as long as `Shading->Face Materials` is checked before you export.
 
 ## Import Your JSON File
-Ok, now that you have your JSON file we can get it into the browser. To get started, we'll use this <a href="/threejs-world-blank-template.html" download="threejs-world-{{page.example}}.html">basic template <i class="fa fa-download"></i></a> that I use in a lot of posts. Open the template to follow along.
+Ok, now that you have your JSON file we can get it into the browser. To get started, we'll use this <a href="{{site.url}}/threejs-world-blank-template.html" download="threejs-world-{{page.example}}.html">basic template <i class="fa fa-download"></i></a> that I use in a lot of posts. Open the template to follow along.
 
 ```javascript
 var mesh = new THREE.Object3D();

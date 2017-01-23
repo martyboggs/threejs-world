@@ -15,16 +15,16 @@
 	<!--<meta name="apple-mobile-web-app-capable" content="yes">-->
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 	<!--<meta name="mobile-web-app-capable" content="yes">-->
-	<link rel="icon" sizes="192x192" href="/images/icons/launcher-icon-4x.png">
-	<link rel="stylesheet" type="text/css" href="/stylesheets/pygment_trac.css" media="screen">
-	<link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print">
+	<link rel="icon" sizes="192x192" href="{{site.url}}/images/icons/launcher-icon-4x.png">
+	<link rel="stylesheet" type="text/css" href="{{site.url}}/stylesheets/pygment_trac.css" media="screen">
+	<link rel="stylesheet" type="text/css" href="{{site.url}}/stylesheets/print.css" media="print">
 	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-	<link rel="stylesheet" type="text/css" href="/stylesheets/monokai.css">
-	<link rel="stylesheet" type="text/css" href="/stylesheets/dat.gui.css">
-	<link rel="stylesheet" type="text/css" href="/stylesheets/slick.css">
-	<link rel="stylesheet" type="text/css" href="/stylesheets/slick-theme.css">
-	<link rel="stylesheet" type="text/css" href="/stylesheets/stylesheet.css">
-	<link rel="stylesheet" type="text/css" href="/stylesheets/custom.css">
+	<link rel="stylesheet" type="text/css" href="{{site.url}}/stylesheets/monokai.css">
+	<link rel="stylesheet" type="text/css" href="{{site.url}}/stylesheets/dat.gui.css">
+	<link rel="stylesheet" type="text/css" href="{{site.url}}/stylesheets/slick.css">
+	<link rel="stylesheet" type="text/css" href="{{site.url}}/stylesheets/slick-theme.css">
+	<link rel="stylesheet" type="text/css" href="{{site.url}}/stylesheets/stylesheet.css">
+	<link rel="stylesheet" type="text/css" href="{{site.url}}/stylesheets/custom.css">
 	<link rel="canonical" href="{{site.url}}{{page.url}}" />
 	<meta itemprop="name" content="{{site.title}}">
 	<meta property="og:title" content="{{site.title}}">
@@ -45,11 +45,11 @@
 	<header>
 		<div class="bg"></div>
 		<div class="inner flex-container">
-			<a href="/"><h1>Three<span class="accent-color">.</span>js <span class="accent-color">World</span></h1></a>
-			<a href="/category/tutorials">Tutorials</a>
-			<a href="/tag/featured">Featured</a>
-			<a href="/all/models">Free 3D Models</a>
-			<a href="/about">About</a>
+			<a href="{{site.url}}/"><h1>Three<span class="accent-color">.</span>js <span class="accent-color">World</span></h1></a>
+			<a href="{{site.url}}/category/tutorials">Tutorials</a>
+			<a href="{{site.url}}/tag/featured">Featured</a>
+			<a href="{{site.url}}/all/models">Free 3D Models</a>
+			<a href="{{site.url}}/about">About</a>
 		</div>
 	</header>
 	{% include scripts.html %}
@@ -57,20 +57,20 @@
 	{{content}}
 
 	<footer>
-		<a href="/"><h1>Three<span class="accent-color">.</span>js <span class="accent-color">World</span></h1></a>
+		<a href="{{site.url}}/"><h1>Three<span class="accent-color">.</span>js <span class="accent-color">World</span></h1></a>
 		<div class="">
 			{% for category in site.categories limit: 3 %}
-				<a href="/category/{{category | first | slugify}}">{{category | first}}</a>{% unless forloop.last %}{% endunless %}
+				<a href="{{site.url}}/category/{{category | first | slugify}}">{{category | first}}</a>{% unless forloop.last %}{% endunless %}
 			{% endfor %}
 		</div>
 		<div class="">
 			{% for tag in site.tags limit: 3 %}
-				<a href="/tag/{{tag | first}}">{{tag | first | capitalize}}</a>{% unless forloop.last %}{% endunless %}
+				<a href="{{site.url}}/tag/{{tag | first}}">{{tag | first | capitalize}}</a>{% unless forloop.last %}{% endunless %}
 			{% endfor %}
 		</div>
 		<div class="">
 			{% for model in site.models limit: 3 %}
-				<a href="/models/{{model.title | slugify}}">{{model.title}}</a>{% unless forloop.last %}{% endunless %}
+				<a href="{{site.url}}/models/{{model.title | slugify}}">{{model.title}}</a>{% unless forloop.last %}{% endunless %}
 			{% endfor %}
 		</div>
 	</footer>

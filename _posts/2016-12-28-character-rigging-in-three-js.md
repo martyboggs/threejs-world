@@ -16,11 +16,11 @@ downloading it from the [Free 3D Models](/models/hugbot) area and following this
 
 <a href="https://threejs.org/examples/?q=morph#webgl_animation_skinning_morph" rel="nofollow" target="_blank">See this example from the docs of what can be achieved <i class="fa fa-external-link"></i></a>
 
-To get started, we'll use this <a href="/threejs-world-blank-template.html" download="threejs-world-{{page.example}}.html">basic template <i class="fa fa-download"></i></a> that I use in a lot of posts. Open the template to follow along.
+To get started, we'll use this <a href="{{site.url}}/threejs-world-blank-template.html" download="threejs-world-{{page.example}}.html">basic template <i class="fa fa-download"></i></a> that I use in a lot of posts. Open the template to follow along.
 
 We'll import Hugbot with a `JSONLoader`. The Hugbot model was made in Blender with armatures or bones which form a skeleton. The skeleton can then be manipulated to move the model's vertices around.
 
-To make this process work with your own rigged models, make sure you export with "bones" and "skinning" along with the rest of your model. You might want to check out my <a href="/tutorials/export-a-model-from-blender">post about exporting from Blender</a>.
+To make this process work with your own rigged models, make sure you export with "bones" and "skinning" along with the rest of your model. You might want to check out my <a href="{{site.url}}/tutorials/export-a-model-from-blender">post about exporting from Blender</a>.
 
 Also, use the `SkinnedMesh` class which will add a skeleton array to the mesh and read the "mesh skin weighting." This information tells the renderer how much to stretch the mesh for each bone in question.
 
@@ -51,7 +51,7 @@ Since I want to create an oscillating movement, I'll use sine and cosine functio
 
 Here's an illustration of the concept:
 
-<img src="/images/sine.gif">
+<img src="{{site.url}}/images/sine.gif">
 
 Now put the following code in your `render` function to make your Hugbot come to life!
 

@@ -75,7 +75,7 @@ layout: default
 		}
 		render();
 		</script>
-		<a href="/js/models/{{slug}}/{{slug}}.zip" download="{{slug}}.zip">Download</a><br>
+		<a href="{{site.url}}/js/models/{{slug}}/{{slug}}.zip" download="{{slug}}.zip">Download</a><br>
 		Materials: {% if page.materials > 0 %}{{page.materials}}{% else %}None{% endif %}<br>
 		Images: {% if page.images > 0 %}{{page.images}}{% else %}None{% endif %}<br>
 		Skeleton: {% if page.skeleton == true %}Yes{% else %}No{% endif %}<br>

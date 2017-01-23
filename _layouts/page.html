@@ -10,7 +10,7 @@ layout: default
 	</div>
 	<div class="blog-inner">
 		{% if page.example == '' %}
-			<img class="blog-image margin-bottom" src="/images/{{page.image}}">
+			<img class="blog-image margin-bottom" src="{{site.url}}/images/{{page.image}}">
 		{% endif %}
 
 		{{content}}

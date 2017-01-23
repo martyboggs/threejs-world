@@ -16,7 +16,7 @@ tags:
 <br>
 <br>
 <div id="info"></div>
-To show how to put together ThreeJS design concepts into **a complete project**, I created a little game called Climber. Click in the box to activate the Pointer Lock API. Now the mouse cursor is hidden and the **mouse movement** controls the angle of the camera. Use the **WASD** buttons to move the camera's position around.
+To show how to put together ThreeJS design concepts into **a complete project**, I created a little game called Climber. Click in the box to activate the Pointer Lock API. Now the mouse cursor is hidden and the **mouse movement** controls the angle of the camera. Use the **WASD** keys to move the camera's position around.
 
 Wow! Now you're navigating a 3D world!
 
@@ -29,6 +29,11 @@ Don't you hate it when you're playing a web game and you accidently click outsid
 ## Controls
 
 If you dig through the threeJS examples on their site, you will find lots of references to little plugins to use in your projects. I found one called <a href="https://threejs.org/examples/js/controls/PointerLockControls.js" target="_blank" rel="nofollow">PointerLockControls.js</a> that worked nicely with my game. It doesn't use the Pointer Lock API described above, but the controls are usually associated with it. A better name may have been "First Person Controls."
+
+```javascript
+controls = new THREE.PointerLockControls(camera);
+scene.add(controls.getObject());
+```
 
 ## Data Structures
 

@@ -13,7 +13,7 @@ tags:
 I just saw Rogue One, so this next example features a Star Wars like droid. BB-8 may be your only hope...
 <!--more-->
 
-This tutorial will show you how to put spheres in your project and how to create UV maps that wrap over them. To get started, we'll use this <a href="/threejs-world-blank-template.html" download="threejs-world-{{page.example}}.html">basic template <i class="fa fa-download"></i></a> that I use in a lot of posts. Open the template to follow along.
+This tutorial will show you how to put spheres in your project and how to create UV maps that wrap over them. To get started, we'll use this <a href="{{site.url}}/threejs-world-blank-template.html" download="threejs-world-{{page.example}}.html">basic template <i class="fa fa-download"></i></a> that I use in a lot of posts. Open the template to follow along.
 
 To get images onto the canvas, they need to be loaded in using a TextureLoader which can be instantiated once and then reused.
 
@@ -23,7 +23,7 @@ var loader = new THREE.TextureLoader();
 
 Let's start with the droid's head. The type of image needed for spherical UV mapping is called an **equirectangular projection**. Our droid's head is simple enough that I could draw it myself. To ensure that your textures aren't stretched out, make sure to use an image twice as wide as it is tall.
 
-<img src="/images/bb8head.png">
+<img src="{{site.url}}/images/bb8head.png">
 
 The example for TextureLoader in the documentation is asynchronous which will make your code more complicated than it needs to be. The TextureLoader immediately returns a blank texture which gets filled as soon as the image loads. This means that **you don't need to use asynchronous code to load textures**. You can get the texture with one line of code, as I've done below.
 
@@ -47,7 +47,7 @@ A better method is to use a **cube map** and then morph it into a sphere. A cube
 
 For the BoxGeometry function call, we'll need to split the cube into 8 x 8 x 8 sections so we're able to morph it. That's what the three other arguments do.
 
-<img src="/images/bb8one.png">
+<img src="{{site.url}}/images/bb8one.png">
 
 ```javascript
 var geometry = new THREE.BoxGeometry(1, 1, 1, 8, 8, 8);
