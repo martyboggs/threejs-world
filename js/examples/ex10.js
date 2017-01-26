@@ -212,6 +212,7 @@
 	scene.add(outside);
 	var outsideAngle = 0;
 	var meshes = [];
+	var ropes = [];
 
 // meshes[0] is bottom
 // meshes[1] is top
@@ -234,6 +235,7 @@
 				rope.name = 'p' + i + 'r' + j;
 				scene.add(rope);
 				meshes.push(rope);
+				ropes.push(rope);
 			}
 		}
 		// coins
@@ -408,22 +410,34 @@
 			}
 			// rope collisions
 			holdingRope = false;
-			for (var i = 0; i < platforms.length; i += 1) {
+			for (var i = 0; i < ropes.length; i += 1) {
 				if (
-					camera.position.x > platforms[i].x - 0.4 &&
-					camera.position.x < platforms[i].x + 0.4 &&
-					camera.position.y - 0.5 > platforms[i].y - 0.5 - platforms[i].rope && // bottom
-					camera.position.y - 0.5 < platforms[i].y - 0.5 && // top
-					camera.position.z > platforms[i].z - 0.4 &&
-					camera.position.z < platforms[i].z + 0.4
+					camera.position.x > ropes[i].position.x - 0.4 &&
+					camera.position.x < ropes[i].position.x + 0.4 &&
+					camera.position.y > ropes[i].position.y - 2.5 &&
+					camera.position.y < ropes[i].position.y + 2.5 &&
+					camera.position.z > ropes[i].position.z - 0.4 &&
+					camera.position.z < ropes[i].position.z + 0.4
 				) {
-					ropeSegment = platforms[i].y
+					ropeSegment = ropes[i];
 					holdingRope = true;
 					onGround = false;
 					velY = 0;
 					break;
 				}
 			}
+			// for (var i = 0; i < platforms.length; i += 1) {
+			// 	if (
+			// 		camera.position.x > platforms[i].x - 0.4 &&
+			// 		camera.position.x < platforms[i].x + 0.4 &&
+			// 		camera.position.y - 0.5 > platforms[i].y - 0.5 - platforms[i].rope && // bottom
+			// 		camera.position.y - 0.5 < platforms[i].y - 0.5 && // top
+			// 		camera.position.z > platforms[i].z - 0.4 &&
+			// 		camera.position.z < platforms[i].z + 0.4
+			// 	) {
+			// 	}
+			// }
+
 			if (!holdingRope) hitHead = false;
 			// coin collisions
 			for (var i = 0; i < coins.length; i += 1) {
