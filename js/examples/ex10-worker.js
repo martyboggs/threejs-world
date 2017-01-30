@@ -11,7 +11,7 @@ self.onmessage = function (e) {
 		OIMO.WORLD_SCALE = 1;
 		OIMO.INV_SCALE = 1;
 		world = new OIMO.World(e.data.dt, 2, 8, true);
-		world.gravity.init(0, -10, 0);
+		world.gravity.init(0, -9.8, 0);
 		var lastBody, pos1Y;
 		var platforms = e.data.platforms;
 

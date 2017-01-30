@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Game Tutorial&#58; CLIMBER
+title: Three.js Game Tutorial&#58; CLIMBER
 description:
 example: ex10
 author: Marty Boggs
@@ -15,6 +15,9 @@ tags:
 ---
 <br>
 <br>
+**WASD to move<br>**
+**Mouse to look around<br>**
+**E to jump or release rope**
 <div id="info"></div>
 To show how to put together ThreeJS design concepts into **a complete project**, I created a little game called Climber. Click in the box to activate the Pointer Lock API. Now the mouse cursor is hidden and the **mouse movement** controls the angle of the camera. Use the **WASD** keys to move the camera's position around.
 
@@ -61,6 +64,7 @@ spaghetti <img src="{{site.url}}/images/spaghetti.jpg">
 <script src="http://threejs.org/examples/js/postprocessing/RenderPass.js"></script>
 <script src="http://threejs.org/examples/js/postprocessing/MaskPass.js"></script>
 <script src="http://threejs.org/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="{{site.url}}/js/lib/PointerLockControls.js"></script>
 <!-- 			// // platforms have static bounding boxes.. need to be generated once?
 			// firstBB = new THREE.Box3().setFromObject(firstObject);
 			// secondBB = new THREE.Box3().setFromObject(secondObject);
@@ -75,12 +79,4 @@ spaghetti <img src="{{site.url}}/images/spaghetti.jpg">
 	// TODO: stepping off ledge, disable jumping
 	// TODO: remove diagonal bug
 -->
-Made a game...
-WASD to move
-WA to climb
-E to jump
-
-* collisions
 * Euler angles
-* lighting
-* physics

@@ -1,6 +1,6 @@
 (function () {
 	var scene = new THREE.Scene();
-	var camera = new THREE.PerspectiveCamera(75, 2, 0.001, 500);
+	var camera = new THREE.PerspectiveCamera(75, 2, 0.001, 1000);
 	var renderer = new THREE.WebGLRenderer({alpha: true});
 	renderer.setSize(660, 330);
 	renderer.shadowMap.enabled = true;
@@ -77,10 +77,12 @@
 		if (document.pointerLockElement === renderer.domElement ||
 		document.mozPointerLockElement === renderer.domElement ||
 		document.webkitPointerLockElement === renderer.domElement) {
-			document.addEventListener('mousemove', moveCallback, false);
+			// document.addEventListener('mousemove', moveCallback, false);
+			controls.enabled = true;
 			document.getElementById('overlay').style.display = 'none';
 		} else {
-			document.removeEventListener('mousemove', moveCallback, false);
+			// document.removeEventListener('mousemove', moveCallback, false);
+			controls.enabled = false;
 			document.getElementById('overlay').style.display = 'flex';
 		}
 	}
@@ -94,10 +96,15 @@
 		'pineapple2.jpg', // left
 	]);
 
-	camera.position.y = 97;
-	camera.position.x = -7;
-	camera.position.z = -7;
-	camera.rotation.order = 'ZYX';
+
+	var controls = new THREE.PointerLockControls(camera);
+	var player = controls.getObject();
+	scene.add(player);
+
+	player.position.set(4.5, 6, 1);
+
+	// camera.rotation.order = 'ZYX';
+
 	var sounds = {
 		jump: new Howl({src: ['sounds/jump.wav']}),
 		coin: new Howl({src: ['sounds/coin.wav']}),
@@ -106,13 +113,13 @@
 	};
 	sounds.hit.sounding = 0;
 	var q = new THREE.Quaternion(); // create once and reuse
-	var lastPos = Object.assign({}, camera.position);
+	var lastPos = Object.assign({}, player.position);
 	var platformMaterial = new THREE.MeshLambertMaterial({color: 'violet'});
 	var ropeMaterial = new THREE.MeshLambertMaterial({color: 'yellow'});
 	var coinMaterial = new THREE.MeshPhongMaterial({color: 'gold', specular: 'white', shininess: 100, envMap: coinBg, reflectivity: 0.2, combine: THREE.MixOperation});
 	var coins = [];
 	var keyboard = new THREEx.KeyboardState();
-	var velY = 0;
+	var vel = {x: 0, y: 0, z: 0};
 	var onGround = true;
 	var jumpAllowed = false;
 	var holdingRope = false;
@@ -124,18 +131,23 @@
 	var dead = false;
 	var deadTimer = 120;
 	var hitHead = false;
+	var meshes = [];
+	var ropes = [];
+	var ropeSegment = false;
+	var letGoTimer = 0;
+	var rgbAmount = 0;
 
-	// var composer = new THREE.EffectComposer( renderer );
-	// composer.addPass( new THREE.RenderPass( scene, camera ) );
+	var composer = new THREE.EffectComposer( renderer );
+	composer.addPass( new THREE.RenderPass( scene, camera ) );
 
 	// var effect = new THREE.ShaderPass( THREE.DotScreenShader );
 	// effect.uniforms[ 'scale' ].value = 1;
 	// composer.addPass( effect );
 
-	// var effect = new THREE.ShaderPass( THREE.RGBShiftShader );
-	// effect.uniforms[ 'amount' ].value = 0.15;
-	// effect.renderToScreen = true;
-	// composer.addPass( effect );
+	var effect = new THREE.ShaderPass( THREE.RGBShiftShader );
+	effect.uniforms[ 'amount' ].value = 0.15;
+	effect.renderToScreen = true;
+	composer.addPass( effect );
 
 	// set up objects
 	var platforms = [
@@ -166,9 +178,13 @@
 		{x: -8,   y: 93,  z: 2.5,  rope: 0,   width: 4,  depth: 3}, // jumping
 		{x: 3,    y: 96,  z: -6,   rope: 0,   width: 4,  depth: 4}, // jumping
 		{x: -8,   y: 99,  z: -5.5, rope: 0,   width: 4,  depth: 3}, // jumping
-		{x: 0.5,  y: 229, z: 0,    rope: 125, width: 2,  depth: 4}
+		{x: 0.5,  y: 219, z: 0,    rope: 115, width: 2,  depth: 4}
 	];
 
+/*
+All your hard work...
+amounted to nothing
+*/
 
 	var sceneBgTexture = new THREE.TextureLoader().load('images/pineapple2.jpg');
 	sceneBgTexture.wrapS = sceneBgTexture.wrapT = THREE.RepeatWrapping;
@@ -194,25 +210,37 @@
 	var endingTexture = new THREE.TextureLoader().load('images/ending.png');
 	var ending = new THREE.Mesh(new THREE.BoxGeometry(52, 5000, 52), new THREE.MeshBasicMaterial({map: endingTexture, side: THREE.BackSide, transparent: true}));
 	endingTexture.wrapS = endingTexture.wrapT = THREE.RepeatWrapping;
-	endingTexture.repeat.set(7, 100);
+	endingTexture.repeat.set(7, 70);
 	ending.position.set(0, -2602, 0);
 	scene.add(ending);
 
 	var endingTexture2 = new THREE.TextureLoader().load('images/ending.png');
 	endingTexture2.wrapS = endingTexture2.wrapT = THREE.RepeatWrapping;
-	endingTexture2.repeat.set(7, 42);
-	var ending2 = new THREE.Mesh(new THREE.BoxGeometry(68, 5000, 68), new THREE.MeshBasicMaterial({map: endingTexture2, side: THREE.BackSide}));
+	endingTexture2.repeat.set(7, 48);
+	var ending2 = new THREE.Mesh(new THREE.BoxGeometry(82, 5000, 82), new THREE.MeshBasicMaterial({map: endingTexture2, side: THREE.BackSide}));
 	ending2.position.set(0, -2602, 0);
 	scene.add(ending2);
 
-	var outsideTexture = new THREE.TextureLoader().load('images/ending.png');
-	var outside = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), new THREE.MeshBasicMaterial({map: outsideTexture}));
-	outsideTexture.repeat.set(1, .2);
-	outside.visible = false;
+	function CustomSinCurve(scale) {
+		this.scale = (scale === undefined) ? 1 : scale;
+	}
+	CustomSinCurve.prototype = Object.create( THREE.Curve.prototype );
+	CustomSinCurve.prototype.constructor = CustomSinCurve;
+	CustomSinCurve.prototype.getPoint = function ( t ) {
+		var tx = 4.2 * Math.sin( 16 * Math.PI * t );
+		var ty = 50 * t - 50;
+		var tz = 4.2 * Math.cos( 16 * Math.PI * t );
+		return new THREE.Vector3( tx, ty, tz ).multiplyScalar( this.scale );
+	};
+
+	var path = new CustomSinCurve( 10 );
+	var geometry = new THREE.TubeGeometry( path, 90, 2, 8, false );
+	var material = new THREE.MeshLambertMaterial({
+		color: 'yellow'
+	});
+	var outside = new THREE.Mesh(geometry, material);
 	scene.add(outside);
-	var outsideAngle = 0;
-	var meshes = [];
-	var ropes = [];
+	// outside.visible = false;
 
 // meshes[0] is bottom
 // meshes[1] is top
@@ -233,6 +261,8 @@
 				var rope = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 5), ropeMaterial);
 				rope.position.set(platforms[i].x, platforms[i].y - 0.5 - 2.5 - 5 * j, platforms[i].z);
 				rope.name = 'p' + i + 'r' + j;
+				rope.parentHeight = platforms[i].y;
+				rope.ropeLength = platforms[i].rope;
 				scene.add(rope);
 				meshes.push(rope);
 				ropes.push(rope);
@@ -273,90 +303,88 @@
 		minfo: minfo
 	}, [minfo.buffer]);
 
-	// mouse
-	function moveCallback(e) {
-		// pitch
-		camera.rotation.x -= 0.01 * e.movementY;
-		// yaw
-		q.setFromAxisAngle(new THREE.Vector3(0, 1, 0), -0.01 * e.movementX);
-		camera.quaternion.premultiply(q);
-	}
-
 	function render() {
+
 		collided = false;
-		var camAngle = Math.round(camera.rotation.z) === 0 ? camera.rotation.y : -camera.rotation.y + Math.PI;
+		var camAngle = Math.round(player.rotation.z) === 0 ? player.rotation.y : -player.rotation.y + Math.PI;
 		if (document.pointerLockElement === renderer.domElement) {
-			if (!keyboard.pressed('w') || !holdingRope || hitHead) {
+			if ((!keyboard.pressed('w') && !keyboard.pressed('up')) || !holdingRope || hitHead) {
 				if (sounds.climb.id) sounds.climb.stop(sounds.climb.id);
 				sounds.climb.sounding = false;
 			}
-			if (keyboard.pressed('w')) {
+			if (keyboard.pressed('w') || keyboard.pressed('up')) {
 				if (holdingRope) {
 					if (!hitHead) {
-						camera.position.y += 0.1;
-						if (!sounds.climb.sounding) {
-							sounds.climb.id = sounds.climb.play();
-							sounds.climb.sounding = true;
+						if (player.position.y < ropeSegment.parentHeight - 0.6) {
+							player.position.y += 0.1;
+							if (!sounds.climb.sounding) {
+								sounds.climb.id = sounds.climb.play();
+								sounds.climb.sounding = true;
+							}
+						} else {
+							hitHead = true;
+							collision = true;
 						}
 					}
 				} else {
-					camera.position.z -= 0.1 * Math.cos(camAngle);
-					camera.position.x -= 0.1 * Math.sin(camAngle);
+					player.position.z -= 0.1 * Math.cos(camAngle);
+					player.position.x -= 0.1 * Math.sin(camAngle);
 				}
-			} else if (keyboard.pressed('s')) {
+			} else if (keyboard.pressed('s') || keyboard.pressed('down')) {
 				hitHead = false;
 				if (holdingRope) {
-					camera.position.y -= 0.1;
+					if (player.position.y > ropeSegment.parentHeight - 0.6 - ropeSegment.ropeLength) {
+						player.position.y -= 0.1;
+					} else {
+						holdingRope = false;
+						letGoTimer = 30;
+					}
 				} else {
-					camera.position.z += 0.1 * Math.cos(camAngle);
-					camera.position.x += 0.1 * Math.sin(camAngle);
+					player.position.z += 0.1 * Math.cos(camAngle);
+					player.position.x += 0.1 * Math.sin(camAngle);
 				}
 			}
-			if (keyboard.pressed('a')) {
-				camera.position.z += 0.1 * Math.sin(camAngle);
-				camera.position.x -= 0.1 * Math.cos(camAngle);
-			} else if (keyboard.pressed('d')) {
-				camera.position.z -= 0.1 * Math.sin(camAngle);
-				camera.position.x += 0.1 * Math.cos(camAngle);
-			}
-			if (keyboard.pressed('j')) {
-				camera.rotation.y += 0.07;
-			} else if (keyboard.pressed('k')) {
-				camera.rotation.y -= 0.07;
+			if (keyboard.pressed('a') || keyboard.pressed('left')) {
+				player.position.z += 0.1 * Math.sin(camAngle);
+				player.position.x -= 0.1 * Math.cos(camAngle);
+			} else if (keyboard.pressed('d') || keyboard.pressed('right')) {
+				player.position.z -= 0.1 * Math.sin(camAngle);
+				player.position.x += 0.1 * Math.cos(camAngle);
 			}
 			// jump
 			if (keyboard.pressed('e') && onGround && jumpAllowed) {
 				jumpAllowed = false;
 				sounds.jump.play();
-				velY = 0.15;
+				vel.y = 0.15;
 				onGround = false;
 				sounds.hit.sounding = 0;
 			}
 		}
 		// make player fall
 		if (!holdingRope) {
-			camera.position.y += velY;
+			player.position.y += vel.y;
 		}
 		// floor
-		if (!won && camera.position.y < -99.5) {
+		if (!won && player.position.y < -99.5) {
 			collided = true;
-			camera.position.y = -99.5;
+			player.position.y = -99.5;
 			onGround = true;
 			dead = true;
 		}
 		if (onGround && !keyboard.pressed('e')) {
 			jumpAllowed = true;
 		}
+
 		// calculate velocity from gravity (until terminal velocity)
-		if (velY > -0.9 && !holdingRope) {
-			velY -= 0.00272;
+		if (vel.y > -0.9 && !holdingRope) {
+			vel.y -= 0.00272;
 		}
 		// spin coins
 		for (var i = 0; i < coins.length; i += 1) {
 			coins[i].rotation.z += 0.04;
 		}
 		// win
-		if (camera.position.y > 226 && !won) {
+		if (player.position.y > 216 && !won) {
 			won = true;
 			worker = null;
 			holdingRope = false;
@@ -368,15 +396,16 @@
 		if (deadTimer === 0) {
 			dead = false;
 			deadTimer = 120;
-			camera.position.set(5.5, 6, 1);
+			player.position.set(4.5, 6, 1);
 			deathsAdd(1);
 		}
 
 		if (won) {
-			outside.position.set(22 * Math.sin(outsideAngle), camera.position.y, 22 * Math.cos(outsideAngle));
-			outsideAngle += 0.01;
-
 			ending2.rotation.y += 0.01;
+			outside.rotation.y += 0.1;
+			if (player.position.y < -200) {
+				outside.position.y = player.position.y + 200;
+			}
 		}
 
 		// after manipulation, run checks (before render)
@@ -385,69 +414,79 @@
 			// platform collisions
 			for (var i = 0; i < platforms.length; i += 1) {
 				if (
-					camera.position.x > platforms[i].x - ((platforms[i].width) / 2) &&
-					camera.position.x < platforms[i].x + ((platforms[i].width) / 2) &&
-					camera.position.y - 0.5 > platforms[i].y - 0.5 &&
-					camera.position.y - 0.5 < platforms[i].y + 0.5 &&
-					camera.position.z > platforms[i].z - ((platforms[i].depth) / 2) &&
-					camera.position.z < platforms[i].z + ((platforms[i].depth) / 2)
+					player.position.x > platforms[i].x - ((platforms[i].width) / 2) &&
+					player.position.x < platforms[i].x + ((platforms[i].width) / 2) &&
+					player.position.y - 0.5 > platforms[i].y - 0.5 &&
+					player.position.y - 0.5 < platforms[i].y + 0.5 &&
+					player.position.z > platforms[i].z - ((platforms[i].depth) / 2) &&
+					player.position.z < platforms[i].z + ((platforms[i].depth) / 2)
 				) {
 					var minDistance = {
-						x: Math.min(Math.abs(camera.position.x - (platforms[i].x - ((platforms[i].width) / 2))), Math.abs(camera.position.x - (platforms[i].x + ((platforms[i].width) / 2)))),
-						y: Math.min(Math.abs((camera.position.y - 0.5) - (platforms[i].y - 0.5)), Math.abs((camera.position.y - 0.5) - (platforms[i].y + 0.5))),
-						z: Math.min(Math.abs(camera.position.z - (platforms[i].z - ((platforms[i].width) / 2))), Math.abs(camera.position.z - (platforms[i].z + ((platforms[i].width) / 2))))
+						x: Math.min(Math.abs(player.position.x - (platforms[i].x - ((platforms[i].width) / 2))), Math.abs(player.position.x - (platforms[i].x + ((platforms[i].width) / 2)))),
+						y: Math.min(Math.abs((player.position.y - 0.5) - (platforms[i].y - 0.5)), Math.abs((player.position.y - 0.5) - (platforms[i].y + 0.5))),
+						z: Math.min(Math.abs(player.position.z - (platforms[i].z - ((platforms[i].width) / 2))), Math.abs(player.position.z - (platforms[i].z + ((platforms[i].width) / 2))))
 					};
 					if (minDistance.x <= minDistance.y && minDistance.x <= minDistance.z) {
-						camera.position.x = freeAxis('x', platforms[i]);
+						player.position.x = freeAxis('x', platforms[i]);
 					} else if (minDistance.y <= minDistance.x && minDistance.y <= minDistance.z) {
-						camera.position.y = freeAxis('y', platforms[i]);
+						player.position.y = freeAxis('y', platforms[i]);
 						collided = true;
 					} else if (minDistance.z <= minDistance.x && minDistance.z <= minDistance.y) {
-						camera.position.z = freeAxis('z', platforms[i]);
+						player.position.z = freeAxis('z', platforms[i]);
 					}
 					break;
 				}
 			}
 			// rope collisions
-			holdingRope = false;
 			for (var i = 0; i < ropes.length; i += 1) {
 				if (
-					camera.position.x > ropes[i].position.x - 0.4 &&
-					camera.position.x < ropes[i].position.x + 0.4 &&
-					camera.position.y > ropes[i].position.y - 2.5 &&
-					camera.position.y < ropes[i].position.y + 2.5 &&
-					camera.position.z > ropes[i].position.z - 0.4 &&
-					camera.position.z < ropes[i].position.z + 0.4
+					player.position.x > ropes[i].position.x - 0.5 &&
+					player.position.x < ropes[i].position.x + 0.5 &&
+					player.position.y > ropes[i].position.y - 2.6 &&
+					player.position.y < ropes[i].position.y + 2.6 &&
+					player.position.z > ropes[i].position.z - 0.5 &&
+					player.position.z < ropes[i].position.z + 0.5
 				) {
-					ropeSegment = ropes[i];
-					holdingRope = true;
-					onGround = false;
-					velY = 0;
+					if (holdingRope) {
+						ropeSegment = ropes[i];
+					}
+					if (letGoTimer === 0) {
+						ropeSegment = ropes[i];
+						holdingRope = true;
+						onGround = false;
+						vel.y = 0;
+					}
 					break;
 				}
 			}
-			// for (var i = 0; i < platforms.length; i += 1) {
-			// 	if (
-			// 		camera.position.x > platforms[i].x - 0.4 &&
-			// 		camera.position.x < platforms[i].x + 0.4 &&
-			// 		camera.position.y - 0.5 > platforms[i].y - 0.5 - platforms[i].rope && // bottom
-			// 		camera.position.y - 0.5 < platforms[i].y - 0.5 && // top
-			// 		camera.position.z > platforms[i].z - 0.4 &&
-			// 		camera.position.z < platforms[i].z + 0.4
-			// 	) {
-			// 	}
-			// }
 
-			if (!holdingRope) hitHead = false;
+			if (letGoTimer > 0) {
+				letGoTimer -= 1;
+			}
+
+			if (holdingRope) {
+				player.position.x = ropeSegment.position.x + 0.3 * Math.sin(camAngle);
+				player.position.z = ropeSegment.position.z + 0.3 * Math.cos(camAngle);
+
+				if (keyboard.pressed('e')) {
+					holdingRope = false;
+					letGoTimer = 30;
+				}
+			}
+
+			if (!holdingRope) {
+				hitHead = false;
+			}
+
 			// coin collisions
 			for (var i = 0; i < coins.length; i += 1) {
 				if (
-					camera.position.x > coins[i].position.x - 0.4 &&
-					camera.position.x < coins[i].position.x + 0.4 &&
-					camera.position.y > coins[i].position.y - 0.4 &&
-					camera.position.y < coins[i].position.y + 0.4 &&
-					camera.position.z > coins[i].position.z - 0.4 &&
-					camera.position.z < coins[i].position.z + 0.4
+					player.position.x > coins[i].position.x - 0.4 &&
+					player.position.x < coins[i].position.x + 0.4 &&
+					player.position.y > coins[i].position.y - 0.4 &&
+					player.position.y < coins[i].position.y + 0.4 &&
+					player.position.z > coins[i].position.z - 0.4 &&
+					player.position.z < coins[i].position.z + 0.4
 				) {
 					scene.remove(coins[i]);
 					coins.splice(i, 1);
@@ -458,20 +497,21 @@
 			}
 		}
 		// walls
-		if (camera.position.x > 10) {
-			camera.position.x = 10;
-		} else if (camera.position.x < -10) {
-			camera.position.x = -10;
+		if (player.position.x > 10) {
+			player.position.x = 10;
+		} else if (player.position.x < -10) {
+			player.position.x = -10;
 		}
-		if (camera.position.z > 10) {
-			camera.position.z = 10;
-		} else if (camera.position.z < -10) {
-			camera.position.z = -10;
+		if (player.position.z > 10) {
+			player.position.z = 10;
+		} else if (player.position.z < -10) {
+			player.position.z = -10;
 		}
 
 		if (collided) {
 			if (sounds.hit.sounding === 0) {
 				sounds.hit.play();
+				rgbAmount = 0.02;
 				sounds.hit.sounding = 1;
 			} if (sounds.hit.sounding === 2) {
 				sounds.hit.sounding = 1;
@@ -483,14 +523,22 @@
 				sounds.hit.sounding = 0;
 			}
 		}
-		lastPos = Object.assign({}, camera.position);
+		lastPos = Object.assign({}, player.position);
 		requestAnimationFrame(render);
 
-		// if (keyboard.pressed('w')) {
+// holding down e after jump bug
+// position on rope x z
+// climbing above platform
+
+		if (rgbAmount > 0) {
+			effect.uniforms[ 'amount' ].value = rgbAmount; //.15
+			composer.render();
+			rgbAmount -= 0.005;
+		} else {
 			renderer.render(scene, camera);
-		// } else {
-		// 	composer.render();
-		// }
+			rgbAmount = 0;
+		}
+
 		displayInfo();
 	}
 	render();
@@ -502,18 +550,22 @@
 			radius = 0.5;
 			offset = 0.5;
 			tune = 0.5;
-			onGround = true;
-			velY = 0;
+			vel.y = 0;
 		} else if (axis === 'x') {
 			radius = platform.width / 2;
 		} else if (axis === 'z') {
 			radius = platform.depth / 2;
 		}
-		if (Math.abs((camera.position[axis] - offset) - (platform[axis] - radius)) <
-			Math.abs((camera.position[axis] - offset) - (platform[axis] + radius))) {
-				if (axis === 'y') hitHead = true;
+		if (Math.abs((player.position[axis] - offset) - (platform[axis] - radius)) <
+			Math.abs((player.position[axis] - offset) - (platform[axis] + radius))) {
+				if (axis === 'y') {
+					hitHead = true;
+				}
 				return platform[axis] - radius - tune;
 		} else {
+				if (axis === 'y') {
+					onGround = true;
+				}
 				return platform[axis] + radius + tune;
 		}
 	}
