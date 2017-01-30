@@ -23,28 +23,53 @@ To show how to put together ThreeJS design concepts into **a complete project**,
 
 Wow! Now you're navigating a 3D world!
 
+Games take forever to make. There are so many things to keep in balance: aesthetics, complexity, engagement, expected gameplay elements, strategy. As you add these things to your game, they make adding more elements all the more complicated.
+
+## Lean Workflow
+
+To prevent myself from starting this project and getting lost before reaching an endpoint, I'm going to use principles from the Lean workflow system. To do this, I'll keep the game as simple as possible focusing only on the most necessary elements. Once I have a beginning, middle and end, I'll ITERATE new versions of the game and add the harder stuff like physics and sound with each new iteration. First, I'll add player movement and controls.
+
 ## Pointer Lock API
 
 Don't you hate it when you're playing a web game and you accidently click outside the borders and your character gets stuck? I thought so. The Pointer Lock API (available to modern browsers) fixes this problem by only allowing clicks and mouse movement within the borders of your game.
 
-## Fullscreen API
-
 ## Controls
 
-If you dig through the threeJS examples on their site, you will find lots of references to little plugins to use in your projects. I found one called <a href="https://threejs.org/examples/js/controls/PointerLockControls.js" target="_blank" rel="nofollow">PointerLockControls.js</a> that worked nicely with my game. It doesn't use the Pointer Lock API described above, but the controls are usually associated with it. A better name may have been "First Person Controls."
+If you dig through the threeJS examples on their site, you will find lots of references to little plugins to use in your projects. I found one by mrdoob called <a href="https://threejs.org/examples/js/controls/PointerLockControls.js" target="_blank" rel="nofollow">PointerLockControls.js</a> that worked nicely with my game. It doesn't use the Pointer Lock API described above, but the controls are usually associated with it. A better name may have been "First Person Controls."
 
 ```javascript
-controls = new THREE.PointerLockControls(camera);
-scene.add(controls.getObject());
+var controls = new THREE.PointerLockControls(camera);
+var player = controls.getObject();
+scene.add(player);
+```
+
+That covers mouse control. Now, I need keyboard controls. For keyboard, I'll use a plugin by Jerome Etienne <a href="https://github.com/jeromeetienne/threex.keyboardstate" target="_blank" rel="nofollow">THREEx.KeyboardState.js</a>
+
+```javascript
+var keyboard = new THREEx.KeyboardState();
 ```
 
 ## Data Structures
 
 At IndieCade last year, I heard a talk by <a href="http://www.galaxykate.com/" target="_blank" rel="nofollow">Galaxy Kate</a> about procedural programming and procedurally generated games. She emphasized using data structures instead of "if statements." The `platforms` array is a good example of this.
 
+```javascript
+	// set up objects
+	var platforms = [
+		{x: 5.5,  y: 0,   z: 1,    rope: 0,   width: 5,  depth: 10}, // just above ground level
+		{x: 8.5,  y: 10,  z: -8.5, rope: 0,   width: 4,  depth: 3}, // isolated
+		{x: 5,    y: 19,  z: 8,    rope: 15,  width: 4,  depth: 4},
+		// ...
+	];
+```
+
 ## Materials
 
 To give the coins in my game a shiny metal look, I used a MeshPhongMaterial with an environment map or envmap. An environment map is 6 images that represent the environment to create the illusion that the material is reflecting its surroundings.
+
+```javascript
+var coinMaterial = new THREE.MeshPhongMaterial({color: 'gold', specular: 'white', shininess: 100, envMap: coinBg, reflectivity: 0.2, combine: THREE.MixOperation});
+```
 
 ## Collisions
 
@@ -52,10 +77,13 @@ Collisions can be costly in terms of performance. To keep things simple, I consi
 
 ## Physics
 
-oimo Webworker
-spaghetti <img src="{{site.url}}/images/spaghetti.jpg">
+To make the ropes swing around, I used <a href="https://github.com/lo-th/Oimo.js/" target="_blank" rel="nofollow">Oimo.js</a>, a physics library ported from ActionScript by loth. I used the webworker example which allows the expensive physics calculations to be done in a new thread. At first the rope segments were flying all over the place. It took some practice to get the mesh objects their associated physics bodies aligned.
+
+<img src="{{site.url}}/images/spaghetti.jpg">
 
 ## Post Processing
+
+I played a little with AlteredQualia's postprocessing <a href="http://threejs.org/examples/js/postprocessing/EffectComposer.js" target="_blank" rel="nofollow">EffectComposer</a>. The RGBShiftShader splits the colors a little when you land, creating a glitch effect.
 
 <script src="http://threejs.org/examples/js/shaders/CopyShader.js"></script>
 <script src="http://threejs.org/examples/js/shaders/DotScreenShader.js"></script>
@@ -65,18 +93,3 @@ spaghetti <img src="{{site.url}}/images/spaghetti.jpg">
 <script src="http://threejs.org/examples/js/postprocessing/MaskPass.js"></script>
 <script src="http://threejs.org/examples/js/postprocessing/ShaderPass.js"></script>
 <script src="{{site.url}}/js/lib/PointerLockControls.js"></script>
-<!-- 			// // platforms have static bounding boxes.. need to be generated once?
-			// firstBB = new THREE.Box3().setFromObject(firstObject);
-			// secondBB = new THREE.Box3().setFromObject(secondObject);
-			// var collision = firstBB.isIntersectionBox(secondBB);
-	// gravity
-	// -9.8m/s/s /60/60
-	// -0.00272m/f/f
-	// -0.00272u/f/f
-	// max = -54m/s
-	// max = -0.9 u/f
-	// jump (TODO: make jump change based on hold length)
-	// TODO: stepping off ledge, disable jumping
-	// TODO: remove diagonal bug
--->
-* Euler angles
