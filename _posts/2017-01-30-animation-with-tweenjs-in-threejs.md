@@ -10,7 +10,7 @@ tags:
 -  animation
 ---
 
-Saw this article on medium and I remembered I need to write about animation.
+I saw this article on medium and I remembered I need to write about animation.
 
 <a href="https://medium.com/@lachlantweedie/animation-in-three-js-using-tween-js-with-examples" target="_blank" rel="nofollow">via Animation in Three.js using Tween.js with examples <i class="fa fa-external-link"></i></a>
 
@@ -19,6 +19,9 @@ Saw this article on medium and I remembered I need to write about animation.
 >It’s also good practice to never create new variables outside your init function (or however you initialise your project). Try to create all your target positions/rotations/scales at the start and reference them later on.
 >Another thing aim for is to not modify your variables outside the render loop. For example, if the user triggers an event to rotate a mesh 90 degrees, set a variable which the mesh will update to within the render loop. An alternative solution could be to use the below animation function with a duration of 0 seconds.
 >To use the examples below you’ll need to include and setup Tween.js in your project which you can find here: https://github.com/tweenjs/tween.js/
+
+
+The article actually sucks though (sorry, man). Let me show you how simple it to do awesome animations.
 
 Tween.js really is a great tool to use with three.js. It keeps an array of the tweens that are running and discards them when they are complete.
 
