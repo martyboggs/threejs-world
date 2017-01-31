@@ -27,7 +27,7 @@ Games take forever to make. There are so many things to keep in balance: aesthet
 
 ## Lean Workflow
 
-To prevent myself from starting this project and getting lost before reaching an endpoint, I'm going to use principles from the Lean workflow system. To do this, I'll keep the game as simple as possible focusing only on the most necessary elements. Once I have a beginning, middle and end, I'll ITERATE new versions of the game and add the harder stuff like physics and sound with each new iteration. First, I'll add player movement and controls.
+To prevent myself from starting this project and getting lost before reaching the end, I used principles from the Lean workflow system. To do this, I kept the game as simple as possible focusing only on the most necessary elements. Once I had a beginning, middle and end, I ITERATED new versions of the game adding the harder stuff like physics and sound with each new iteration. First, I added player movement and controls.
 
 ## Pointer Lock API
 
@@ -35,7 +35,7 @@ Don't you hate it when you're playing a web game and you accidently click outsid
 
 ## Controls
 
-If you dig through the threeJS examples on their site, you will find lots of references to little plugins to use in your projects. I found one by mrdoob called <a href="https://threejs.org/examples/js/controls/PointerLockControls.js" target="_blank" rel="nofollow">PointerLockControls.js</a> that worked nicely with my game. It doesn't use the Pointer Lock API described above, but the controls are usually associated with it. A better name may have been "First Person Controls."
+If you dig through the threeJS examples on their site, you will find lots of references to little plugins to use in your projects. I found one by mrdoob called <a href="https://threejs.org/examples/js/controls/PointerLockControls.js" target="_blank" rel="nofollow">PointerLockControls.js</a> that worked nicely with my game. It's a little confusing because the PointerLockControls.js script doesn't include the Pointer Lock API. You'll have to include it yourself in a click event for example.
 
 ```javascript
 var controls = new THREE.PointerLockControls(camera);
@@ -43,7 +43,7 @@ var player = controls.getObject();
 scene.add(player);
 ```
 
-That covers mouse control. Now, I need keyboard controls. For keyboard, I'll use a plugin by Jerome Etienne <a href="https://github.com/jeromeetienne/threex.keyboardstate" target="_blank" rel="nofollow">THREEx.KeyboardState.js</a>
+That covers mouse control. Now, I need keyboard controls. For keyboard, I used a plugin by Jerome Etienne <a href="https://github.com/jeromeetienne/threex.keyboardstate" target="_blank" rel="nofollow">THREEx.KeyboardState.js</a>
 
 ```javascript
 var keyboard = new THREEx.KeyboardState();
@@ -54,13 +54,13 @@ var keyboard = new THREEx.KeyboardState();
 At IndieCade last year, I heard a talk by <a href="http://www.galaxykate.com/" target="_blank" rel="nofollow">Galaxy Kate</a> about procedural programming and procedurally generated games. She emphasized using data structures instead of "if statements." The `platforms` array is a good example of this.
 
 ```javascript
-	// set up objects
-	var platforms = [
-		{x: 5.5,  y: 0,   z: 1,    rope: 0,   width: 5,  depth: 10}, // just above ground level
-		{x: 8.5,  y: 10,  z: -8.5, rope: 0,   width: 4,  depth: 3}, // isolated
-		{x: 5,    y: 19,  z: 8,    rope: 15,  width: 4,  depth: 4},
-		// ...
-	];
+// set up objects
+var platforms = [
+	{x: 5.5,  y: 0,   z: 1,    rope: 0,   width: 5,  depth: 10}, // just above ground level
+	{x: 8.5,  y: 10,  z: -8.5, rope: 0,   width: 4,  depth: 3}, // isolated
+	{x: 5,    y: 19,  z: 8,    rope: 15,  width: 4,  depth: 4},
+	// ...
+];
 ```
 
 ## Materials
