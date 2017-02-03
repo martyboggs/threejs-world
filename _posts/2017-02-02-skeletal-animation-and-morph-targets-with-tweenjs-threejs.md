@@ -70,7 +70,7 @@ As you can see it's very easy to **chain your options** and create a tween in a 
 
 **Delay** your tween or **repeat** it. There are also callbacks: **onUpdate** and **onComplete** at your disposal.
 
-**Relative tweens** can be performed by making the destination a string with units. '+10' will move 10 pixels from its current position and stop. Repeats will start from this position and move ANOTHER 10 pixels. **Gravy!**
+**Relative tweens** can be performed by making the destination a string with + or -. '+10' will move the object 10 pixels from its current position and stop. Repeats will start from this position and move ANOTHER 10 pixels. **Gravy!**
 
 To do more than one tween, use the onComplete to start a new tween or use an **array in the destination object**. How Tween.js moves between these tweens can be customized too.
 

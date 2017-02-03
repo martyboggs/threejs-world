@@ -30,18 +30,22 @@
 	scene.add(group1);
 
 	function startAnimation() {
-		new TWEEN.Tween(group1.position).to({x: 1}, 1000).easing(TWEEN.Easing.Elastic.Out).delay(3000).onComplete(function () {
-			new TWEEN.Tween(mesh1.rotation).to({y: '+3.141'}, 500).easing(TWEEN.Easing.Quintic.InOut).start();
-			new TWEEN.Tween(mesh2.rotation).to({x: '+3.141'}, 500).delay(250).easing(TWEEN.Easing.Quintic.InOut).start();
-			new TWEEN.Tween(mesh3.rotation).to({z: '+3.141'}, 500).delay(500).easing(TWEEN.Easing.Quintic.InOut).start();
-			new TWEEN.Tween(group1.position).to({x: '-2'}, 1000).easing(TWEEN.Easing.Bounce.Out).onComplete(function () {
-				new TWEEN.Tween(group1.rotation).to({z: '3.141'}, 1000).easing(TWEEN.Easing.Quintic.InOut).onComplete(function () {
-					new TWEEN.Tween(mesh1.rotation).to({z: '3.141'}, 1000).easing(TWEEN.Easing.Quintic.InOut).start();
-					new TWEEN.Tween(group1.position).to({x: '+2'}, 1000).easing(TWEEN.Easing.Quintic.InOut).onComplete(function () {
+		new TWEEN.Tween(group1.position).to({x: '+0.5'}, 1000).easing(TWEEN.Easing.Elastic.Out).delay(3000).onComplete(function () {
+			new TWEEN.Tween(mesh3.position).to({x: '-1'}, 250).easing(TWEEN.Easing.Quintic.InOut).start();
+			new TWEEN.Tween(mesh1.position).to({x: '-1'}, 250).delay(250).easing(TWEEN.Easing.Quintic.InOut).start();
+			new TWEEN.Tween(mesh2.position).to({x: '-1'}, 250).delay(500).easing(TWEEN.Easing.Quintic.InOut).start();
+			new TWEEN.Tween(group1.position).to({}, 700).easing(TWEEN.Easing.Bounce.Out).onComplete(function () {
+				new TWEEN.Tween(group1.rotation).to({z: '+3.141'}, 1000).easing(TWEEN.Easing.Quintic.InOut).onComplete(function () {
+					new TWEEN.Tween(mesh1.rotation).to({z: '+3.141'}, 1000).easing(TWEEN.Easing.Quintic.InOut).start();
+					new TWEEN.Tween(group1.position).to({x: '-1', y: '-0.5'}, 1000).easing(TWEEN.Easing.Quintic.InOut).onComplete(function () {
 						new TWEEN.Tween(group1.rotation).to({y: '+6.282'}, 1000).easing(TWEEN.Easing.Quintic.InOut).onComplete(function () {
-							new TWEEN.Tween(group1.position).to({x: '-2'}, 1000).easing(TWEEN.Easing.Quintic.InOut).onComplete(function () {
-								new TWEEN.Tween(group1.position).to({x: '+2'}, 1000).easing(TWEEN.Easing.Quintic.InOut).onComplete(function () {
-									new TWEEN.Tween(group1.rotation).to({z: '-3.141'}, 1000).easing(TWEEN.Easing.Bounce.Out).start();
+							new TWEEN.Tween(mesh2.position).to({x: '+1'}, 250).easing(TWEEN.Easing.Quintic.InOut).start();
+							new TWEEN.Tween(mesh1.position).to({x: '+1'}, 250).delay(250).easing(TWEEN.Easing.Quintic.InOut).start();
+							new TWEEN.Tween(mesh3.position).to({x: '+1'}, 250).delay(500).easing(TWEEN.Easing.Quintic.InOut).start();
+							new TWEEN.Tween(group1.position).to({y: '+0.5'}, 1000).easing(TWEEN.Easing.Quintic.InOut).onComplete(function () {
+								new TWEEN.Tween(group1.position).to({x: 0}, 1000).easing(TWEEN.Easing.Quintic.InOut).onComplete(function () {
+									new TWEEN.Tween(group1.rotation).to({z: '-3.141'}, 1000).easing(TWEEN.Easing.Sinusoidal.Out).start();
+									new TWEEN.Tween(group1.position).to({z: [1, 0]}, 1000).easing(TWEEN.Easing.Sinusoidal.Out).start();
 								}).start();
 							}).start();
 						}).start();
