@@ -16,12 +16,12 @@ can perform calculations in two dimensions, but because these calculations can b
 
 Use Blender since it supports inverse kinematics in three dimensions, and create animations before exporting to three.js. By doing IK in Blender, you are effectively **baking the inverse kinematics** into the animations to be used later. You won't have the flexibility of dynamic IK, but your animations will be easier to make and look more natural.
 
-<img src="{{site.url}}/images/ik1.jpg">
+<img src="{{site.url}}/images/ik1.jpg" alt="inverse kinematics in three.js">
 
 Until someone builds an IK library for the 3 dimensions in the browser, I'm afraid we'll just have to wait. One good thing about using baked animations though is being able to use three.js's **animation mixer** class which allows you to fade between animations like a DJ fades between tracks.
 
 <a href="https://threejs.org/examples/?q=morph#webgl_animation_skinning_morph" rel="nofollow" target="_blank">Here's an example of a model with IK animations and the mixer class. <i class="fa fa-external-link"></i></a>
 
-<img src="{{site.url}}/images/ik2.jpg">
+<img src="{{site.url}}/images/ik2.jpg" alt="inverse kinematics in three.js">
 
 <!-- To get started, we'll use this <a href="{{site.url}}/threejs-world-blank-template.html" download="threejs-world-{{page.example}}.html">basic template <i class="fa fa-download"></i></a> that I use in a lot of posts. Open the template to follow along. -->
