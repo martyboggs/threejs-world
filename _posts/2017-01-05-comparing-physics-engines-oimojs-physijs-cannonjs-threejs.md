@@ -1,10 +1,10 @@
 ---
 layout: post
-title: Physics in ThreeJS with OimoJS
+title: Comparing Physics Engines with Oimo.js, Physi.js, Cannon.js and Three.js
 description: I find Oimo more accurate than cannon, but each has its downsides. For example, Oimo only supports cubes and spheres whereas cannon supports other types of meshes as well.
 example: ex6
 author: Marty Boggs
-category: Tutorials
+category: Comparisons
 published: false
 tags:
 -  featured

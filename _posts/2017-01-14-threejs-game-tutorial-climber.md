@@ -10,6 +10,7 @@ tags:
 -  physics
 -  lighting
 -  collisions
+-  advanced
 -  euler
 -  featured
 ---

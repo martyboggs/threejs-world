@@ -7,6 +7,7 @@ author: Marty Boggs
 category: Tutorials
 tags:
 -  animation
+-  advanced
 ---
 
 If you're reading this article, you're probably interested in animating a mesh by using either morph targets or skeletal animations. These kinds of animations move the vertices of a model. I'll also go over how to use Tween.js which is useful for animating a single object such as a model in a scene.
