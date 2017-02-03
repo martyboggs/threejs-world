@@ -31,7 +31,7 @@ layout: default
 			{{content}}
 		</div>
 		{% if page.guest == nil %}
-			{% if page.example != 'ex7' %}
+			{% if page.example != 'ex7' and page.example != 'ex4' %}
 				<p><a target="_blank" href="{{site.url}}/js/examples/{{page.example}}.js"><i class="fa fa-file"></i>Get the code from this article <i class="fa fa-external-link"></i></a></p>
 			{% endif %}
 			<p class="author">This article was brought to you by {{page.author}}. To find out about new articles, subscribe below.</p>
