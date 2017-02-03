@@ -24,4 +24,4 @@ Until someone builds an IK library for the 3 dimensions in the browser, I'm afra
 
 <img src="{{site.url}}/images/ik2.jpg" alt="inverse kinematics in three.js">
 
-<!-- To get started, we'll use this <a href="{{site.url}}/threejs-world-blank-template.html" download="threejs-world-{{page.example}}.html">basic template <i class="fa fa-download"></i></a> that I use in a lot of posts. Open the template to follow along. -->
+Update: Here's a promising library from github user glumb. <a href="https://github.com/glumb/kinematics" target="_blank" rel="nofollow">https://github.com/glumb/kinematics <i class="fa fa-external-link"></i></a>
