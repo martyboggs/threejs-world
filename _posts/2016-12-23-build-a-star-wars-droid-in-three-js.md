@@ -6,7 +6,6 @@ example: ex2
 author: Marty Boggs
 category: Tutorials
 tags:
--  beginner
 -  featured
 ---
 

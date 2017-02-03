@@ -6,7 +6,6 @@ example: ex9
 author: Marty Boggs
 category: Tutorials
 tags:
--  beginner
 -  animation
 ---
 
@@ -37,6 +36,8 @@ If a model has a skeleton, we call it a "rigged" model. A powerful feature of ma
 Tween.js really is a great tool to use with three.js. It keeps an array of the tweens that are running and discards them when they are complete.
 
 Very complex animations are possible thanks to the implementation. Tween any property: position, rotation scale, objects, cameras, lights... Choose from many easing functions including your favorite wacky ones. I'm looking at you, bounce!
+
+<a href="https://tweenjs.github.io/tween.js/examples/03_graphs.html" target="_blank" rel="nofollow">More easing functions</a>
 
 **Making a Tween**
 

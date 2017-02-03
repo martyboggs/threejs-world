@@ -6,7 +6,7 @@ example: ex6
 author: Marty Boggs
 category: Tutorials
 tags:
--  beginner
+-  materials
 ---
 
 Let's import this sweet [bowling pin](/models/bowling-pin) into three.js! I created it

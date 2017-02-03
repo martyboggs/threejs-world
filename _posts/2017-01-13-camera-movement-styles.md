@@ -7,7 +7,6 @@ author: Marty Boggs
 category: Tutorials
 published: false
 tags:
--  beginner
 -  animation
 ---
 

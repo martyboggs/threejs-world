@@ -51,9 +51,9 @@ example: index
 	</section>
 
 	<section class="s3 padding">
-		<h2><i class="fa fa-tag"></i>beginner</h2>
+		<h2><i class="fa fa-tag"></i>advanced</h2>
 		<div class="boxes">
-			{% for post in site.tags.beginner limit: 6 %}
+			{% for post in site.tags.advanced limit: 6 %}
 				{% include box.html %}
 			{% endfor %}
 		</div>
