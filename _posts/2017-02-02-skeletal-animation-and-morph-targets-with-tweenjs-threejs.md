@@ -24,11 +24,11 @@ If you're reading this article, you're probably interested in animating a mesh b
 
 ## Morph Targets
 
-Morph target animations were around before skeletal animations. They basically just describe positions of vertices by keyframes and let the rendering software tween between them.
+Morph target animations are more simple than skeletal animations. They basically just describe positions of vertices for each keyframe and let the rendering software tween between them.
 
 ## Skeletal Animation
 
-Skeletal animation is great for exactly what you would think: objects with skeletons. That includes people walking, cats meowing, robots working, snakes a-slithering, octopi a-swimming, tails a-wagging and anything else your twisted mind can dream up.
+Skeletal animation is great for exactly what you would think: objects with skeletons. That includes people walking, cats meowing, robots working, snakes a-slithering, octopi a-swimming, tails a-wagging and anything else with a skeleton-like structure.
 
 If a model has a skeleton, we call it a "rigged" model. A powerful feature of many modeling programs called inverse kinematics can be used with rigged models that calculates realistic movement of a chain of bones. You can read about <a href="{{site.url}}/tutorials/inverse-kinematics-in-three-js">inverse kinematics</a> for more on that.
 
@@ -74,4 +74,34 @@ As you can see it's very easy to **chain your options** and create a tween in a 
 
 To do more than one tween, use the onComplete to start a new tween or use an **array in the destination object**. How Tween.js moves between these tweens can be customized too.
 
-Now get out there and move something, show me whatcha made! Cheese! I mean, Cheers!
+One limitation of Tween.js is that sequences of animation can send your code to callback hell. See the pyramid shape the code starts to make? If this is a problem, you should try using Greensock's <a href="https://greensock.com/tweenmax" target="_blank" rel="nofollow">TweenMax<i class="fa fa-external-link"></i></a> instead.
+
+```javascript
+function startAnimation() {
+	new TWEEN.Tween(mesh1.position).to({x: [-0.5, -2]}, 1000).easing(TWEEN.Easing.Quadratic.InOut).delay(3000).start();
+	new TWEEN.Tween(mesh2.position).to({x: [0.5, -1]}, 1000).easing(TWEEN.Easing.Quadratic.InOut).delay(3250).start();
+	new TWEEN.Tween(mesh3.position).to({x: [1.5, 0]}, 1000).easing(TWEEN.Easing.Quadratic.InOut).delay(3500).start();
+	new TWEEN.Tween(mesh3.position).to({}, 1000).easing(TWEEN.Easing.Quintic.InOut).delay(3500).onComplete(function () {
+		new TWEEN.Tween(mesh3.position).to({x: [-0, 1]}, 1000).easing(TWEEN.Easing.Elastic.Out).delay(250).start();
+		new TWEEN.Tween(mesh2.position).to({x: [-1, 0]}, 1000).easing(TWEEN.Easing.Elastic.InOut).delay(500).start();
+		new TWEEN.Tween(mesh1.position).to({x: [-2, -1]}, 1000).easing(TWEEN.Easing.Elastic.InOut).delay(750).start();
+		new TWEEN.Tween(group1.position).to({}, 1000).easing(TWEEN.Easing.Quintic.InOut).delay(750).onComplete(function () {
+			startAnimation();
+			new TWEEN.Tween(mesh3.position).to({y: '-1'}, 1000).easing(TWEEN.Easing.Bounce.Out).start();
+			new TWEEN.Tween(mesh2.position).to({y: '-1'}, 1000).easing(TWEEN.Easing.Bounce.Out).start();
+			new TWEEN.Tween(mesh1.position).to({y: '-1'}, 1000).easing(TWEEN.Easing.Bounce.Out).start();
+			new TWEEN.Tween(group1.position).to({}, 1000).easing(TWEEN.Easing.Quintic.InOut).onComplete(function () {
+				new TWEEN.Tween(mesh3.position).to({y: '+1'}, 2000).easing(TWEEN.Easing.Sinusoidal.Out).start();
+				new TWEEN.Tween(mesh2.position).to({y: '+1'}, 2000).easing(TWEEN.Easing.Sinusoidal.Out).start();
+				new TWEEN.Tween(mesh1.position).to({y: '+1'}, 2000).easing(TWEEN.Easing.Sinusoidal.Out).start();
+				new TWEEN.Tween(group1.rotation).to({z: '-6.282'}, 2500).easing(TWEEN.Easing.Sinusoidal.InOut).start();
+				new TWEEN.Tween(group1.rotation).to({x: '-6.282'}, 1200).easing(TWEEN.Easing.Linear.None).onComplete(function () {
+					new TWEEN.Tween(group1.position).to({z: '1.5'}, 700).easing(TWEEN.Easing.Quadratic.Out).onComplete(function () {
+						new TWEEN.Tween(group1.position).to({z: '-1.5'}, 700).easing(TWEEN.Easing.Quadratic.In).start();
+					}).start();
+				}).start();
+			}).start();
+		}).start();
+	}).start();
+}
+```

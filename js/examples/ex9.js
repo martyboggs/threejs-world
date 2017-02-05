@@ -1,13 +1,14 @@
 (function () {
 	var scene = new THREE.Scene();
-
 	var camera = new THREE.PerspectiveCamera(
 		75, 2, 0.1, 1000
 	);
 
 	var renderer = new THREE.WebGLRenderer({
-		alpha: true
+		// alpha: true
+		antialias: true
 	});
+	renderer.setClearColor(0xffffff, 1);
 	renderer.setSize(660, 330);
 	document.getElementById('canvases').appendChild(renderer.domElement);
 
@@ -44,9 +45,9 @@
 		new TWEEN.Tween(mesh2.position).to({x: [0.5, -1]}, 1000).easing(TWEEN.Easing.Quadratic.InOut).delay(3250).start();
 		new TWEEN.Tween(mesh3.position).to({x: [1.5, 0]}, 1000).easing(TWEEN.Easing.Quadratic.InOut).delay(3500).start();
 		new TWEEN.Tween(mesh3.position).to({}, 1000).easing(TWEEN.Easing.Quintic.InOut).delay(3500).onComplete(function () {
-			new TWEEN.Tween(mesh3.position).to({x: [-0.2, 1]}, 1000).easing(TWEEN.Easing.Quadratic.InOut).delay(250).start();
-			new TWEEN.Tween(mesh2.position).to({x: [-1.2, 0]}, 1000).easing(TWEEN.Easing.Quadratic.InOut).delay(500).start();
-			new TWEEN.Tween(mesh1.position).to({x: [-2.2, -1]}, 1000).easing(TWEEN.Easing.Quadratic.InOut).delay(750).start();
+			new TWEEN.Tween(mesh3.position).to({x: [-0, 1]}, 1000).easing(TWEEN.Easing.Elastic.Out).delay(250).start();
+			new TWEEN.Tween(mesh2.position).to({x: [-1, 0]}, 1000).easing(TWEEN.Easing.Elastic.InOut).delay(500).start();
+			new TWEEN.Tween(mesh1.position).to({x: [-2, -1]}, 1000).easing(TWEEN.Easing.Elastic.InOut).delay(750).start();
 			new TWEEN.Tween(group1.position).to({}, 1000).easing(TWEEN.Easing.Quintic.InOut).delay(750).onComplete(function () {
 				startAnimation();
 				new TWEEN.Tween(mesh3.position).to({y: '-1'}, 1000).easing(TWEEN.Easing.Bounce.Out).start();
@@ -66,31 +67,14 @@
 			}).start();
 		}).start();
 	}
-	// todo:
-	/*
-in a sine curve with amplitude growing
-spinning along y. outside fly out
-skull back along z
-
-skull has constant hovering motion
-left
-right
-left and square is following
-right and square and sphere following
-left and skull chases others
-skull lunges at camera
-
-
-	*/
-
 	camera.position.set(0, 0, 2);
 
 	var startedAnimation = false;
 
 	function render() {
-console.log(group1.position);
 		requestAnimationFrame(render);
 		renderer.render(scene, camera);
+
 		TWEEN.update();
 	}
 	render();
