@@ -1,10 +1,11 @@
 ---
 ---
 <!doctype html>
-<html amp lang="en" xmlns= "http://www.w3.org/1999/xhtml" class="wf-loading">
+<html {% if page.amp %}amp {% endif %}lang="en" xmlns= "http://www.w3.org/1999/xhtml" class="wf-loading">
+
 <head>
 	<meta charset='utf-8'>
-	<!--<script async src="https://cdn.ampproject.org/v0.js"></script>-->
+	{% if page.amp %}<script async src="https://cdn.ampproject.org/v0.js"></script>{% endif %}
 	<!--[if lt IE 9]>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
 	<![endif]-->
@@ -12,19 +13,7 @@
 	<meta http-equiv="Content-Language" content="en">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta id="viewport" name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,user-scalable=no">
-	<!--<meta name="apple-mobile-web-app-capable" content="yes">-->
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-	<!--<meta name="mobile-web-app-capable" content="yes">-->
-	<link rel="icon" sizes="192x192" href="{{site.url}}/images/icons/launcher-icon-4x.png">
-	<link rel="stylesheet" type="text/css" href="{{site.url}}/stylesheets/pygment_trac.css" media="screen">
-	<link rel="stylesheet" type="text/css" href="{{site.url}}/stylesheets/print.css" media="print">
-	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-	<link rel="stylesheet" type="text/css" href="{{site.url}}/stylesheets/monokai.css">
-	<link rel="stylesheet" type="text/css" href="{{site.url}}/stylesheets/dat.gui.css">
-	<link rel="stylesheet" type="text/css" href="{{site.url}}/stylesheets/slick.css">
-	<link rel="stylesheet" type="text/css" href="{{site.url}}/stylesheets/slick-theme.css">
-	<link rel="stylesheet" type="text/css" href="{{site.url}}/stylesheets/stylesheet.css">
-	<link rel="stylesheet" type="text/css" href="{{site.url}}/stylesheets/custom.css">
 	<link rel="canonical" href="{{site.url}}{{page.url}}" />
 	<meta itemprop="name" content="{{site.title}}">
 	<meta property="og:title" content="{{site.title}}">
@@ -32,6 +21,21 @@
 	<meta property="og:site_name" content="{{site.title}}">
 	<meta name="description" content="{{page.description}}">
 	<meta itemprop="description" content="{{site.description}}">
+	<link rel="icon" sizes="192x192" href="{{site.url}}/images/icons/launcher-icon-4x.png">
+	{% if !page.amp %}
+		<link rel="stylesheet" type="text/css" href="{{site.url}}/stylesheets/pygment_trac.css" media="screen">
+		<link rel="stylesheet" type="text/css" href="{{site.url}}/stylesheets/print.css" media="print">
+		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" type="text/css" href="{{site.url}}/stylesheets/monokai.css">
+		<link rel="stylesheet" type="text/css" href="{{site.url}}/stylesheets/dat.gui.css">
+		<link rel="stylesheet" type="text/css" href="{{site.url}}/stylesheets/slick.css">
+		<link rel="stylesheet" type="text/css" href="{{site.url}}/stylesheets/slick-theme.css">
+		<link rel="stylesheet" type="text/css" href="{{site.url}}/stylesheets/stylesheet.css">
+		<link rel="stylesheet" type="text/css" href="{{site.url}}/stylesheets/custom.css">
+	{% else %}
+		{% include amp-style.html %}
+		<style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
+	{% endif %}
 	<script type="application/ld+json">
 	{"@context": "http://schema.org",
 	"@type": "WebPage",

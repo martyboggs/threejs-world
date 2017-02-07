@@ -8,7 +8,7 @@
 		// alpha: true
 		antialias: true
 	});
-	renderer.setClearColor(0xffffff, 1);
+	renderer.setClearColor(0x691919, 1);
 	renderer.setSize(660, 330);
 	document.getElementById('canvases').appendChild(renderer.domElement);
 
