@@ -21,6 +21,13 @@ setInterval(function () {
 	$('#canvases canvas').height(width / 2);
 }, 100);
 
+setTimeout(function () {
+	var html = $('html');
+	if (html.hasClass('wf-loading')) {
+		html.removeClass('wf-loading');
+	}
+}, 3000);
+
 $(function () {
 	$('.boxes').each(function () {
 		var breakpoints = [1324, 1124, 700, 480];
