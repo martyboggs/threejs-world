@@ -8,7 +8,7 @@ amp: true
 <div class="home" id="content-wrapper">
 	<section class="s1">
 		<div class="padding flex-business">
-			<div id="canvases"></div>
+			<!--<div id="canvases"></div>
 			{% for file in site.static_files %}
 				{% if
 				file.path == '/js/examples/ex6.js' or
@@ -18,7 +18,7 @@ amp: true
 				file.path == '/js/examples/ex5.js'  %}
 					<script src="{{file.path}}"></script>
 				{% endif %}
-			{% endfor %}
+			{% endfor %}-->
 		</div>
 	</section>
 
@@ -31,7 +31,7 @@ amp: true
 	<section class="s2 padding">
 		<h2>Featured</h2>
 		<div class="boxes">
-			{% for post in site.tags.featured limit: 6 %}
+			{% for post in site.tags.featured limit: 5 %}
 				{% include box.html %}
 			{% endfor %}
 		</div>
@@ -40,7 +40,7 @@ amp: true
 	<section class="s3 padding">
 		<h2>#advanced</h2>
 		<div class="boxes">
-			{% for post in site.tags.advanced limit: 6 %}
+			{% for post in site.tags.advanced limit: 5 %}
 				{% include box.html %}
 			{% endfor %}
 		</div>
@@ -49,7 +49,7 @@ amp: true
 	<section class="s4 padding">
 		<h2>Tutorials</h2>
 		<div class="boxes">
-			{% for post in site.categories.Tutorials limit: 6 %}
+			{% for post in site.categories.Tutorials limit: 5 %}
 				{% include box.html %}
 			{% endfor %}
 		</div>

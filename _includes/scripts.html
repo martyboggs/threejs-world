@@ -1,37 +1,83 @@
-<script src="https://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js"></script>
-<script src="https://www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
-<script>
-// Initialize Firebase
-var config = {
-	apiKey: "AIzaSyCU9IsffFBD4QqmRQK8m8BHh3KI4jGp8og",
-	authDomain: "static-sites-9b2b4.firebaseapp.com",
-	databaseURL: "https://static-sites-9b2b4.firebaseio.com",
-	storageBucket: "static-sites-9b2b4.appspot.com",
-	messagingSenderId: "704885440130"
-};
-firebase.initializeApp(config);
-var database = firebase.database();
-</script>
-<script src="{{site.url}}/js/lib/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/{{site.three_version}}/three.js"></script>
-<script src="{{site.url}}/js/lib/slick.min.js"></script>
-<script id="dsq-count-scr" src="https://three-js-world.disqus.com/count.js"></script>
-<script src="{{site.url}}/js/lib/oimo.js"></script>
-<script src="{{site.url}}/js/lib/THREEx.KeyboardState.js"></script>
-<script src="{{site.url}}/js/lib/THREEx.FullScreen.js"></script>
-<script src="{{site.url}}/js/lib/dat.gui.js"></script>
-<script src="{{site.url}}/js/lib/stats.min.js"></script>
-<script src="{{site.url}}/js/lib/Tween.js"></script>
-<script src="{{site.url}}/js/lib/howler.core.js"></script>
+{% if page.amp == nil %}
+	<script src="https://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
+	<script>
+	// Initialize Firebase
+	var config = {
+		apiKey: "AIzaSyCU9IsffFBD4QqmRQK8m8BHh3KI4jGp8og",
+		authDomain: "static-sites-9b2b4.firebaseapp.com",
+		databaseURL: "https://static-sites-9b2b4.firebaseio.com",
+		storageBucket: "static-sites-9b2b4.appspot.com",
+		messagingSenderId: "704885440130"
+	};
+	firebase.initializeApp(config);
+	var database = firebase.database();
+	</script>
+	<script src="{{site.url}}/js/lib/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/{{site.three_version}}/three.js"></script>
+	<script src="{{site.url}}/js/lib/slick.min.js"></script>
+	<script id="dsq-count-scr" src="https://three-js-world.disqus.com/count.js"></script>
+	<script src="{{site.url}}/js/lib/oimo.js"></script>
+	<script src="{{site.url}}/js/lib/THREEx.KeyboardState.js"></script>
+	<script src="{{site.url}}/js/lib/THREEx.FullScreen.js"></script>
+	<script src="{{site.url}}/js/lib/dat.gui.js"></script>
+	<script src="{{site.url}}/js/lib/stats.min.js"></script>
+	<script src="{{site.url}}/js/lib/Tween.js"></script>
+	<script src="{{site.url}}/js/lib/howler.core.js"></script>
+	<script src="{{site.url}}/js/lib/adapter-latest.js"></script>
+	<script src="{{site.url}}/js/lib/js-aruco/svd.js"></script>
+	<script src="{{site.url}}/js/lib/js-aruco/posit1-patched.js"></script>
+	<script src="{{site.url}}/js/lib/js-aruco/cv.js"></script>
+	<script src="{{site.url}}/js/lib/js-aruco/aruco.js"></script>
+	<script src="{{site.url}}/js/lib/threex.jsarucomarker.js"></script>
+	<script src="{{site.url}}/js/lib/threex.webcamgrabbing.js"></script>
 
-<script src="{{site.url}}/js/lib/adapter-latest.js"></script>
-
-<script src="{{site.url}}/js/lib/js-aruco/svd.js"></script>
-<script src="{{site.url}}/js/lib/js-aruco/posit1-patched.js"></script>
-<script src="{{site.url}}/js/lib/js-aruco/cv.js"></script>
-<script src="{{site.url}}/js/lib/js-aruco/aruco.js"></script>
-<script src="{{site.url}}/js/lib/threex.jsarucomarker.js"></script>
-<script src="{{site.url}}/js/lib/threex.webcamgrabbing.js"></script>
-
-<script src="{{site.url}}/js/lib/visibility.js"></script>
-<script src="{{site.url}}/js/main.js"></script>
+	<script src="{{site.url}}/js/lib/visibility.js"></script>
+	<script src="{{site.url}}/js/main.js"></script>
+{% else %}
+	{% if site.github != nil %}
+		<amp-analytics type="googleanalytics">
+		<script type="application/json">
+		{
+			"vars": {
+				"account": "UA-52138306-3"
+			},
+			"triggers": {
+				"trackPageview": {
+				"on": "visible",
+				"request": "pageview"
+				}
+			}
+		}
+		</script>
+		</amp-analytics>
+	{% endif %}
+	<amp-font
+		layout="nodisplay"
+		font-family="Font does not exist"
+		timeout="3000"
+		on-error-remove-class="no-font-loading"
+		on-error-add-class="no-font-missing">
+	</amp-font>
+	<amp-font
+		layout="nodisplay"
+		font-family="Raleway"
+		timeout="3000"
+		on-error-remove-class="raleway-loading"
+		on-error-add-class="raleway-missing">
+	</amp-font>
+	<amp-font
+		layout="nodisplay"
+		font-family="Bree Serif"
+		timeout="3000"
+		on-error-remove-class="breeserif-loading"
+		on-error-add-class="breeserif-missing">
+	</amp-font>
+	<amp-font
+		layout="nodisplay"
+		font-family="Roboto"
+		timeout="3000"
+		on-error-remove-class="roboto-loading"
+		on-error-add-class="roboto-missing">
+	</amp-font>
+{% endif %}
