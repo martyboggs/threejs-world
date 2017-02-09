@@ -72,6 +72,233 @@
 .type-csharp .highlight .s { color: #A31515 }
 .type-csharp .highlight .sc { color: #A31515 }
 
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol, ul {
+  list-style: none;
+}
+blockquote, q {
+  quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+body {
+  font-size: 13px;
+  line-height: 1.5;
+  font-family: 'Helvetica Neue', Helvetica, Arial, serif;
+  color: #000;
+}
+
+a {
+  color: #d5000d;
+  /*font-weight: bold;*/
+}
+
+header {
+  padding-top: 35px;
+  padding-bottom: 10px;
+}
+
+header h1 {
+  font-weight: bold;
+  letter-spacing: -1px;
+  font-size: 48px;
+  color: #303030;
+  line-height: 1.2;
+}
+
+header h2 {
+  letter-spacing: -1px;
+  font-size: 24px;
+  color: #aaa;
+  font-weight: normal;
+  line-height: 1.3;
+}
+#downloads {
+  display: none;
+}
+#main_content {
+  padding-top: 20px;
+}
+
+code, pre {
+  font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal;
+  color: #222;
+  margin-bottom: 30px;
+  font-size: 12px;
+}
+
+code {
+  padding: 0 3px;
+}
+
+pre {
+  border: solid 1px #ddd;
+  padding: 20px;
+  overflow: auto;
+}
+pre code {
+  padding: 0;
+}
+
+ul, ol, dl {
+  margin-bottom: 20px;
+}
+
+
+/* COMMON STYLES */
+
+table {
+  width: 100%;
+  border: 1px solid #ebebeb;
+}
+
+th {
+  font-weight: 500;
+}
+
+td {
+  border: 1px solid #ebebeb;
+  text-align: center;
+  font-weight: 300;
+}
+
+form {
+  background: #f2f2f2;
+  padding: 20px;
+
+}
+
+
+/* GENERAL ELEMENT TYPE STYLES */
+
+h1 {
+  font-size: 2.8em;
+}
+
+h2 {
+  font-size: 22px;
+  font-weight: bold;
+  color: #303030;
+  margin-bottom: 8px;
+}
+
+h3 {
+  color: #d5000d;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+h4 {
+  font-size: 16px;
+  color: #303030;
+  font-weight: bold;
+}
+
+h5 {
+  font-size: 1em;
+  color: #303030;
+}
+
+h6 {
+  font-size: .8em;
+  color: #303030;
+}
+
+p {
+  font-weight: 300;
+  margin-bottom: 20px;
+}
+
+a {
+  text-decoration: none;
+}
+
+p a {
+  font-weight: 400;
+}
+
+blockquote {
+  font-size: 1.6em;
+  border-left: 10px solid #e9e9e9;
+  margin-bottom: 20px;
+  padding: 0 0 0 30px;
+}
+
+ul li {
+  list-style: disc inside;
+  padding-left: 20px;
+}
+
+ol li {
+  list-style: decimal inside;
+  padding-left: 3px;
+}
+
+dl dd {
+  font-style: italic;
+  font-weight: 100;
+}
+
+footer {
+  margin-top: 40px;
+  padding-top: 20px;
+  padding-bottom: 30px;
+  font-size: 13px;
+  color: #aaa;
+}
+
+footer a {
+  color: #666;
+}
+
+/* MISC */
+.clearfix:after {
+  clear: both;
+  content: '.';
+  display: block;
+  visibility: hidden;
+  height: 0;
+}
+
+.clearfix {display: inline-block;}
+* html .clearfix {height: 1%;}
+.clearfix {display: block;}
+
 
 .highlight { background: #272822; }
 .highlight code { background: #272822; }
@@ -657,6 +884,213 @@
 .slick-arrow.slick-hidden {
     display: none;
 }
+
+
+@charset 'UTF-8';
+/* Slider */
+.slick-loading .slick-list
+{
+    background: #fff url('./ajax-loader.gif') center center no-repeat;
+}
+
+/* Icons */
+@font-face
+{
+    font-family: 'slick';
+    font-weight: normal;
+    font-style: normal;
+
+    src: url('./fonts/slick.eot');
+    src: url('./fonts/slick.eot?#iefix') format('embedded-opentype'), url('./fonts/slick.woff') format('woff'), url('./fonts/slick.ttf') format('truetype'), url('./fonts/slick.svg#slick') format('svg');
+}
+/* Arrows */
+.slick-prev,
+.slick-next
+{
+    font-size: 0;
+    line-height: 0;
+
+    position: absolute;
+    top: 50%;
+
+    display: block;
+
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    -webkit-transform: translate(0, -50%);
+    -ms-transform: translate(0, -50%);
+    transform: translate(0, -50%);
+
+    cursor: pointer;
+
+    color: transparent;
+    border: none;
+    outline: none;
+    background: transparent;
+}
+.slick-prev:hover,
+.slick-prev:focus,
+.slick-next:hover,
+.slick-next:focus
+{
+    color: transparent;
+    outline: none;
+    background: transparent;
+}
+.slick-prev:hover:before,
+.slick-prev:focus:before,
+.slick-next:hover:before,
+.slick-next:focus:before
+{
+    opacity: 1;
+}
+.slick-prev.slick-disabled:before,
+.slick-next.slick-disabled:before
+{
+    opacity: .25;
+}
+
+.slick-prev:before,
+.slick-next:before
+{
+    font-family: 'slick';
+    font-size: 20px;
+    line-height: 1;
+
+    opacity: .75;
+    color: white;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.slick-prev
+{
+    left: -25px;
+}
+[dir='rtl'] .slick-prev
+{
+    right: -25px;
+    left: auto;
+}
+.slick-prev:before
+{
+    content: '←';
+}
+[dir='rtl'] .slick-prev:before
+{
+    content: '→';
+}
+
+.slick-next
+{
+    right: -25px;
+}
+[dir='rtl'] .slick-next
+{
+    right: auto;
+    left: -25px;
+}
+.slick-next:before
+{
+    content: '→';
+}
+[dir='rtl'] .slick-next:before
+{
+    content: '←';
+}
+
+/* Dots */
+.slick-dotted.slick-slider
+{
+    margin-bottom: 30px;
+}
+
+.slick-dots
+{
+    position: absolute;
+    bottom: -25px;
+
+    display: block;
+
+    width: 100%;
+    padding: 0;
+    margin: 0;
+
+    list-style: none;
+
+    text-align: center;
+}
+.slick-dots li
+{
+    position: relative;
+
+    display: inline-block;
+
+    width: 20px;
+    height: 20px;
+    margin: 0 5px;
+    padding: 0;
+
+    cursor: pointer;
+}
+.slick-dots li button
+{
+    font-size: 0;
+    line-height: 0;
+
+    display: block;
+
+    width: 20px;
+    height: 20px;
+    padding: 5px;
+
+    cursor: pointer;
+
+    color: transparent;
+    border: 0;
+    outline: none;
+    background: transparent;
+}
+.slick-dots li button:hover,
+.slick-dots li button:focus
+{
+    outline: none;
+}
+.slick-dots li button:hover:before,
+.slick-dots li button:focus:before
+{
+    opacity: 1;
+}
+.slick-dots li button:before
+{
+    font-family: 'slick';
+    font-size: 6px;
+    line-height: 20px;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 20px;
+    height: 20px;
+
+    content: '•';
+    text-align: center;
+
+    opacity: .25;
+    color: black;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.slick-dots li.slick-active button:before
+{
+    opacity: .75;
+    color: black;
+}
+
 
 
 /*! normalize.css v3.0.2 | MIT License | git.io/normalize */
