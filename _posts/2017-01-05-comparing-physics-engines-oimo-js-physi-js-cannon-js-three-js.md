@@ -1,18 +1,20 @@
 ---
 layout: post
-title: The Best Modeling Tool for ThreeJS
-description: Blender, 3ds Max, Maya, Lightwave, Modo
+title: Comparing Physics Engines with Oimo.js, Physi.js, Cannon.js and three.js
+description: I find Oimo more accurate than cannon, but each has its downsides. For example, Oimo only supports cubes and spheres whereas cannon supports other types of meshes as well.
 example: ex6
 author: Marty Boggs
-category: Tutorials
+category: Comparisons
 published: false
 tags:
 -  featured
 -  advanced
 ---
 
-https://manu.ninja/webgl-3d-model-viewer-using-three-js
-Blender, 3ds Max, Maya, Lightwave, Modo
+I find Oimo more accurate than cannon, but each has its downsides. For example, Oimo only supports cubes and spheres whereas cannon supports other types of meshes as well.
+
+Ok - Oimo seem to have a problem with taking the mass into account when applying a force
+
 
 <!--more--> [Free 3D Models page](/all/models).
 

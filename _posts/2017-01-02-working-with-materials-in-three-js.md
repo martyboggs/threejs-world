@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Working with Materials in ThreeJS
+title: Working with Materials in three.js
 description: Let's import this sweet bowling pin into three.js! I created it in Blender where I assigned two materials to the faces of the model-- a magenta material for the stripes and a white material for the rest.
 example: ex6
 author: Marty Boggs

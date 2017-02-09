@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Getting Started with ThreeJS
+title: Getting Started with three.js
 description: Using three.js is a great way to incorporate 3D graphics into your browser whether it's on a website, webapp, game or art project. It makes working with WebGL easy. In this guide, we'll create a scene with a spinning rectangular shape.
 example: ex1
 category: Tutorials

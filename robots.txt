@@ -1,5 +1,3 @@
 User-agent: *
 Disallow: /about
 Disallow: /threejs-world-blank-template.html
-
-Sitemap: http://www.threejsworld.com/sitemap.xml
