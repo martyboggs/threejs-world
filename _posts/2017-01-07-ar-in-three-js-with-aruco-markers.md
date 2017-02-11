@@ -11,17 +11,17 @@ tags:
 
 You'll need two devices or a printer to see this example. First, print out or load this image with a different device.<br>
 <!--more-->
-<a href="https://martyboggs.github.io/aruco-marker-example/images/aruco.jpg" target="_blank">Aruco marker <i class="fa fa-external-link"></i></a>
+<a href="https://martyboggs.github.io/aruco-marker-example/images/aruco.jpg" target="_blank">Aruco marker</a> <i class="fa fa-external-link"></i>
 
 Then, open the example and point your camera at the aruco marker.<br>
-<a href="https://martyboggs.github.io/aruco-marker-example" target="_blank">Aruco Marker Example with three.js <i class="fa fa-external-link"></i></a>
+<a href="https://martyboggs.github.io/aruco-marker-example" target="_blank">Aruco Marker Example with three.js</a> <i class="fa fa-external-link"></i>
 
 
 
 
 ## Let's See the Code
 
-Chrome requires websites to have an SSL certificate to display a video feed.
+Chrome requires websites to have an SSL certificate to display a video feed, but it will work on localhost as well.
 
 adapter.js a polyfill to make improve cross-browser compatibility.
 

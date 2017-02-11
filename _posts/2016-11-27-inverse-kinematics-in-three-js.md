@@ -20,8 +20,8 @@ Use Blender since it supports inverse kinematics in three dimensions, and create
 
 Until someone builds an IK library for the 3 dimensions in the browser, I'm afraid we'll just have to wait. One good thing about using baked animations though is being able to use three.js's **animation mixer** class which allows you to fade between animations like a DJ fades between tracks.
 
-<a href="https://threejs.org/examples/?q=morph#webgl_animation_skinning_morph" rel="nofollow" target="_blank">Here's an example of a model with IK animations and the mixer class. <i class="fa fa-external-link"></i></a>
+<a href="https://threejs.org/examples/?q=morph#webgl_animation_skinning_morph" rel="nofollow" target="_blank">Here's an example of a model with IK animations and the mixer class.</a> <i class="fa fa-external-link"></i>
 
 <img src="{{site.url}}/images/ik2.jpg" alt="inverse kinematics in three.js">
 
-Update: Here's a promising library from github user glumb. <a href="https://github.com/glumb/kinematics" target="_blank" rel="nofollow">https://github.com/glumb/kinematics <i class="fa fa-external-link"></i></a>
+Update: Here's a promising library from github user glumb. <a href="https://github.com/glumb/kinematics" target="_blank" rel="nofollow">https://github.com/glumb/kinematics</a> <i class="fa fa-external-link"></i>

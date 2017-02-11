@@ -14,7 +14,7 @@ Meet Hugbot. A robot designed for expressing affection. It can be yours for 9000
 <!--more-->
 downloading it from the [Free 3D Models](/models/hugbot) area and following this tutorial.
 
-<a href="https://threejs.org/examples/?q=morph#webgl_animation_skinning_morph" rel="nofollow" target="_blank">See this example from the docs of what can be achieved <i class="fa fa-external-link"></i></a>
+<a href="https://threejs.org/examples/?q=morph#webgl_animation_skinning_morph" rel="nofollow" target="_blank">See this example from the docs of what can be achieved</a> <i class="fa fa-external-link"></i>
 
 To get started, we'll use this <a href="{{site.url}}/threejs-world-blank-template.html" download="threejs-world-{{page.example}}.html">basic template <i class="fa fa-download"></i></a> that I use in a lot of posts. Open the template to follow along.
 

@@ -10,7 +10,7 @@ tags:
 ---
 This is a futuristic paperweight I designed in Blender, a 3D modeling tool. I did some modeling in<!--more--> college, but it didn't help with this kind of modeling :/ This model is available to download on the [Free 3D Models page](/all/models).
 
-To export your own models from Blender to JSON files, you'll need to install <a rel="nofollow" target="_blank" href="https://github.com/mrdoob/three.js/tree/master/utils/exporters/blender">the three.js blender exporter tool <i class="fa fa-external-link"></i></a>. Instructions can be found at the link and involve copying a folder to your Blender install and activating the addon in the program. Once you install the exporter, the export to three.js option will be available.
+To export your own models from Blender to JSON files, you'll need to install <a rel="nofollow" target="_blank" href="https://github.com/mrdoob/three.js/tree/master/utils/exporters/blender">the three.js blender exporter tool</a> <i class="fa fa-external-link"></i>. Instructions can be found at the link and involve copying a folder to your Blender install and activating the addon in the program. Once you install the exporter, the export to three.js option will be available.
 
 There are a few things you should know about exporting models using this exporter.
 

@@ -74,7 +74,7 @@ As you can see it's very easy to **chain your options** and create a tween in a 
 
 To do more than one tween, use the onComplete to start a new tween or use an **array in the destination object**. How Tween.js moves between these tweens can be customized too.
 
-One limitation of Tween.js is that sequences of animation can send your code to callback hell. See the pyramid shape the code starts to make? If this is a problem, you should try using Greensock's <a href="https://greensock.com/tweenmax" target="_blank" rel="nofollow">TweenMax <i class="fa fa-external-link"></i></a> instead.
+One limitation of Tween.js is that sequences of animation can send your code to callback hell. See the pyramid shape the code starts to make? If this is a problem, you should try using Greensock's <a href="https://greensock.com/tweenmax" target="_blank" rel="nofollow">TweenMax</a> <i class="fa fa-external-link"></i> instead.
 
 ```javascript
 new TWEEN.Tween(mesh1.position).to({x: [-0.5, -2]}, 1000).easing(TWEEN.Easing.Quadratic.InOut).delay(3000).start();
