@@ -26,6 +26,6 @@
  "dateCreated": "{{page.date | date: '%Y-%m-%d'}}",
  "dateModified": "{{page.date | date: '%Y-%m-%d'}}",
  "description": "Lots of three.js info",
- "articleBody": "{{content | strip_newlines | strip_html}}"
+ "articleBody": "{{content | strip_newlines | strip_html | remove: '"'}}"
  }
 </script>

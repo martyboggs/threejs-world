@@ -1,6 +1,9 @@
 competitor study
 google: three js tutorial (I'm nowhere to be found? why!?)
-
+does changing meta-description reset ranking?
+are ending names besides .com favored?
+is word count important?
+entire site's reputation seems to matter for individual links
                    words     backlinks    pictures ssl
 aerotwist,         1700      1.63k          0      y
 threejs.org        2000     30k             0      y
