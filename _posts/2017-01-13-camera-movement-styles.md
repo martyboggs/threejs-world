@@ -11,7 +11,7 @@ tags:
 ---
 
 There are tons of questions on Stack Overflow on this subject.
-
+<!--more-->
 javascript - How to rotate a 3D object on axis three.js?
 javascript - How can I rotate a mesh by 90 degrees in three.js
 Rotate a Mesh along x y z axis in Three.js

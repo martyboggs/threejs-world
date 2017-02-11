@@ -12,6 +12,7 @@ tags:
 -  featured
 ---
 Here are my suggested "rules" for how you deal with eularAngles in this situation:
+<!--more-->
 
 Never read eulerAngles. Consider them write-only.
 

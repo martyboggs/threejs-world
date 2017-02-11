@@ -10,7 +10,7 @@ tags:
 -  advanced
 ---
 
-If you're reading this article, you're probably interested in animating a mesh by using either morph targets or skeletal animations. These kinds of animations move the vertices of a model. I'll also go over how to use Tween.js which is useful for animating a single object such as a model in a scene.
+If you're reading this article, you're probably interested in animating a mesh by using either morph <!--more-->targets or skeletal animations. These kinds of animations move the vertices of a model. I'll also go over how to use Tween.js which is useful for animating a single object such as a model in a scene.
 
 >What's basically being discussed is **morph targets** vs **skeletal animation**.<br><br>
 >Key-framing is a completely different concept, which can be used with almost every form of animation, including both of the above (both of the above can also be used without key-framing)...<br><br>

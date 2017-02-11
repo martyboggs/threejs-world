@@ -19,6 +19,8 @@ tags:
 **WASD to move<br>**
 **Mouse to look around<br>**
 **E to jump or release rope**
+<!--more-->
+
 <div id="info"></div>
 To show how to put together ThreeJS design concepts into **a complete project**, I created a little game called Climber. Click in the box to activate the Pointer Lock API. Now the mouse cursor is hidden and the **mouse movement** controls the angle of the camera. Use the **WASD** keys to move the camera's position around.
 

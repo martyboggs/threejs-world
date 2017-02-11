@@ -10,8 +10,8 @@ tags:
 ---
 
 You'll need two devices or a printer to see this example. First, print out or load this image with a different device.<br>
-<a href="https://martyboggs.github.io/aruco-marker-example/images/aruco.jpg" target="_blank">Aruco marker <i class="fa fa-external-link"></i></a>
 <!--more-->
+<a href="https://martyboggs.github.io/aruco-marker-example/images/aruco.jpg" target="_blank">Aruco marker <i class="fa fa-external-link"></i></a>
 
 Then, open the example and point your camera at the aruco marker.<br>
 <a href="https://martyboggs.github.io/aruco-marker-example" target="_blank">Aruco Marker Example with three.js <i class="fa fa-external-link"></i></a>
