@@ -7,6 +7,8 @@ permalink: /:categories/:title
 excerpt_separator: <!--more-->
 exclude:
 -  notes.txt
+-  study.txt
+-  pablo.js
 collections:
   archive_category:
     permalink: /category/:name

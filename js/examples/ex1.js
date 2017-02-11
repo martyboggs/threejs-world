@@ -17,11 +17,11 @@
 	scene.add(directionalLight);
 	var geometry = new THREE.BoxGeometry(2.5, 1, 1);
 	var material = new THREE.MeshLambertMaterial({color: '#285cd0'});
-	var cube = new THREE.Mesh(geometry, material);
-	scene.add(cube);
+	var box = new THREE.Mesh(geometry, material);
+	scene.add(box);
 
 	function render() {
-		cube.rotation.y += 0.01;
+		box.rotation.y += 0.01;
 		requestAnimationFrame(render);
 		renderer.render(scene, camera);
 	}

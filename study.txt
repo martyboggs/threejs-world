@@ -1,0 +1,14 @@
+competitor study
+google: three js tutorial (I'm nowhere to be found? why!?)
+
+                   words     backlinks    pictures ssl
+aerotwist,         1700      1.63k          0      y
+threejs.org        2000     30k             0      y
+treehouse          3600      16k            1      n
+dinosaurscode.xyz  600        65            5      y ???
+tympanus.net       5000 (2parts) 148k       13     y
+learningthreejs    1300        10.3k        4      n
+johannes-raida.de   370        70           0      n  ???
+tutsplus           2300        78k          4      y
+tutorialzine       2300        47k         22      n
+stemkoksi          2400        779         90      y
