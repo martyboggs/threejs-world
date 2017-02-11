@@ -411,7 +411,7 @@ body {
 	line-height: 1.8;
 	font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, serif;
 	font-weight: 400;
-	color: #333;
+	color: #474747;
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
@@ -1033,7 +1033,7 @@ h1 {
 	letter-spacing: -1px;
 	margin-top: 0;
 	margin-bottom: 0;
-	color: #474747;
+	color: black;
 	text-indent: 6px;
 }
 
@@ -1044,7 +1044,7 @@ h2 {
 	font-weight: 200;
 	margin-top: 0;
 	margin-bottom: 0px;
-	color: #474747;
+	color: black;
 	text-indent: 4px;
 }
 
@@ -1054,7 +1054,7 @@ h3 {
 	font-weight: bold;
 	margin-top: 0;
 	margin-bottom: 8px;
-	color: #474747;
+	color: black;
 	text-indent: 3px;
 }
 
@@ -1063,7 +1063,7 @@ h4 {
 	font-size: 15px;
 	font-weight: bold;
 	margin-bottom: 8px;
-	color: #474747;
+	color: black;
 	text-indent: 3px;
 }
 
@@ -1072,7 +1072,7 @@ h5 {
 	font-size: 14px;
 	margin-top: 0;
 	margin-bottom: 8px;
-	color: #474747;
+	color: black;
 	text-indent: 3px;
 }
 
@@ -1080,7 +1080,7 @@ h6 {
 	font-family: 'Raleway', 'Helvetica Neue', Helvetica, Arial, serif;
 	font-size: .8em;
 	margin-bottom: 8px;
-	color: #474747;
+	color: black;
 	text-indent: 3px;
 }
 
