@@ -9,9 +9,7 @@ tags:
 -  materials
 ---
 
-Let's import this sweet [bowling pin](/models/bowling-pin) into three.js! I created it
-<!--more-->
-in Blender where I assigned two materials to the faces of the model: a magenta material for the stripes and a white material for the rest.
+Let's import this sweet [bowling pin](/models/bowling-pin) into three.js! I created it <!--more-->in Blender where I assigned two materials to the faces of the model: a magenta material for the stripes and a white material for the rest.
 
 In Blender, I chose Lambert materials and assigned diffuse colors. All this information is included in the JSON file as long as `Shading->Face Materials` is checked before you export.
 

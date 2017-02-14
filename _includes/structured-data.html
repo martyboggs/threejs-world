@@ -26,6 +26,7 @@
  "dateCreated": "{{page.date | date: '%Y-%m-%d'}}",
  "dateModified": "{{page.date | date: '%Y-%m-%d'}}",
  "description": "{{page.description}}",
- "articleBody": "{{content | strip_html | strip_newlines | remove: '"' | remove: '  ' | remove: '	'}}"
+ "articleBody": "{{content | strip_html | replace: '
+', ' ' | remove: '"' | remove: '  ' | remove: '	'}}"
  }
 </script>
