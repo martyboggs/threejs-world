@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Casting Shadows and Casting Light in Three.js
+title: Casting Shadows and Casting Light in three.js
 description: Casting shadows is a little tricky in WebGL because the rendering can become expensive. To cast shadows, you need to choose `DirectionalLight` or `SpotLight` and enable the renderer, light and objects.
 example: ex11
 author: Marty Boggs
