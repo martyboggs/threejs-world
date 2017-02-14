@@ -21,11 +21,11 @@
  "keywords": "{{page.tags | join: ' '}}",
  "wordcount": "{{content | number_of_words}}",
  "publisher": "{{site.title}}",
- "url": "{{site.url}}/{{page.url}}",
+ "url": "{{site.url}}{{page.url}}",
  "datePublished": "{{page.date | date: '%Y-%m-%d'}}",
  "dateCreated": "{{page.date | date: '%Y-%m-%d'}}",
  "dateModified": "{{page.date | date: '%Y-%m-%d'}}",
- "description": "Lots of three.js info",
- "articleBody": "{{content | strip_newlines | strip_html | remove: '"'}}"
+ "description": "{{page.description}}",
+ "articleBody": "{{content | strip_html | strip_newlines | remove: '"' | remove: '  ' | remove: '	'}}"
  }
 </script>
