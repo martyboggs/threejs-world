@@ -1,0 +1,32 @@
+.three-buttons {
+	position: absolute;
+	z-index: 20;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	padding: 20px;
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	justify-content: flex-end;
+}
+
+.three-button {
+	margin: 2px;
+	background: rgba(255, 255, 255, 0.5);
+	border: 1px solid black;
+	display: flex-inline;
+	padding: 0;
+	width: 50px;
+	height: 50px;
+	cursor: pointer;
+}
+
+.three-button-row {
+	text-align: center;
+}
+
+.three-button-wide {
+	width: 158px;
+}
