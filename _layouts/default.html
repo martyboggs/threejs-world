@@ -14,12 +14,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta id="viewport" name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,user-scalable=no">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-	{% if page.url == '/tutorials/getting-started-with-threejs' %}
-		<meta http-equiv="refresh" content="0; url=http://www.threejsworld.com/tutorials/getting-started-with-three-js">
-		<link rel="canonical" href="http://www.threejsworld.com/tutorials/getting-started-with-three-js" />
-	{% else %}
-		<link rel="canonical" href="{{site.url}}{{page.url}}" />
-	{% endif %}
+	<link rel="canonical" href="{{site.url}}{{page.url}}" />
 	<meta itemprop="name" content="{{site.title}}">
 	<meta property="og:title" content="{{site.title}}">
 	<meta property="og:url" content="{{site.url}}">

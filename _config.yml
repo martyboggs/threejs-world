@@ -5,7 +5,7 @@ timezone: America/Los_Angeles
 repository: martyboggs/threejs-world
 permalink: /:categories/:title
 excerpt_separator: <!--more-->
-incremental: true
+# incremental: true
 exclude:
 -  notes.txt
 -  study.txt
