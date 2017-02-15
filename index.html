@@ -7,8 +7,9 @@ amp: true
 ---
 <div class="home" id="content-wrapper">
 	<section class="s1">
-		<div class="padding flex-business">
-			<!--<div id="canvases"></div>
+		<div class="padding flex-business"></div>
+		<!--<div class="padding flex-business">
+			<div id="canvases"></div>
 			{% for file in site.static_files %}
 				{% if
 				file.path == '/js/examples/ex6.js' or
@@ -18,13 +19,15 @@ amp: true
 				file.path == '/js/examples/ex5.js'  %}
 					<script src="{{file.path}}"></script>
 				{% endif %}
-			{% endfor %}-->
-		</div>
+			{% endfor %}
+		</div>-->
 	</section>
 
 	<p class="flex-container bold-links m-top-40">Welcome to Three.js World - a site for web developers who want to learn how to use three.js, a JavaScript library that brings 3D animation to the web with HTML5 and WebGL technology.
 
-	<br><br>3D graphics can be obtained easily now that browsers and devices are so powerful, and with the growing popularity of virtual reality and VR headsets like Google Cardboard and the Oculus Rift, there are more opportunities to utilize 3D design. Learn how to integrate the web with 3d modeling software assets from Blender, 3D Studio Max or Maya.
+	<amp-img class="hero" src="images/hero.jpg" width="1367" height="578" alt="{{site.title}}" layout="responsive"></amp-img>
+
+	3D graphics can be obtained easily now that browsers and devices are so powerful, and with the growing popularity of virtual reality and VR headsets like Google Cardboard and the Oculus Rift, there are more opportunities to utilize 3D design. Learn how to integrate the web with 3d modeling software assets from Blender, 3D Studio Max or Maya.
 
 	<br><br>Try an <a href="{{site.url}}/tutorials/getting-started-with-three-js">easy example</a> if you're just getting started, or see how a <a href="{{site.url}}/threejs-game-tutorial-climber">complete project</a> comes together.</p>
 
