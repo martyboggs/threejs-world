@@ -7,12 +7,12 @@ function initScene() {
 	camera.rotation.y = Math.PI / 4;
 
 	var n = navigator.userAgent;
-	var isMobile, antialias = true;
+	var antialias = true;
 	if (n.match(/Android/i) || n.match(/webOS/i) || n.match(/iPhone/i) || n.match(/iPad/i) || n.match(/iPod/i) || n.match(/BlackBerry/i) || n.match(/Windows Phone/i)) { isMobile = true;  antialias = false; }
 	renderer = new THREE.WebGLRenderer({antialias: antialias, precision: 'mediump'});
 	renderer.setClearColor('white', 1);
-	renderer.setSize(window.innerWidth, window.innerHeight);
 	document.getElementById('canvases').appendChild(renderer.domElement);
+	onWindowResize();
 
 	var directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
 	directionalLight.position.set(2, 2, 2);
@@ -378,6 +378,7 @@ var geoBox = new THREE.BoxGeometry(1, 1, 1);
 var buffGeoBox = new THREE.BufferGeometry();
 buffGeoBox.fromGeometry(new THREE.BoxGeometry(1, 1, 1));
 var keyboard = new THREEx.KeyboardState();
+var isMobile;
 
 initScene();
 var fmb = new FlexMobileButtons({onclick: handleClick, offclick: handleUnclick});
@@ -389,7 +390,7 @@ fmb.newButton('DOWN');
 fmb.newButton('RIGHT');
 fmb.newRow();
 fmb.newButton('J', 'wide');
-fmb.init();
+if (isMobile) fmb.init();
 initBird();
 initTable();
 initPhysics();
@@ -424,10 +425,11 @@ function handleUnclick(value) {
 }
 
 function onWindowResize() {
-	console.log(renderer.domElement.style.width);
-	camera.aspect = window.innerWidth / window.innerHeight;
+	var w = parseInt(getComputedStyle(renderer.domElement).width);
+	var h = window.innerHeight;
+	camera.aspect = w / h;
 	camera.updateProjectionMatrix();
-	renderer.setSize( window.innerWidth, window.innerHeight );
+	renderer.setSize(w, h);
 }
 
 function placeTables(tables) {
