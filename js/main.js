@@ -16,11 +16,6 @@ WebFont.load({
 	}
 });
 
-setInterval(function () {
-	var width = $('#canvases canvas').first().width();
-	$('#canvases canvas').height(width / 2);
-}, 100);
-
 setTimeout(function () {
 	var html = $('html');
 	if (html.hasClass('wf-loading')) {
