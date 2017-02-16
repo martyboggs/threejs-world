@@ -20,6 +20,18 @@ function initScene() {
 	var ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 	scene.add(ambientLight);
 
+	if (!isMobile) {
+		directionalLight.castShadow = true;
+		var d = 300;
+		directionalLight.shadow.camera = new THREE.OrthographicCamera( -d, d, d, -d,  500, 1600 );
+		directionalLight.shadow.bias = 0.0001;
+		directionalLight.shadow.mapSize.width = directionalLight.shadow.mapSize.height = 1024;
+		scene.add(new THREE.CameraHelper(directionalLight.shadow.camera));
+		scene.add(directionalLight);
+		renderer.shadowMap.enabled = true;
+		renderer.shadowMap.type = THREE.PCFShadowMap;//THREE.BasicShadowMap;
+	}
+
 	window.addEventListener('resize', onWindowResize, false);
 
 	// axisHelper = new THREE.AxisHelper(40);
@@ -28,12 +40,15 @@ function initScene() {
 	scene.add(gridHelper);
 }
 
-function initButtons(cb1, cb2) {
-	var el = document.getElementById('three-buttons');
-	var container, containers = [];
+function FlexMobileButtons(args) {
+	var el;
+	this.args = args;
+	if (!this.args.element)
+		this.args.element = document.getElementById('three-buttons');
 
-	if (!el) {
-		el = document.createElement('div');
+	if (!this.args.element) {
+		this.args.element = document.createElement('div');
+		el = this.args.element;
 		el.className = el.id = 'three-buttons';
 		if (renderer) {
 			var r = renderer.domElement;
@@ -42,52 +57,47 @@ function initButtons(cb1, cb2) {
 			document.body.append(el);
 		}
 	}
-	container = el;
 
-	newRow();
-	newButton('UP');
-	newRow();
-	newButton('LEFT');
-	newButton('DOWN');
-	newButton('RIGHT');
-	newRow();
-	newButton('J', 'wide');
+	this.containers = [];
+	this.container = this.args.element;
+	this.clicking = {};
+	var self = this;
 
-	for (var i = 0; i < containers.length; i += 1) {
-		el.appendChild(containers[i]);
-	}
-
-	el.addEventListener('mousedown', function (e) {
+	this.args.element.addEventListener('mousedown', function (e) {
 		if (
 			e.target.className.indexOf('three-buttons') === -1 &&
 			e.target.className.indexOf('three-button') !== -1
 		) {
-			cb1(e.target.value);
+			self.args.onclick(e.target.value);
 		}
 	});
-	el.addEventListener('mouseup', function (e) {
+	this.args.element.addEventListener('mouseup', function (e) {
 		if (
 			e.target.className.indexOf('three-buttons') === -1 &&
 			e.target.className.indexOf('three-button') !== -1
 		) {
-			cb2(e.target.value);
+			self.args.offclick(e.target.value);
 		}
 	});
-
-	function newButton(value, type) {
-		clicking[value] = false;
-		var input = document.createElement('input');
-		input.type = 'submit';
-		input.className = 'three-button';
-		if (type === 'wide') input.className += ' three-button-wide';
-		input.value = value;
-		container.appendChild(input);
-		return input;
-	}
-	function newRow() {
-		container = document.createElement('div');
-		container.className = 'three-button-row';
-		containers.push(container);
+}
+FlexMobileButtons.prototype.newButton = function (value, type) {
+	this.clicking[value] = false;
+	var input = document.createElement('input');
+	input.type = 'submit';
+	input.className = 'three-button';
+	if (type === 'wide') input.className += ' three-button-wide';
+	input.value = value;
+	this.container.appendChild(input);
+	return input;
+}
+FlexMobileButtons.prototype.newRow = function () {
+	this.container = document.createElement('div');
+	this.container.className = 'three-button-row';
+	this.containers.push(this.container);
+}
+FlexMobileButtons.prototype.init = function () {
+	for (var i = 0; i < this.containers.length; i += 1) {
+		this.args.element.appendChild(this.containers[i]);
 	}
 }
 
@@ -241,7 +251,7 @@ function render() {
 		}
 	}
 
-	if (keyboard.pressed('j')) {
+	if (keyboard.pressed('j') || fmb.clicking.J) {
 		if (wingsAway) {
 			openWings();
 		}
@@ -312,18 +322,18 @@ function render() {
 
 	birdY = camera.rotation.y;
 
-	if (keyboard.pressed('w') || clicking.UP) {
+	if (keyboard.pressed('w') || fmb.clicking.UP) {
 		bird.rotation.x += 0.2;
 		bodies[0].applyImpulse(bodies[0].getPosition(), new OIMO.Vec3(-500 * Math.sin(birdY), 0, -500 * Math.cos(birdY)));
-	} else if (keyboard.pressed('s') || clicking.DOWN) {
+	} else if (keyboard.pressed('s') || fmb.clicking.DOWN) {
 		bird.rotation.x -= 0.2;
 		bodies[0].applyImpulse(bodies[0].getPosition(), new OIMO.Vec3(500 * Math.sin(birdY), 0, 500 * Math.cos(birdY)));
 	}
 
-	if (keyboard.pressed('a') || clicking.LEFT) {
+	if (keyboard.pressed('a') || fmb.clicking.LEFT) {
 		bird.rotation.z -= 0.2;
 		bodies[0].applyImpulse(bodies[0].getPosition(), new OIMO.Vec3(-500 * Math.cos(-birdY), 0, -500 * Math.sin(-birdY)));
-	} else if (keyboard.pressed('d') || clicking.RIGHT) {
+	} else if (keyboard.pressed('d') || fmb.clicking.RIGHT) {
 		bird.rotation.z += 0.2;
 		bodies[0].applyImpulse(bodies[0].getPosition(), new OIMO.Vec3(500 * Math.cos(-birdY), 0, 500 * Math.sin(-birdY)));
 	}
@@ -355,7 +365,6 @@ var wingImpulse = false;
 var frame = 0;
 var wingAnimations = [];
 var wingsAway = false;
-// might need to round wingTimer
 var blue1 = new THREE.MeshLambertMaterial({color: '#0E1A40'});
 var blue2 = new THREE.MeshLambertMaterial({color: '#222F5B'});
 var gray = new THREE.MeshLambertMaterial({color: '#5D5D5D'});
@@ -367,12 +376,20 @@ var birdY;
 var tableShape;
 var geoBox = new THREE.BoxGeometry(1, 1, 1);
 var buffGeoBox = new THREE.BufferGeometry();
-buffGeoBox.fromGeometry( new THREE.BoxGeometry( 1, 1, 1 ) );
+buffGeoBox.fromGeometry(new THREE.BoxGeometry(1, 1, 1));
 var keyboard = new THREEx.KeyboardState();
-var clicking = {};
 
 initScene();
-initButtons(handleClick, handleUnclick);
+var fmb = new FlexMobileButtons({onclick: handleClick, offclick: handleUnclick});
+fmb.newRow();
+fmb.newButton('UP');
+fmb.newRow();
+fmb.newButton('LEFT');
+fmb.newButton('DOWN');
+fmb.newButton('RIGHT');
+fmb.newRow();
+fmb.newButton('J', 'wide');
+fmb.init();
 initBird();
 initTable();
 initPhysics();
@@ -397,14 +414,13 @@ world.play();
 	// if( o.config[2] !== undefined ) sc.restitution = o.config[2];
 	// if( o.config[3] !== undefined ) sc.belongsTo = o.config[3];
 	// if( o.config[4] !== undefined ) sc.collidesWith = o.config[4];
-
 */
 
 function handleClick(value) {
-	clicking[value] = true;
+	fmb.clicking[value] = true;
 }
 function handleUnclick(value) {
-	clicking[value] = false;
+	fmb.clicking[value] = false;
 }
 
 function onWindowResize() {
@@ -455,6 +471,8 @@ function placeBoundaries(boundaries) {
 		});
 		geometry = new THREE.BoxGeometry(boundary.size[0], boundary.size[1], boundary.size[2]);
 		mesh = new THREE.Mesh(geometry, boundary.color);
+		mesh.castShadow = true;
+		mesh.receiveShadow = true;
 		scene.add(mesh);
 		body.connectMesh(mesh);
 	}
