@@ -424,6 +424,7 @@ function handleUnclick(value) {
 }
 
 function onWindowResize() {
+	console.log(renderer.domElement.style.width);
 	camera.aspect = window.innerWidth / window.innerHeight;
 	camera.updateProjectionMatrix();
 	renderer.setSize( window.innerWidth, window.innerHeight );
