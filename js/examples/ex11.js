@@ -5,6 +5,7 @@ function initScene() {
 	);
 	camera.position.set(40, 20, 40);
 	camera.rotation.y = Math.PI / 4;
+	camera.rotation.order = 'YZX';
 
 	var n = navigator.userAgent;
 	var antialias = true;
@@ -32,6 +33,21 @@ function initScene() {
 		renderer.shadowMap.type = THREE.PCFShadowMap;//THREE.BasicShadowMap;
 	}
 
+	//Create an AudioListener and add it to the camera
+	var listener = new THREE.AudioListener();
+	camera.add(listener);
+
+	//Create the PositionalAudio object (passing in the listener)
+	flapSound = new THREE.PositionalAudio(listener);
+
+	//Load a sound and set it as the PositionalAudio object's buffer
+	var audioLoader = new THREE.AudioLoader();
+	audioLoader.load('/sounds/flap.wav', function (buffer) {
+		flapSound.setBuffer(buffer);
+		flapSound.setRefDistance(20);
+		flapSound.play();
+	});
+
 	window.addEventListener('resize', onWindowResize, false);
 
 	// axisHelper = new THREE.AxisHelper(40);
@@ -41,20 +57,22 @@ function initScene() {
 }
 
 function FlexMobileButtons(args) {
-	var el;
-	this.args = args;
+	this.args = args || {};
+	if (!('mobileOnly' in this.args)) this.args.mobileOnly = false;
+	if (!this.args.onclick) this.args.onclick = onclick;
+	if (!this.args.offclick) this.args.offclick = offclick;
+	if (this.args.mobileOnly)
+		this.isMobile = checkMobile();
 	if (!this.args.element)
-		this.args.element = document.getElementById('three-buttons');
-
+		this.args.element = document.getElementById('fmb-container');
 	if (!this.args.element) {
 		this.args.element = document.createElement('div');
-		el = this.args.element;
-		el.className = el.id = 'three-buttons';
+		this.args.element.className = this.args.element.id = 'fmb-container';
 		if (renderer) {
 			var r = renderer.domElement;
-			r.parentNode.insertBefore(el, r.nextSibling);
+			r.parentNode.insertBefore(this.args.element, r.nextSibling);
 		} else {
-			document.body.append(el);
+			document.body.append(this.args.element);
 		}
 	}
 
@@ -63,43 +81,88 @@ function FlexMobileButtons(args) {
 	this.clicking = {};
 	var self = this;
 
-	this.args.element.addEventListener('mousedown', function (e) {
-		if (
-			e.target.className.indexOf('three-buttons') === -1 &&
-			e.target.className.indexOf('three-button') !== -1
-		) {
-			self.args.onclick(e.target.value);
+	this.args.element.addEventListener('mousedown', buttonOnClick);
+	this.args.element.addEventListener('touchstart', buttonOnClick);
+	document.addEventListener('touchend', buttonOffClick);
+
+	function checkMobile() {
+		return n.match(/Android/i) || n.match(/webOS/i) || n.match(/iPhone/i) || n.match(/iPad/i) || n.match(/iPod/i) || n.match(/BlackBerry/i) || n.match(/Windows Phone/i);
+	}
+
+	function isButton(target) {
+		return target.className.indexOf('fmb-button') !== -1;
+	}
+
+	function onclick(value) {
+		self.clicking[value] = true;
+	}
+	function offclick(value) {
+		self.clicking[value] = false;
+	}
+
+	function buttonOnClick(e) {
+		e.preventDefault();
+		if (e.type === 'touchstart') {
+			for (var i = 0; i < e.touches.length; i += 1) {
+				if (isButton(e.touches[i].target)) {
+					self.args.onclick(e.touches[i].target.value);
+					document.getElementById('info').innerHTML += ' touch ' + i;
+				}
+			}
+		} else {
+			document.addEventListener('mouseup', this.buttonMouseUnclick, false);
+			document.addEventListener('mouseout', this.buttonMouseUnclick, false);
+			if (isButton(e.target)) {
+				self.args.onclick(e.target.value);
+			}
 		}
-	});
-	this.args.element.addEventListener('mouseup', function (e) {
-		if (
-			e.target.className.indexOf('three-buttons') === -1 &&
-			e.target.className.indexOf('three-button') !== -1
-		) {
+
+	}
+
+	function buttonOffClick(e) {
+		console.log(e);
+		if (e.type === 'touchend') {
+			for (var i = 0; i < e.changedTouches.length; i += 1) {
+				if (isButton(e.changedTouches[i].target)) {
+					self.args.offclick(e.changedTouches[i].target.value);
+					document.getElementById('info').innerHTML += ' touchoff ' + i;
+				}
+			}
+			e.touches
+			// this.args.element.addEventListener('touchstart', buttonOnClick);
+		} else {
+			self.args.element.addEventListener('mousedown', buttonOnClick);
 			self.args.offclick(e.target.value);
 		}
-	});
+	}
+	function buttonMouseUnclick() {
+		document.removeEventListener('mouseup', this.buttonOnClick);
+		document.removeEventListener('mouseout', this.buttonOnClick);
+		self.args.offclick(e.target.value);
+	}
 }
-FlexMobileButtons.prototype.newButton = function (value, type) {
+FlexMobileButtons.prototype.button = function (value, type) {
 	this.clicking[value] = false;
 	var input = document.createElement('input');
 	input.type = 'submit';
-	input.className = 'three-button';
-	if (type === 'wide') input.className += ' three-button-wide';
+	input.className = 'fmb-button';
+	if (type === 'wide') input.className += ' fmb-wide';
 	input.value = value;
 	this.container.appendChild(input);
-	return input;
-}
-FlexMobileButtons.prototype.newRow = function () {
+	return this;
+};
+FlexMobileButtons.prototype.row = function () {
 	this.container = document.createElement('div');
-	this.container.className = 'three-button-row';
+	this.container.className = 'fmb-row';
 	this.containers.push(this.container);
-}
+	return this;
+};
 FlexMobileButtons.prototype.init = function () {
 	for (var i = 0; i < this.containers.length; i += 1) {
 		this.args.element.appendChild(this.containers[i]);
 	}
-}
+	return this;
+};
 
 function initBird() {
 	bodyWidth = 6;
@@ -150,7 +213,7 @@ function initBird() {
 	head.position.set(0, 1, 7.8);
 	bird = new THREE.Object3D().add(wingR, wingL, birdBody, head);
 	scene.add(bird);
-	camera.rotation.order = 'YZX';
+	bird.add(flapSound);
 }
 
 function initTable() {
@@ -237,6 +300,7 @@ function initPhysics() {
 
 function render() {
 	// document.getElementById('info').innerHTML = world.getInfo();
+	document.getElementById('info').innerHTML = '';
 
 	wingAction = 'hover';
 	// wingsAway = false
@@ -379,18 +443,13 @@ var buffGeoBox = new THREE.BufferGeometry();
 buffGeoBox.fromGeometry(new THREE.BoxGeometry(1, 1, 1));
 var keyboard = new THREEx.KeyboardState();
 var isMobile;
+var flapSound;
 
 initScene();
-var fmb = new FlexMobileButtons({onclick: handleClick, offclick: handleUnclick});
-fmb.newRow();
-fmb.newButton('UP');
-fmb.newRow();
-fmb.newButton('LEFT');
-fmb.newButton('DOWN');
-fmb.newButton('RIGHT');
-fmb.newRow();
-fmb.newButton('J', 'wide');
-if (isMobile) fmb.init();
+var fmb = new FlexMobileButtons();
+fmb.row().button('UP')
+	.row().button('LEFT').button('DOWN').button('RIGHT')
+	.row().button('J', 'wide').init();
 initBird();
 initTable();
 initPhysics();
@@ -417,12 +476,6 @@ world.play();
 	// if( o.config[4] !== undefined ) sc.collidesWith = o.config[4];
 */
 
-function handleClick(value) {
-	fmb.clicking[value] = true;
-}
-function handleUnclick(value) {
-	fmb.clicking[value] = false;
-}
 
 function onWindowResize() {
 	var w = parseInt(getComputedStyle(renderer.domElement).width);

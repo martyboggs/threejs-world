@@ -5,7 +5,6 @@ description: birds
 example: ex11
 author: Marty Boggs
 category: Tutorial
-published: false
 tags:
 -  advanced
 -  physics
@@ -14,6 +13,7 @@ tags:
 -  lighting
 -  shadows
 ---
+<div id="info"></div>
 I love animated violence. I find it's a great stress reliever.
 While others do yoga or meditate, I prefer taking my frustration out on zombie hordes.
 The first FPS I played was Doom and I was too scared to play at night. I was terrified of getting surprised by one of those bull-like, pink demons.

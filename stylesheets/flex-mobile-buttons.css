@@ -1,4 +1,4 @@
-.three-buttons {
+.fmb-container {
 	position: absolute;
 	z-index: 20;
 	top: 0;
@@ -12,7 +12,7 @@
 	justify-content: flex-end;
 }
 
-.three-button {
+.fmb-button {
 	margin: 2px;
 	background: rgba(255, 255, 255, 0.5);
 	border: 1px solid black;
@@ -23,10 +23,10 @@
 	cursor: pointer;
 }
 
-.three-button-row {
+.fmb-row {
 	text-align: center;
 }
 
-.three-button-wide {
+.fmb-wide {
 	width: 158px;
 }

@@ -10,7 +10,12 @@ tags:
 -  advanced
 ---
 
-If you're reading this article, you're probably interested in animating a mesh by using either morph <!--more-->targets or skeletal animations. These kinds of animations move the vertices of a model. I'll also go over how to use Tween.js which is useful for animating a single object such as a model in a scene.
+
+As humans, we like when stuff moves around. If our eyeballs aren't shifting the cameras in our head around, and our bodies aren't performing locomotion, there's bound to be something in our purview that is walking or floating or convulsing or doing The Hustle.<!--more-->
+
+In three.js, animation is quite complicated. It's hard enough to orient and translate meshes in 3d space. When you add a fourth dimension and the coordinates of hundreds of vertices, the task seems impossible.
+
+That's why the best way to deal with animation is to **bake in** animations with a tool that is built for them. Modeling programs such as Blender allow you to create both morph target and skeletal animations. These can be created using keyframes and exported in the JSON format to be loaded by three.js.
 
 >What's basically being discussed is **morph targets** vs **skeletal animation**.<br><br>
 >Key-framing is a completely different concept, which can be used with almost every form of animation, including both of the above (both of the above can also be used without key-framing)...<br><br>

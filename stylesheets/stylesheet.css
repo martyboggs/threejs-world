@@ -701,6 +701,9 @@ canvas {
 	display: flex;
 	justify-content: center;
 }
+#canvases {
+	margin-bottom: 30px;
+}
 #canvases canvas {
 	width: 100% !important;
 }
