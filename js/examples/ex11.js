@@ -137,14 +137,15 @@ function FlexMobileButtons(args) {
 		}
 	}
 }
-FlexMobileButtons.prototype.button = function (value, type) {
+FlexMobileButtons.prototype.button = function (value, display, type) {
 	this.clicking[value] = false;
-	var input = document.createElement('input');
-	input.type = 'submit';
-	input.className = 'fmb-button';
-	if (type === 'wide') input.className += ' fmb-wide';
-	input.value = value;
-	this.container.appendChild(input);
+	var button = document.createElement('button');
+	button.className = 'fmb-button';
+	if (value) button.value = value;
+	if (display) button.innerHTML = display;
+	if (!button.innerHTML && value) button.innerHTML = value;
+	if (type === 'wide') button.className += ' fmb-wide';
+	this.container.appendChild(button);
 	return this;
 };
 FlexMobileButtons.prototype.row = function () {
@@ -444,9 +445,11 @@ var flapSound;
 
 initScene();
 var fmb = new FlexMobileButtons();
-fmb.row().button('UP')
-	.row().button('LEFT').button('DOWN').button('RIGHT')
-	.row().button('J', 'wide').init();
+fmb.row().button('UP', '<i class="fa fa-chevron-circle-up"></i>')
+	.row().button('LEFT', '<i class="fa fa-chevron-circle-left"></i>')
+	.button('DOWN', '<i class="fa fa-chevron-circle-down"></i>')
+	.button('RIGHT', '<i class="fa fa-chevron-circle-right"></i>')
+	.row().button('J', null, 'wide').init();
 initBird();
 initTable();
 initPhysics();
@@ -537,6 +540,8 @@ function placeGround(ground) {
 	mesh.position.set(ground.pos[0], ground.pos[1], ground.pos[2]);
 	// if (ground.rotation)
 	// 	mesh.rotation.set(ground.rotation[0]*ToRad, ground.rotation[1]*ToRad, ground.rotation[2]*ToRad);
+	mesh.castShadow = true;
+	mesh.receiveShadow = true;
 	scene.add(mesh);
 	ground.config = [0.2, 0.4, 0.1]; // reuse object
 	var body = world.add(ground);
