@@ -82,6 +82,8 @@ function FlexMobileButtons(args) {
 	var self = this;
 
 	this.args.element.addEventListener('mousedown', buttonOnClick);
+	// document.addEventListener('mouseup', buttonOffClick);
+	// document.addEventListener('mouseout', buttonOffClick);
 	this.args.element.addEventListener('touchstart', buttonOnClick);
 	document.addEventListener('touchend', buttonOffClick);
 
@@ -110,8 +112,8 @@ function FlexMobileButtons(args) {
 				}
 			}
 		} else {
-			document.addEventListener('mouseup', this.buttonMouseUnclick, false);
-			document.addEventListener('mouseout', this.buttonMouseUnclick, false);
+			document.addEventListener('mouseup', buttonOffClick);
+			document.addEventListener('mouseout', buttonOffClick);
 			if (isButton(e.target)) {
 				self.args.onclick(e.target.value);
 			}
@@ -120,7 +122,6 @@ function FlexMobileButtons(args) {
 	}
 
 	function buttonOffClick(e) {
-		console.log(e);
 		if (e.type === 'touchend') {
 			for (var i = 0; i < e.changedTouches.length; i += 1) {
 				if (isButton(e.changedTouches[i].target)) {
@@ -129,16 +130,11 @@ function FlexMobileButtons(args) {
 				}
 			}
 			e.touches
-			// this.args.element.addEventListener('touchstart', buttonOnClick);
 		} else {
-			self.args.element.addEventListener('mousedown', buttonOnClick);
+			document.removeEventListener('mouseup', buttonOffClick);
+			document.removeEventListener('mouseout', buttonOffClick);
 			self.args.offclick(e.target.value);
 		}
-	}
-	function buttonMouseUnclick() {
-		document.removeEventListener('mouseup', this.buttonOnClick);
-		document.removeEventListener('mouseout', this.buttonOnClick);
-		self.args.offclick(e.target.value);
 	}
 }
 FlexMobileButtons.prototype.button = function (value, type) {
@@ -158,6 +154,7 @@ FlexMobileButtons.prototype.row = function () {
 	return this;
 };
 FlexMobileButtons.prototype.init = function () {
+	if (this.args.mobileOnly && !this.isMobile) return;
 	for (var i = 0; i < this.containers.length; i += 1) {
 		this.args.element.appendChild(this.containers[i]);
 	}
@@ -387,18 +384,18 @@ function render() {
 	birdY = camera.rotation.y;
 
 	if (keyboard.pressed('w') || fmb.clicking.UP) {
-		bird.rotation.x = 0.5;
+		// bird.rotation.x = 0.5;
 		bodies[0].applyImpulse(bodies[0].getPosition(), new OIMO.Vec3(-500 * Math.sin(birdY), 0, -500 * Math.cos(birdY)));
 	} else if (keyboard.pressed('s') || fmb.clicking.DOWN) {
-		bird.rotation.x = -0.5;
+		// bird.rotation.x = -0.5;
 		bodies[0].applyImpulse(bodies[0].getPosition(), new OIMO.Vec3(500 * Math.sin(birdY), 0, 500 * Math.cos(birdY)));
 	}
 
 	if (keyboard.pressed('a') || fmb.clicking.LEFT) {
-		bird.rotation.z = -0.5;
+		// bird.rotation.z = -0.5;
 		bodies[0].applyImpulse(bodies[0].getPosition(), new OIMO.Vec3(-500 * Math.cos(-birdY), 0, -500 * Math.sin(-birdY)));
 	} else if (keyboard.pressed('d') || fmb.clicking.RIGHT) {
-		bird.rotation.z = 0.5;
+		// bird.rotation.z = 0.5;
 		bodies[0].applyImpulse(bodies[0].getPosition(), new OIMO.Vec3(500 * Math.cos(-birdY), 0, 500 * Math.sin(-birdY)));
 	}
 
