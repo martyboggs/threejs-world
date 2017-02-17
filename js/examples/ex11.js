@@ -300,7 +300,7 @@ function initPhysics() {
 
 function render() {
 	// document.getElementById('info').innerHTML = world.getInfo();
-	document.getElementById('info').innerHTML = '';
+	// document.getElementById('info').innerHTML = '';
 
 	wingAction = 'hover';
 	// wingsAway = false
