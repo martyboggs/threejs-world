@@ -387,18 +387,18 @@ function render() {
 	birdY = camera.rotation.y;
 
 	if (keyboard.pressed('w') || fmb.clicking.UP) {
-		bird.rotation.x += 0.2;
+		bird.rotation.x = 0.5;
 		bodies[0].applyImpulse(bodies[0].getPosition(), new OIMO.Vec3(-500 * Math.sin(birdY), 0, -500 * Math.cos(birdY)));
 	} else if (keyboard.pressed('s') || fmb.clicking.DOWN) {
-		bird.rotation.x -= 0.2;
+		bird.rotation.x = -0.5;
 		bodies[0].applyImpulse(bodies[0].getPosition(), new OIMO.Vec3(500 * Math.sin(birdY), 0, 500 * Math.cos(birdY)));
 	}
 
 	if (keyboard.pressed('a') || fmb.clicking.LEFT) {
-		bird.rotation.z -= 0.2;
+		bird.rotation.z = -0.5;
 		bodies[0].applyImpulse(bodies[0].getPosition(), new OIMO.Vec3(-500 * Math.cos(-birdY), 0, -500 * Math.sin(-birdY)));
 	} else if (keyboard.pressed('d') || fmb.clicking.RIGHT) {
-		bird.rotation.z += 0.2;
+		bird.rotation.z = 0.5;
 		bodies[0].applyImpulse(bodies[0].getPosition(), new OIMO.Vec3(500 * Math.cos(-birdY), 0, 500 * Math.sin(-birdY)));
 	}
 
