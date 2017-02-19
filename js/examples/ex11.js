@@ -15,32 +15,31 @@ function initScene() {
 	document.getElementById('canvases').appendChild(renderer.domElement);
 	onWindowResize();
 
-	var directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-	directionalLight.position.set(2, 2, 2);
-	scene.add(directionalLight);
-	var ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-	scene.add(ambientLight);
-
+	var directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
+	directionalLight.position.set(115, 600, 100);
 	if (!isMobile) {
 		directionalLight.castShadow = true;
-		var d = 300;
-		directionalLight.shadow.camera = new THREE.OrthographicCamera( -d, d, d, -d,  500, 1600 );
+		var d = 100;
+		directionalLight.shadow.camera = new THREE.OrthographicCamera(-d, d, d, -d, 0, 700);
 		directionalLight.shadow.bias = 0.0001;
 		directionalLight.shadow.mapSize.width = directionalLight.shadow.mapSize.height = 1024;
-		scene.add(new THREE.CameraHelper(directionalLight.shadow.camera));
+		// scene.add(new THREE.CameraHelper(directionalLight.shadow.camera));
 		scene.add(directionalLight);
 		renderer.shadowMap.enabled = true;
 		renderer.shadowMap.type = THREE.PCFShadowMap;//THREE.BasicShadowMap;
+		// var gui = new dat.GUI();
+		// gui.add(directionalLight.position, 'x', 0, 500);
+		// gui.add(directionalLight.position, 'y', 0, 600);
+		// gui.add(directionalLight.position, 'z', 0, 500);
 	}
+	scene.add(directionalLight);
+	var ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+	scene.add(ambientLight);
 
-	//Create an AudioListener and add it to the camera
+	// audio
 	var listener = new THREE.AudioListener();
 	camera.add(listener);
-
-	//Create the PositionalAudio object (passing in the listener)
 	flapSound = new THREE.PositionalAudio(listener);
-
-	//Load a sound and set it as the PositionalAudio object's buffer
 	var audioLoader = new THREE.AudioLoader();
 	audioLoader.load('/sounds/flap.wav', function (buffer) {
 		flapSound.setBuffer(buffer);
@@ -50,117 +49,40 @@ function initScene() {
 
 	window.addEventListener('resize', onWindowResize, false);
 
-	// axisHelper = new THREE.AxisHelper(40);
-	// scene.add(axisHelper);
+	axisHelper = new THREE.AxisHelper(10);
+	scene.add(axisHelper);
 	var gridHelper = new THREE.GridHelper(500, 50);
 	scene.add(gridHelper);
+
+	renderer.domElement.addEventListener('click', clickedCanvas);
+	document.addEventListener('fullscreenchange', toggleFullscreen);
+	document.addEventListener('webkitfullscreenchange', toggleFullscreen);
+	document.addEventListener('mozfullscreenchange', toggleFullscreen);
+	document.addEventListener('MSFullscreenChange', toggleFullscreen);
+	function clickedCanvas(e) {
+		toggleFullscreen(null, renderer.domElement, clickedCanvas);
+	}
+	function toggleFullscreen(e, clickedEl, handler) {
+		if (clickedEl) {
+			i = clickedEl;
+			i.removeEventListener('click', handler);
+			if (i.requestFullscreen) i.requestFullscreen();
+			else if (i.webkitRequestFullscreen) i.webkitRequestFullscreen();
+			else if (i.mozRequestFullScreen) i.mozRequestFullScreen();
+			else if (i.msRequestFullscreen) i.msRequestFullscreen();
+		} else if (!isFullscreen()) {
+			renderer.domElement.addEventListener('click', clickedCanvas);
+		}
+	}
+	function isFullscreen() {
+		return document.fullscreenElement ||
+		document.webkitFullscreenElement ||
+		document.mozFullScreenElement ||
+		document.msFullscreenElement;
+	}
 }
 
-function FlexMobileButtons(args) {
-	this.args = args || {};
-	if (!('mobileOnly' in this.args)) this.args.mobileOnly = false;
-	if (!this.args.onclick) this.args.onclick = onclick;
-	if (!this.args.offclick) this.args.offclick = offclick;
-	if (this.args.mobileOnly)
-		this.isMobile = checkMobile();
-	if (!this.args.element)
-		this.args.element = document.getElementById('fmb-container');
-	if (!this.args.element) {
-		this.args.element = document.createElement('div');
-		this.args.element.className = this.args.element.id = 'fmb-container';
-		if (renderer) {
-			var r = renderer.domElement;
-			r.parentNode.insertBefore(this.args.element, r.nextSibling);
-		} else {
-			document.body.append(this.args.element);
-		}
-	}
 
-	this.containers = [];
-	this.container = this.args.element;
-	this.clicking = {};
-	var self = this;
-
-	this.args.element.addEventListener('mousedown', buttonOnClick);
-	// document.addEventListener('mouseup', buttonOffClick);
-	// document.addEventListener('mouseout', buttonOffClick);
-	this.args.element.addEventListener('touchstart', buttonOnClick);
-	document.addEventListener('touchend', buttonOffClick);
-
-	function checkMobile() {
-		return n.match(/Android/i) || n.match(/webOS/i) || n.match(/iPhone/i) || n.match(/iPad/i) || n.match(/iPod/i) || n.match(/BlackBerry/i) || n.match(/Windows Phone/i);
-	}
-
-	function isButton(target) {
-		return target.className.indexOf('fmb-button') !== -1;
-	}
-
-	function onclick(value) {
-		self.clicking[value] = true;
-	}
-	function offclick(value) {
-		self.clicking[value] = false;
-	}
-
-	function buttonOnClick(e) {
-		e.preventDefault();
-		if (e.type === 'touchstart') {
-			for (var i = 0; i < e.touches.length; i += 1) {
-				if (isButton(e.touches[i].target)) {
-					self.args.onclick(e.touches[i].target.value);
-					document.getElementById('info').innerHTML += ' touch ' + i;
-				}
-			}
-		} else {
-			document.addEventListener('mouseup', buttonOffClick);
-			document.addEventListener('mouseout', buttonOffClick);
-			if (isButton(e.target)) {
-				self.args.onclick(e.target.value);
-			}
-		}
-
-	}
-
-	function buttonOffClick(e) {
-		if (e.type === 'touchend') {
-			for (var i = 0; i < e.changedTouches.length; i += 1) {
-				if (isButton(e.changedTouches[i].target)) {
-					self.args.offclick(e.changedTouches[i].target.value);
-					document.getElementById('info').innerHTML += ' touchoff ' + i;
-				}
-			}
-			e.touches
-		} else {
-			document.removeEventListener('mouseup', buttonOffClick);
-			document.removeEventListener('mouseout', buttonOffClick);
-			self.args.offclick(e.target.value);
-		}
-	}
-}
-FlexMobileButtons.prototype.button = function (value, display, type) {
-	this.clicking[value] = false;
-	var button = document.createElement('button');
-	button.className = 'fmb-button';
-	if (value) button.value = value;
-	if (display) button.innerHTML = display;
-	if (!button.innerHTML && value) button.innerHTML = value;
-	if (type === 'wide') button.className += ' fmb-wide';
-	this.container.appendChild(button);
-	return this;
-};
-FlexMobileButtons.prototype.row = function () {
-	this.container = document.createElement('div');
-	this.container.className = 'fmb-row';
-	this.containers.push(this.container);
-	return this;
-};
-FlexMobileButtons.prototype.init = function () {
-	if (this.args.mobileOnly && !this.isMobile) return;
-	for (var i = 0; i < this.containers.length; i += 1) {
-		this.args.element.appendChild(this.containers[i]);
-	}
-	return this;
-};
 
 function initBird() {
 	bodyWidth = 6;
@@ -169,6 +91,8 @@ function initBird() {
 	var thickness = 1;
 
 	birdBody = new THREE.Mesh(new THREE.BoxGeometry(bodyWidth, 6, 12), blue2);
+	birdBody.castShadow = true;
+	birdBody.receiveShadow = true;
 	birdBody.position.set(0, 0, -1);
 
 	var wingR1 = new THREE.Mesh(new THREE.BoxGeometry(wing1Width, thickness, 10), blue2);
@@ -209,9 +133,15 @@ function initBird() {
 	beak2.rotation.y = Math.PI;
 	head.add(headSphere, eye1, eye2, beak1, beak2);
 	head.position.set(0, 1, 7.8);
+
+	birdUpright = new THREE.Object3D();
+	// birdUpright.position.y = -10;
+	// scene.add(birdUpright);
+
 	bird = new THREE.Object3D().add(wingR, wingL, birdBody, head);
 	scene.add(bird);
 	bird.add(flapSound);
+
 }
 
 function initTable() {
@@ -406,6 +336,16 @@ function render() {
 
 	camera.lookAt(bird.position);
 
+	// axisHelper.position.copy(bird.position);
+	axisHelper.rotation.copy(bird.rotation);
+
+	// make bird upright
+	birdUpright.position.copy(bird.position);
+	birdUpright.rotation.copy(bird.rotation);
+	birdUpright.translateY(-10);
+	axisHelper.position.copy(birdUpright.position);
+	bodies[0].applyImpulse(birdUpright.position, {x: 0, y: -10, z: 0});
+
 	frame += 1;
 
 	requestAnimationFrame(render);
@@ -416,7 +356,7 @@ function render() {
 var matrix = new THREE.Matrix4();
 var axisHelper;
 var scene, camera, renderer;
-var bird, birdBody, wingL, wingR, wingtipL, wingtipR, head;
+var bird, birdBody, wingL, wingR, wingtipL, wingtipR, head, birdUpright;
 var bodyWidth;
 var world, bodies = [], editor;
 var wingTimer = 0;
@@ -442,19 +382,21 @@ buffGeoBox.fromGeometry(new THREE.BoxGeometry(1, 1, 1));
 var keyboard = new THREEx.KeyboardState();
 var isMobile;
 var flapSound;
+var fullscreen = false;
 
 initScene();
-var fmb = new FlexMobileButtons();
-fmb.row().button('UP', '<i class="fa fa-chevron-circle-up"></i>')
-	.row().button('LEFT', '<i class="fa fa-chevron-circle-left"></i>')
-	.button('DOWN', '<i class="fa fa-chevron-circle-down"></i>')
-	.button('RIGHT', '<i class="fa fa-chevron-circle-right"></i>')
+var fmb = new FlexMobileButtons({parent: document.getElementById('canvases')});
+fmb.row().button('UP', '<i class="fa fa-caret-up"></i>')
+	.row().button('LEFT', '<i class="fa fa-caret-left"></i>')
+	.button('DOWN', '<i class="fa fa-caret-down"></i>')
+	.button('RIGHT', '<i class="fa fa-caret-right"></i>')
 	.row().button('J', null, 'wide').init();
 initBird();
 initTable();
 initPhysics();
 render();
 world.play();
+
 
 /*
 	goals:
@@ -483,7 +425,9 @@ function onWindowResize() {
 	camera.aspect = w / h;
 	camera.updateProjectionMatrix();
 	renderer.setSize(w, h);
+	renderer.domElement.style.width = '100%';
 }
+
 
 function placeTables(tables) {
 	var geometry, body, mesh;
@@ -535,6 +479,8 @@ function placeBoundaries(boundaries) {
 }
 
 function placeGround(ground) {
+	ground.config = [0.2, 0.4, 0.1]; // reuse object
+	var body = world.add(ground);
 	var mesh = new THREE.Mesh(buffGeoBox, gray);
 	mesh.scale.set(ground.size[0], ground.size[1], ground.size[2]);
 	mesh.position.set(ground.pos[0], ground.pos[1], ground.pos[2]);
@@ -543,8 +489,6 @@ function placeGround(ground) {
 	mesh.castShadow = true;
 	mesh.receiveShadow = true;
 	scene.add(mesh);
-	ground.config = [0.2, 0.4, 0.1]; // reuse object
-	var body = world.add(ground);
 	body.connectMesh(mesh);
 }
 
