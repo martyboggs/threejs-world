@@ -49,37 +49,10 @@ function initScene() {
 
 	window.addEventListener('resize', onWindowResize, false);
 
-	axisHelper = new THREE.AxisHelper(10);
-	scene.add(axisHelper);
+	// axisHelper = new THREE.AxisHelper(10);
+	// scene.add(axisHelper);
 	var gridHelper = new THREE.GridHelper(500, 50);
 	scene.add(gridHelper);
-
-	renderer.domElement.addEventListener('click', clickedCanvas);
-	document.addEventListener('fullscreenchange', toggleFullscreen);
-	document.addEventListener('webkitfullscreenchange', toggleFullscreen);
-	document.addEventListener('mozfullscreenchange', toggleFullscreen);
-	document.addEventListener('MSFullscreenChange', toggleFullscreen);
-	function clickedCanvas(e) {
-		toggleFullscreen(null, renderer.domElement, clickedCanvas);
-	}
-	function toggleFullscreen(e, clickedEl, handler) {
-		if (clickedEl) {
-			i = clickedEl;
-			i.removeEventListener('click', handler);
-			if (i.requestFullscreen) i.requestFullscreen();
-			else if (i.webkitRequestFullscreen) i.webkitRequestFullscreen();
-			else if (i.mozRequestFullScreen) i.mozRequestFullScreen();
-			else if (i.msRequestFullscreen) i.msRequestFullscreen();
-		} else if (!isFullscreen()) {
-			renderer.domElement.addEventListener('click', clickedCanvas);
-		}
-	}
-	function isFullscreen() {
-		return document.fullscreenElement ||
-		document.webkitFullscreenElement ||
-		document.mozFullScreenElement ||
-		document.msFullscreenElement;
-	}
 }
 
 
@@ -227,8 +200,7 @@ function initPhysics() {
 
 
 function render() {
-	// document.getElementById('info').innerHTML = world.getInfo();
-	// document.getElementById('info').innerHTML = '';
+	document.getElementById('info').innerHTML = world.getInfo();
 
 	wingAction = 'hover';
 	// wingsAway = false
@@ -336,15 +308,17 @@ function render() {
 
 	camera.lookAt(bird.position);
 
-	// axisHelper.position.copy(bird.position);
-	axisHelper.rotation.copy(bird.rotation);
-
 	// make bird upright
 	birdUpright.position.copy(bird.position);
 	birdUpright.rotation.copy(bird.rotation);
-	birdUpright.translateY(-10);
-	axisHelper.position.copy(birdUpright.position);
-	bodies[0].applyImpulse(birdUpright.position, {x: 0, y: -10, z: 0});
+	birdUpright.translateOnAxis(tmpVec.set(0, 1, 0), -10);
+	bodies[0].applyImpulse(birdUpright.position, {x: 0, y: -100, z: 0});
+
+	// // collisions
+	// var birdCollide = world.getContact(bodies[0], ground);
+	// if (birdCollide) {
+
+	// }
 
 	frame += 1;
 
@@ -383,6 +357,7 @@ var keyboard = new THREEx.KeyboardState();
 var isMobile;
 var flapSound;
 var fullscreen = false;
+var tmpVec = new THREE.Vector3();
 
 initScene();
 var fmb = new FlexMobileButtons({parent: document.getElementById('canvases')});
@@ -390,7 +365,8 @@ fmb.row().button('UP', '<i class="fa fa-caret-up"></i>')
 	.row().button('LEFT', '<i class="fa fa-caret-left"></i>')
 	.button('DOWN', '<i class="fa fa-caret-down"></i>')
 	.button('RIGHT', '<i class="fa fa-caret-right"></i>')
-	.row().button('J', null, 'wide').init();
+	.row().button('J', null, 'wide').init()
+	.fullscreen(renderer.domElement);
 initBird();
 initTable();
 initPhysics();
