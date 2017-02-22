@@ -5,6 +5,7 @@ description: birds
 example: ex11
 author: Marty Boggs
 category: Tutorials
+published: false
 tags:
 -  advanced
 -  physics
