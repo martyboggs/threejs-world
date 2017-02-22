@@ -1,7 +1,7 @@
 /**
  * @author Marty Boggs / http://www.threejsworld.com
  */
-function FlexMobileButtons(args) {
+function FlexboxMobileButtons(args) {
 	this.args = args || {};
 	var defaults = {
 		mobileOnly: false,
@@ -74,13 +74,21 @@ function FlexMobileButtons(args) {
 	}
 }
 
-FlexMobileButtons.prototype = {
+FlexboxMobileButtons.prototype = {
 	button: function (value, display, type) {
 		this.clicking[value] = false;
 		var button = document.createElement('button');
 		button.className = 'fmb-button';
 		if (value) button.value = value;
-		if (display) button.innerHTML = display;
+		if (display) {
+			switch (display) {
+				case '*UP': button.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100;" xml:space="preserve"><polygon points="27,64 50,40 73,64" fill="#000000"/></svg>'; break;
+				case '*DOWN': button.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100;" xml:space="preserve"><polygon transform="rotate(180, 50, 50)" points="27,64 50,40 73,64" fill="#000000"/></svg>'; break;
+				case '*LEFT': button.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100;" xml:space="preserve"><polygon transform="rotate(270, 50, 50)" points="27,64 50,40 73,64" fill="#000000"/></svg>'; break;
+				case '*RIGHT': button.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100;" xml:space="preserve"><polygon transform="rotate(90, 50, 50)" points="27,64 50,40 73,64" fill="#000000"/></svg>'; break;
+				default: button.innerHTML = display;
+			}
+		}
 		if (!button.innerHTML && value) button.innerHTML = value;
 		if (type === 'wide') button.className += ' fmb-wide';
 		this.container.appendChild(button);
@@ -95,13 +103,23 @@ FlexMobileButtons.prototype = {
 		this.container.appendChild(button);
 		if (!element) element = document.getElementsByTagName('canvas')[0];
 
+		var self = this;
+
 		button.addEventListener('click', toggleFullscreen);
+		button.addEventListener('touchstart', function (e) {
+			self.clicking.fullscreen = true;
+		});
+		button.addEventListener('touchend', toggleFullscreen);
+
 		// document.addEventListener('fullscreenchange', toggleFullscreen);
 		// document.addEventListener('webkitfullscreenchange', toggleFullscreen);
 		// document.addEventListener('mozfullscreenchange', toggleFullscreen);
 		// document.addEventListener('MSFullscreenChange', toggleFullscreen);
-		var self = this;
 		function toggleFullscreen(e) {
+			if (e.type === 'touchend') {
+				if (!self.clicking.fullscreen) return;
+				self.clicking.fullscreen = false;
+			}
 			var i = element;
 			if (i.requestFullscreen) i.requestFullscreen();
 			else if (i.webkitRequestFullscreen) i.webkitRequestFullscreen();

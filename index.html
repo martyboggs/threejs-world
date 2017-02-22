@@ -62,6 +62,7 @@ amp: true
 		<h2>More three.js Tutorials</h2>
 		<div class="links">
 			{% for post in site.posts %}
+				{% include structured-data-loop.html %}
 				<article class="link">
 					<a href="{{ post.url }}">{{ post.title }}</a>
 					<p><strong>{{ post.date | date: "%B %e, %Y" }}</strong> {{ post.category }} <a href="{{site.url}}{{post.url}}"></a></p>

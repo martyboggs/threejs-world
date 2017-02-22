@@ -1,0 +1,32 @@
+{% assign level = '' %}
+{% for tag in post.tags %}
+	{% if tag == 'beginner' %}
+		{% assign level = 'Beginner' %}
+	{% elsif tag == 'advanced' %}
+		{% assign level = 'Advanced' %}
+	{% endif %}
+{% endfor %}
+<script type="application/ld+json">
+{ "@context": "http://schema.org",
+ "@type": "TechArticle",
+ "headline": "{{post.title}}",
+ "dependencies": "For everyone",
+ "proficiencyLevel": "{{level}}",
+ "alternativeHeadline": "",
+ "image": "{{site.url}}/images/{{post.example}}.jpg",
+ "author": "{{post.author}}",
+ "award": "",
+ "editor": "{{post.author}}",
+ "genre": "{{post.category}}",
+ "keywords": "{{post.tags | join: ' '}}",
+ "wordcount": "{{content | number_of_words}}",
+ "publisher": "{{site.title}}",
+ "url": "{{site.url}}{{post.url}}",
+ "datePublished": "{{post.date | date: '%Y-%m-%d'}}",
+ "dateCreated": "{{post.date | date: '%Y-%m-%d'}}",
+ "dateModified": "{{post.date | date: '%Y-%m-%d'}}",
+ "description": "{{post.description}}",
+ "articleBody": "{{content | strip_html | replace: '
+', ' ' | remove: '"' | remove: '  ' | remove: '	'}}"
+ }
+</script>

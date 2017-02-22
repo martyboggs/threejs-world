@@ -41,12 +41,14 @@ function initScene() {
 	camera.add(listener);
 	flapSound = new THREE.PositionalAudio(listener);
 	var audioLoader = new THREE.AudioLoader();
-	audioLoader.load('/sounds/flap.wav', function (buffer) {
+	audioLoader.load('../../sounds/flap.wav', function (buffer) {
 		flapSound.setBuffer(buffer);
 		flapSound.setRefDistance(20);
+		flapSound.loop = true;
 		flapSound.play();
+		flapSound.stop();
 	});
-
+console.log('test1');
 	window.addEventListener('resize', onWindowResize, false);
 
 	// axisHelper = new THREE.AxisHelper(10);
@@ -114,7 +116,6 @@ function initBird() {
 	bird = new THREE.Object3D().add(wingR, wingL, birdBody, head);
 	scene.add(bird);
 	bird.add(flapSound);
-
 }
 
 function initTable() {
@@ -163,7 +164,8 @@ function initPhysics() {
 	var body = world.add({
 		type: 'box',
 		size: [6, 6, 12], pos: [0, 20, 0],
-		move: true
+		move: true,
+		name: 'bird'
 	});
 	bird.position.y = 20;
 	bodies.push(body);
@@ -200,7 +202,7 @@ function initPhysics() {
 
 
 function render() {
-	document.getElementById('info').innerHTML = world.getInfo();
+	// document.getElementById('info').innerHTML = world.getInfo();
 
 	wingAction = 'hover';
 	// wingsAway = false
@@ -216,6 +218,7 @@ function render() {
 	}
 
 	if (keyboard.pressed('j') || fmb.clicking.J) {
+		if (!flapSound.isPlaying) flapSound.play();
 		if (wingsAway) {
 			openWings();
 		}
@@ -224,6 +227,8 @@ function render() {
 			wingAction = 'flapping';
 			wingsAway = false;
 		}
+	} else {
+		if (flapSound.isPlaying) flapSound.stop();
 	}
 
 	switch (wingAction) {
@@ -315,10 +320,15 @@ function render() {
 	bodies[0].applyImpulse(birdUpright.position, {x: 0, y: -100, z: 0});
 
 	// // collisions
-	// var birdCollide = world.getContact(bodies[0], ground);
-	// if (birdCollide) {
+	var birdCollide = world.checkContact('bird', 'ground');
+	if (birdCollide && bodies[0].linearVelocity.lengthSq() > 5) {
+		sound.play('drag');
+	} else {
+		if (sound.isPlaying('drag')) {
+			sound.stop('drag');
+		}
+	}
 
-	// }
 
 	frame += 1;
 
@@ -360,16 +370,18 @@ var fullscreen = false;
 var tmpVec = new THREE.Vector3();
 
 initScene();
-var fmb = new FlexMobileButtons({parent: document.getElementById('canvases')});
-fmb.row().button('UP', '<i class="fa fa-caret-up"></i>')
-	.row().button('LEFT', '<i class="fa fa-caret-left"></i>')
-	.button('DOWN', '<i class="fa fa-caret-down"></i>')
-	.button('RIGHT', '<i class="fa fa-caret-right"></i>')
+var fmb = new FlexboxMobileButtons({parent: document.getElementById('canvases')});
+fmb.row()
+	.button('UP', '*UP')
+	.row().button('LEFT', '*LEFT')
+	.button('DOWN', '*DOWN')
+	.button('RIGHT', '*RIGHT')
 	.row().button('J', null, 'wide').init()
 	.fullscreen(renderer.domElement);
 initBird();
 initTable();
 initPhysics();
+sound.init();
 render();
 world.play();
 
@@ -415,7 +427,7 @@ function placeTables(tables) {
 			posShape: tableShape.positions,
 			move: true,
 			world: world,
-			name: 'box' + i,
+			name: 'table',
 			config: [0.2, 0.4, 0.1]
 		});
 		mesh = new THREE.Mesh(tableShape.geometry, randomMat());
@@ -455,8 +467,10 @@ function placeBoundaries(boundaries) {
 }
 
 function placeGround(ground) {
+	ground.name = 'ground';
 	ground.config = [0.2, 0.4, 0.1]; // reuse object
 	var body = world.add(ground);
+	bodies.push(body);
 	var mesh = new THREE.Mesh(buffGeoBox, gray);
 	mesh.scale.set(ground.size[0], ground.size[1], ground.size[2]);
 	mesh.position.set(ground.pos[0], ground.pos[1], ground.pos[2]);
@@ -501,4 +515,16 @@ function randInt(low, high) {
 
 function rand(low, high) {
 	return low + Math.random() * (high - low);
+}
+
+function firstCollision() {
+	var n1, n2;
+	var contact = world.contacts;
+	while(contact!==null){
+		n1 = contact.body1.name || ' ';
+		n2 = contact.body2.name || ' ';
+		if((n1==name1 && n2==name2) || (n2==name1 && n1==name2)){ if(contact.touching) return true; else return false;}
+		else contact = contact.next;
+	}
+	//return false;
 }
