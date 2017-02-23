@@ -5,7 +5,7 @@ function initScene() {
 	);
 	camera.position.set(40, 20, 40);
 	camera.rotation.y = Math.PI / 4;
-	camera.rotation.order = 'YZX';
+	camera.rotation.order = 'YXZ';
 
 	var n = navigator.userAgent;
 	var antialias = true;
@@ -372,12 +372,13 @@ var tmpVec = new THREE.Vector3();
 initScene();
 var fmb = new FlexboxMobileButtons({parent: document.getElementById('canvases')});
 fmb.row()
-	.button('UP', '*UP')
-	.row().button('LEFT', '*LEFT')
-	.button('DOWN', '*DOWN')
-	.button('RIGHT', '*RIGHT')
-	.row().button('J', null, 'wide').init()
-	.fullscreen(renderer.domElement);
+.button('UP')
+.row().button('LEFT')
+.button('DOWN')
+.button('RIGHT')
+.row().button('J', null, 'wide')
+.fullscreen(renderer.domElement)
+.init();
 initBird();
 initTable();
 initPhysics();
@@ -437,7 +438,9 @@ function placeTables(tables) {
 		body.connectMesh(mesh);
 	}
 }
-
+// animals attached to the end of balloons
+// balloon impulse up,
+// animal locomotion
 function randomMat() {
 	rand = Math.random();
 	if (rand > 0.7) return black;
