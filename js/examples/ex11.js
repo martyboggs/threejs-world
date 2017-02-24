@@ -329,8 +329,8 @@ function render() {
 		}
 	}
 
-	if (harCollision('table')) {
-		sound.play('crash');
+	if (hardCollision('table')) {
+		sound.play('hit');
 	}
 
 	frame += 1;
@@ -528,7 +528,8 @@ function hardCollision(name) {
 	var contact = world.contacts;
 	while (contact !== null) {
 		if ((contact.body1.name === name || contact.body2.name === name)
-		&& (contact.body1.linearVelocity.lengthSq() > 15 || contact.body2.linearVelocity.lengthSq() > 15)) {
+		&& (contact.body1.linearVelocity.lengthSq() > 300 || contact.body2.linearVelocity.lengthSq() > 300)) {
+			console.log(name, contact.body1.name, contact.body2.name, contact.body1.linearVelocity.lengthSq(), contact.body2.linearVelocity.lengthSq());
 			return true;
 		} else {
 			contact = contact.next;
