@@ -121,16 +121,26 @@ FlexboxMobileButtons.prototype = {
 		button.addEventListener('touchstart', function (e) {
 			self.clicking.fullscreen = true;
 		});
-		button.addEventListener('mouseup', toggleFullscreen);
-		button.addEventListener('touchend', toggleFullscreen);
-		document.addEventListener(fullscreen[prefix].event, toggleFullscreen);
+		button.addEventListener('mouseup', goFullscreen);
+		button.addEventListener('touchend', goFullscreen);
+		document.addEventListener(fullscreen[prefix].event, fullscreenChange);
 
-		function toggleFullscreen(e) {
-			if (e.type === 'mouseup' || e.type === 'touchend') {
-				if (!self.clicking.fullscreen) return;
+		function goFullscreen(e) { // clicked off button
+			if (self.clicking.fullscreen) { // clicked on button before
 				self.clicking.fullscreen = false;
+				fullscreen[prefix].request.call(element, function () {});
+				button.style.display = 'none';
 			}
-			fullscreen[prefix].request.call(element, function () {});
+		}
+		function fullscreenChange(e) {
+			if (
+				!document.fullscreenElement &&
+				!document.webkitFullscreenElement &&
+				!document.mozFullScreenElement &&
+				!document.msFullscreenElement
+			) {
+				button.style.display = '';
+			}
 		}
 		function getPrefix(i) {
 			if (i.requestFullscreen) return 'none';
@@ -159,10 +169,10 @@ FlexboxMobileButtons.prototype = {
 			moz: {request: element.mozRequestPointerLock, event: 'mozpointerlockchange'}
 		};
 
-		button.addEventListener('click', togglePointerLock);
+		button.addEventListener('click', goPointerLock);
 		document.addEventListener(pointerLock[prefix].event, pointerLockChanged);
 
-		function togglePointerLock(e) {
+		function goPointerLock(e) {
 			pointerLock[prefix].request.call(element);
 			document.addEventListener('mousemove', moveCallback);
 		}

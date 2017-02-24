@@ -1,1 +1,5 @@
 Header set Cache-Control "max-age=2628000, public"
+
+RedirectMatch 301 ^/tutorials/getting-started-with-threejs$ /tutorials/getting-started-with-three-js
+RedirectMatch 301 ^/tutorials/animation-with-tweenjs-in-threejs$ /tutorials/skeletal-animation-and-morph-targets-with-tweenjs-threejs
+RedirectMatch 301 ^/tutorials/ar-in-threejs-with-aruco-markers$ /tutorials/ar-in-three-js-with-aruco-markers
