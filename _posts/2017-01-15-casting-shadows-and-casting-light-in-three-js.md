@@ -8,6 +8,7 @@ category: Tutorials
 guest: true
 redirect_from:
  - tutorials/casting-light-and-shadows-in-threejs
+ - tutorials/casting-shadows-and-casting-light-in-threejs
 tags:
 -  shadows
 -  featured
