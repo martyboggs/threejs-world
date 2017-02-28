@@ -5,9 +5,11 @@ description: Tween.js really is a great tool to use with three.js. It keeps an a
 example: ex9
 author: Marty Boggs
 category: Tutorials
+redirect_from:
+ - /tutorials/animation-with-tweenjs-in-threejs
 tags:
--  animation
--  advanced
+ - animation
+ - advanced
 ---
 
 
