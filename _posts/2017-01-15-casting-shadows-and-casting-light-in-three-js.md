@@ -6,6 +6,8 @@ example: ex11
 author: Marty Boggs
 category: Tutorials
 guest: true
+redirect_from:
+ - tutorials/casting-light-and-shadows-in-threejs
 tags:
 -  shadows
 -  featured

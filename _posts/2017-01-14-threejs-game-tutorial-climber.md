@@ -4,6 +4,9 @@ title: Three.js Game Tutorial&#58; CLIMBER
 description:
 example: ex10
 author: Marty Boggs
+redirect_from:
+ - /game-tutorial-climber
+ - /tutorials/game-tutorial-climber
 tags:
 -  game
 -  animation

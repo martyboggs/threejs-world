@@ -4,6 +4,8 @@ title: AR in three.js with Aruco Markers
 example: ex7
 author: Marty Boggs
 category: Tutorials
+redirect_from:
+ - tutorials/ar-in-threejs-with-aruco-markers
 tags:
 -  featured
 -  advanced

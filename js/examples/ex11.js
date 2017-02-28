@@ -19,18 +19,18 @@ function initScene() {
 	directionalLight.position.set(115, 600, 100);
 	if (!isMobile) {
 		directionalLight.castShadow = true;
-		var d = 100;
+		var d = 200;
 		directionalLight.shadow.camera = new THREE.OrthographicCamera(-d, d, d, -d, 0, 700);
 		directionalLight.shadow.bias = 0.0001;
 		directionalLight.shadow.mapSize.width = directionalLight.shadow.mapSize.height = 1024;
-		// scene.add(new THREE.CameraHelper(directionalLight.shadow.camera));
 		scene.add(directionalLight);
 		renderer.shadowMap.enabled = true;
 		renderer.shadowMap.type = THREE.PCFShadowMap;//THREE.BasicShadowMap;
-		// var gui = new dat.GUI();
-		// gui.add(directionalLight.position, 'x', 0, 500);
-		// gui.add(directionalLight.position, 'y', 0, 600);
-		// gui.add(directionalLight.position, 'z', 0, 500);
+		scene.add(new THREE.CameraHelper(directionalLight.shadow.camera));
+		var gui = new dat.GUI();
+		gui.add(directionalLight.position, 'x', 0, 500);
+		gui.add(directionalLight.position, 'y', 0, 600);
+		gui.add(directionalLight.position, 'z', 0, 500);
 	}
 	scene.add(directionalLight);
 	var ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
@@ -39,8 +39,8 @@ function initScene() {
 	// audio
 	var listener = new THREE.AudioListener();
 	camera.add(listener);
-	flapSound = new THREE.PositionalAudio(listener);
 	var audioLoader = new THREE.AudioLoader();
+	flapSound = new THREE.PositionalAudio(listener);
 	audioLoader.load('../../sounds/flap.wav', function (buffer) {
 		flapSound.setBuffer(buffer);
 		flapSound.setRefDistance(20);
@@ -48,16 +48,90 @@ function initScene() {
 		flapSound.play();
 		flapSound.stop();
 	});
-console.log('test1');
+
 	window.addEventListener('resize', onWindowResize, false);
 
-	// axisHelper = new THREE.AxisHelper(10);
-	// scene.add(axisHelper);
+	axisHelper = new THREE.AxisHelper(10);
+	scene.add(axisHelper);
 	var gridHelper = new THREE.GridHelper(500, 50);
 	scene.add(gridHelper);
 }
 
 
+var tanks = [];
+var tankSize = [10, 4, 5];
+var tankGeom = new THREE.BoxGeometry(tankSize[0], tankSize[1], tankSize[2]);
+var rodSize = [20, 0.2, 0.2];
+var rodGeom = new THREE.BoxGeometry(rodSize[0], rodSize[1], rodSize[2]);
+var rodMat = new THREE.MeshBasicMaterial({color: 'magenta'});
+
+function Tank() {
+	tanks.push(this);
+	this.number = tanks.length + 1;
+	this.rods = [];
+	this.fireInterval = randInt(5, 15);
+	this.mesh = new THREE.Mesh(tankGeom, tan);
+	this.mesh.rotation.order = 'YXZ';
+	this.rodIndex = 0;
+	// var pos = [randInt(-100, 100), 2, randInt(-100, 100)];
+	var pos = [0, 2, 0];
+	this.mesh.position.set(pos[0], pos[1], pos[2]);
+	scene.add(this.mesh);
+	this.body = world.add({
+		type: 'box',
+		size: tankSize,
+		pos: pos,
+		move: true,
+		name: 'tank'
+	});
+	this.body.connectMesh(this.mesh);
+}
+Tank.prototype = {
+	drive: function () {
+		tmpVec.set(1, 0, 0);
+		tmpVec.applyEuler(this.mesh.rotation);
+		tmpVec.setLength(200);
+
+		// if (this.body.linearVelocity.lengthSq() < 200)
+		// 	this.body.applyImpulse(this.mesh.position, tmpVec);
+
+	},
+	fire: function() {
+		var rod = new THREE.Mesh(rodGeom, rodMat);
+		rod.position.copy(this.mesh.position);
+		rod.position.y = this.mesh.position.y + 10;
+		rod.rotation.y = this.mesh.rotation.y;
+		rod.rotation.z = Math.PI / 8;
+		rod.userData.birthday = frame;
+		rod.userData.parent = tanks.length - 1;
+		rod.userData.rodIndex = this.rodIndex; // not used
+		scene.add(rod);
+		var body = world.add({
+			type: 'box',
+			size: rodSize,
+			pos: [rod.position.x, rod.position.y, rod.position.z],
+			rot: [rod.rotation.x / toRad, rod.rotation.y / toRad, rod.rotation.z / toRad],
+			move: true,
+			name: 'rod'
+		});
+		this.rods.push(body);
+		body.connectMesh(rod);
+
+		// tmpVec needs to be reset to 1,0,0 ?
+		tmpVec.set(1, 0, 0);
+		tmpVec.applyEuler(rod.rotation);
+
+		tmpVec.setLength(200);
+		body.applyImpulse(body.getPosition(), tmpVec);
+		this.rodIndex += 1;
+	},
+	step: function () {
+		this.drive();
+		if (frame % this.fireInterval === 0) {
+			this.fire();
+		}
+	}
+};
 
 function initBird() {
 	bodyWidth = 6;
@@ -70,6 +144,7 @@ function initBird() {
 	birdBody.receiveShadow = true;
 	birdBody.position.set(0, 0, -1);
 
+	// can reuse geom for identical shapes
 	var wingR1 = new THREE.Mesh(new THREE.BoxGeometry(wing1Width, thickness, 10), blue2);
 	wingR1.position.set(-wing1Width / 2, 0.4, -1);
 	var wingR2 = new THREE.Mesh(new THREE.BoxGeometry(wing2Width, thickness, 5), blue2);
@@ -110,10 +185,11 @@ function initBird() {
 	head.position.set(0, 1, 7.8);
 
 	birdUpright = new THREE.Object3D();
+	nest = new THREE.Object3D();
 	// birdUpright.position.y = -10;
 	// scene.add(birdUpright);
 
-	bird = new THREE.Object3D().add(wingR, wingL, birdBody, head);
+	bird = new THREE.Object3D().add(wingR, wingL, birdBody, head, nest);
 	scene.add(bird);
 	bird.add(flapSound);
 }
@@ -125,12 +201,6 @@ function initTable() {
 		positions: [0,0,0, -9,-8,-9, -9,-8,9, 9,-8,-9, 9,-8,9],
 		geometry: new THREE.BufferGeometry()
 	};
-	// tableShape = {
-	// 	types: [ 'box', 'box', 'box', 'box', 'box', 'box', 'box', 'box' ],
-	// 	sizes: [ 30,5,30,  4,30,4,  4,30,4,  4,30,4,  4,30,4,  4,30,4,  4,30,4,  23,10,3 ],
-	// 	positions: [ 0,0,0,  12,-16,12,  -12,-16,12,  12,-16,-12,  -12,-16,-12,  12,16,-12,  -12,16,-12,  0,25,-12 ],
-	// 	geometry: new THREE.BufferGeometry()
-	// };
 
 	var g = new THREE.Geometry();
 	var mesh, n, m;
@@ -147,6 +217,31 @@ function initTable() {
 		g.merge(geoBox, m);
 	}
 	tableShape.geometry.fromGeometry(g);
+}
+
+function initChair() {
+	chairShape = {
+		types: ['box', 'box', 'box', 'box', 'box', 'box', 'box', 'box'],
+		sizes: [5,1,5, 1,6,1, 1,6,1, 1,6,1, 1,6,1, 1,6,1, 1,6,1, 6,3,1],
+		positions: [0,0,0,  2.5,-3,2.5,  -2.5,-3,2.5,  2.5,-3,-2.5,  -2.5,-3,-2.5,  2.5,3,-2.5,  -2.5,3,-2.5,  0,3,-2.5 ],
+		geometry: new THREE.BufferGeometry()
+	};
+
+	var g = new THREE.Geometry();
+	var mesh, n, m;
+	for (var i = 0; i < chairShape.types.length; i += 1) {
+		n = i * 3;
+		m = new THREE.Matrix4().makeTranslation(
+			chairShape.positions[n + 0],
+			chairShape.positions[n + 1],
+			chairShape.positions[n + 2]);
+		m.scale(new THREE.Vector3(
+			chairShape.sizes[n + 0],
+			chairShape.sizes[n + 1],
+			chairShape.sizes[n + 2]));
+		g.merge(geoBox, m);
+	}
+	chairShape.geometry.fromGeometry(g);
 }
 
 function initPhysics() {
@@ -189,20 +284,53 @@ function initPhysics() {
 		{pos: [-36, 48, 0]},
 		{pos: [-36, 64, 0]},
 	];
-	placeTables(tables);
+	placeCompounds(tables, tableShape, 'table');
+	var chairs = [
+		{pos: [-20, 16, 0]},
+		{pos: [-20, 32, 0]},
+		{pos: [-20, 48, 0]},
+		{pos: [-20, 64, 0]}
+	];
+	placeCompounds(chairs, chairShape, 'chair');
 
 	var boundaries = [
 		{pos: [-250, 250, 0], size: [1, 500, 500], color: gray},
 		{pos: [250, 250, 0], size: [1, 500, 500], color: gray},
 		{pos: [0, 250, 250], size: [500, 500, 1], color: gray},
-		{pos: [0, 250, -250], size: [500, 500, 1], color: gray}
+		{pos: [0, 250, -250], size: [500, 500, 1], color: gray},
+		{pos: [0, 100, 200], size: [500, 60, 10], color: blue1},
+		{pos: [0, 30, 200], size: [500, 60, 10], color: blue1},
+		{pos: [-127.5, 65, 200], size: [245, 10, 10], color: blue1},
+		{pos: [127.5, 65, 200], size: [245, 10, 10], color: blue1},
 	];
 	placeBoundaries(boundaries);
 }
 
+function EasyGui(parent) {
+	var guiEl = document.createElement('div');
+	guiEl.className = 'gui';
+	guiEl.innerHTML = `
+	<div class="scoreBox"><span id="score">0</span> pts.</div>
+	<div>Three.js World</div>
+	<div class="livesBox"><span id="lives">3</span> lives</div>
+	`;
+	parent.appendChild(guiEl);
+	this.score = 0;
+	this.lives = 3;
+}
+EasyGui.prototype = {
+	scoreAdd: function (points) {
+		this.score += points;
+		document.getElementById('score').innerHTML = this.score;
+	},
+	livesAdd: function (lives) {
+		this.score += lives;
+		document.getElementById('lives').innerHTML = this.lives;
+	}
+};
 
 function render() {
-	// document.getElementById('info').innerHTML = world.getInfo();
+	document.getElementById('info').innerHTML = world.getInfo();
 
 	wingAction = 'hover';
 	// wingsAway = false
@@ -291,19 +419,15 @@ function render() {
 
 	birdY = camera.rotation.y;
 
-	if (keyboard.pressed('w') || fmb.clicking.UP) {
-		// bird.rotation.x = 0.5;
+	if (keyboard.pressed('w') || keyboard.pressed('up') || fmb.clicking.UP) {
 		bodies[0].applyImpulse(bodies[0].getPosition(), new OIMO.Vec3(-500 * Math.sin(birdY), 0, -500 * Math.cos(birdY)));
-	} else if (keyboard.pressed('s') || fmb.clicking.DOWN) {
-		// bird.rotation.x = -0.5;
+	} else if (keyboard.pressed('s') || keyboard.pressed('down') || fmb.clicking.DOWN) {
 		bodies[0].applyImpulse(bodies[0].getPosition(), new OIMO.Vec3(500 * Math.sin(birdY), 0, 500 * Math.cos(birdY)));
 	}
 
-	if (keyboard.pressed('a') || fmb.clicking.LEFT) {
-		// bird.rotation.z = -0.5;
+	if (keyboard.pressed('a') || keyboard.pressed('left') || fmb.clicking.LEFT) {
 		bodies[0].applyImpulse(bodies[0].getPosition(), new OIMO.Vec3(-500 * Math.cos(-birdY), 0, -500 * Math.sin(-birdY)));
-	} else if (keyboard.pressed('d') || fmb.clicking.RIGHT) {
-		// bird.rotation.z = 0.5;
+	} else if (keyboard.pressed('d') || keyboard.pressed('right') || fmb.clicking.RIGHT) {
 		bodies[0].applyImpulse(bodies[0].getPosition(), new OIMO.Vec3(500 * Math.cos(-birdY), 0, 500 * Math.sin(-birdY)));
 	}
 
@@ -316,10 +440,24 @@ function render() {
 	// make bird upright
 	birdUpright.position.copy(bird.position);
 	birdUpright.rotation.copy(bird.rotation);
-	birdUpright.translateOnAxis(tmpVec.set(0, 1, 0), -10);
+	tmpVec = tmpVec.set(0, 1, 0);
+	birdUpright.translateOnAxis(tmpVec, -10);
+
 	bodies[0].applyImpulse(birdUpright.position, {x: 0, y: -100, z: 0});
 
+
+
+
+
+
+
+
+
+
+
 	// // collisions
+	bodyRemoved = false;
+
 	var birdCollide = world.checkContact('bird', 'ground');
 	if (birdCollide && bodies[0].linearVelocity.lengthSq() > 5) {
 		sound.play('drag');
@@ -330,23 +468,62 @@ function render() {
 	}
 
 	if (hardCollision('table')) {
-		sound.play('hit');
+		sound.play('crash');
+		gui.scoreAdd(1);
+	// } else if (softCollision('table')) {
+	// 	sound.play('crash');
+	}
+
+	loop1:
+	for (var i = 0; i < tanks.length; i += 1) {
+		tanks[i].step();
+		for (var j = 0; j < tanks[i].rods.length; j += 1) {
+			if (frame - tanks[i].rods[j].mesh.userData.birthday > 360) {
+				bodyRemoved = true;
+				scene.remove(tanks[i].rods[j].mesh);
+				world.removeRigidBody(tanks[i].rods[j]);
+				tanks[i].rods.splice(j, 1);
+				break loop1;
+			}
+		}
+	}
+
+	rod = null;
+	if (rod = touchingRod()) {
+		bodyRemoved = true;
+		var parent = tanks[rod.mesh.userData.parent];
+		parent.rods.splice(parent.rods.indexOf(rod), 1);
+		world.removeRigidBody(rod);
+		THREE.SceneUtils.attach(rod.mesh, scene, nest);
+	}
+
+	// set lastVel after calls to hardCollision() or shotbird
+	var body = world.rigidBodies;
+	while (body !== null) {
+		body.lastVel = body.linearVelocity.lengthSq();
+		body = body.next;
+	}
+
+	// fix memory leak
+	if (bodyRemoved) {
+		while (world.contacts !== null)
+			world.removeContact(world.contacts);
 	}
 
 	frame += 1;
-
 	requestAnimationFrame(render);
 	renderer.render(scene, camera);
 	TWEEN.update();
+	world.step();
 }
 
-var matrix = new THREE.Matrix4();
 var axisHelper;
 var scene, camera, renderer;
-var bird, birdBody, wingL, wingR, wingtipL, wingtipR, head, birdUpright;
+var bird, birdBody, wingL, wingR, wingtipL, wingtipR, head, birdUpright, nest;
 var bodyWidth;
 var world, bodies = [], editor;
 var wingTimer = 0;
+var toRad = Math.PI / 180;
 var up = false;
 var wingAction = 'hover';
 var lastAction = wingAction;
@@ -363,6 +540,7 @@ var white = new THREE.MeshLambertMaterial({color: 'white'});
 var yellow = new THREE.MeshLambertMaterial({color: 'yellow'});
 var birdY;
 var tableShape;
+var chairShape;
 var geoBox = new THREE.BoxGeometry(1, 1, 1);
 var buffGeoBox = new THREE.BufferGeometry();
 buffGeoBox.fromGeometry(new THREE.BoxGeometry(1, 1, 1));
@@ -371,8 +549,18 @@ var isMobile;
 var flapSound;
 var fullscreen = false;
 var tmpVec = new THREE.Vector3();
+var tmpVec2 = new THREE.Vector3();
+var tmpMatrix = new THREE.Matrix4();
+var tmpQuat = new THREE.Quaternion();
+var tmpEuler = new THREE.Euler();
+var tanks = [];
+var bodyRemoved = false;
+
+// tmpQuat.setFromEuler(rod.position);
+// tmpVec.applyQuaternion(tmpQuat);
 
 initScene();
+var gui = new EasyGui(document.getElementById('canvases'));
 var fmb = new FlexboxMobileButtons({parent: document.getElementById('canvases')});
 fmb.row()
 .button('UP')
@@ -384,32 +572,73 @@ fmb.row()
 .init();
 initBird();
 initTable();
+initChair();
 initPhysics();
-sound.init();
+
+new Tank();
+// new Tank();
+// new Tank();
+// new Tank();
+// new Tank();
+sound.init({
+	drag: {type: 'loop'},
+	flap: {type: 'loop'},
+	crash: {type: 'overlap'}
+});
 render();
-world.play();
 
 
 /*
 	goals:
-	for comp and mobile and vr (tapping? optional)
-	make no tapping still engaging (vr cursor)
-	fun game, tapping, knock over things
-	simple physics (1 day) otherwise collisions need to be done by hand
+	fun game,
+	vr
+	how to fly without clicking?? not important. If no bluetooth, user can use mobile buttons
 	music, sound effects
-	ice cave explains sliding, objects melting into ground
+	lab
+	multiplier room. navigate to one room for snapshot, new birds show up in other side
+	f
+	camera moves in middle, between house and lab (slerp with bounce)
 	procedurally generated shelves and other items
+	create nests out of fuel rods/bundles
+	lab periodically dumps rods into dumpster
+	lay eggs of bigger and bigger size... glowing eggs contain multiple birds
+	powerups make bird cloning possible
+	automation: babies created automatically with cloning
 
-	Another commonly implemented spring constraint is to enforce a upright orientation of a body, for example, you could apply a spring torque proportional to the difference between the current orientation and an upright orientation, coupled with a damper proportional to angular velocity. Such a constraint is called a ‘stay upright constraint’ and its often used for sci-fi hover racing games.
+	player collects rods to create nests
+	bundle rods
+	nests go in tree, eggs go in nests, babies
+	bigger nests hold more eggs
+	babies increase rods/min linearly
+	if tree full, can stockpile rods
+	automation -- rods added to stockpile
+	can buy eggs with real money
+	eggs pop out periodically
+	fly into shop for items. there it tells you how many babies
 
-	// // config info
-	// if( o.config[0] !== undefined ) sc.density = o.config[0];
-	// if( o.config[1] !== undefined ) sc.friction = o.config[1];
-	// if( o.config[2] !== undefined ) sc.restitution = o.config[2];
-	// if( o.config[3] !== undefined ) sc.belongsTo = o.config[3];
-	// if( o.config[4] !== undefined ) sc.collidesWith = o.config[4];
+	rods are coins
+	eggs are virtual cards
+	babies are employees
+	xp pts
+	can't trade rods to get eggs (doesn't make sense anyway)
+	can't buy nests with rods... need to be built by collecting
+	can sell eggs to get rods
+
+	gui: rods eggs xp
+
+	factors: (for limited factors, just make achieving the limit nearly impossible)
+		number of trees (1 tree - 5 trees) buy with rods or eggs
+		number of babies (0 - 10 million) buy with rods or eggs
+		babies per egg (1 - 5)
+		powerups:
+			direct: increase rod rate (0 - whatever) rods/min
+			number rods can collect at once... nest size (100 - 1000)
+			egg hatch rate (from 10 hours to 1 hour) glowing egg (20hrs - 2 hrs)
+			powerups found in lab: garbage dump (dumpster closer to trees)
+			odds of getting glowing egg
+	problems:
+		rods become worthless
 */
-
 
 function onWindowResize() {
 	var w = parseInt(getComputedStyle(renderer.domElement).width);
@@ -420,23 +649,23 @@ function onWindowResize() {
 	renderer.domElement.style.width = '100%';
 }
 
-
-function placeTables(tables) {
+function placeCompounds(items, shape, name) {
 	var geometry, body, mesh;
-	for (var i = 0; i < tables.length; i += 1) {
+	for (var i = 0; i < items.length; i += 1) {
 		body = world.add({
-			type: tableShape.types,
-			size: tableShape.sizes,
-			pos: tables[i].pos,
-			posShape: tableShape.positions,
+			type: shape.types,
+			size: shape.sizes,
+			pos: items[i].pos,
+			posShape: shape.positions,
 			move: true,
 			world: world,
-			name: 'table',
+			name: name,
 			config: [0.2, 0.4, 0.1]
 		});
-		mesh = new THREE.Mesh(tableShape.geometry, randomMat());
+		mesh = new THREE.Mesh(shape.geometry, randomMat());
 		mesh.castShadow = true;
 		mesh.receiveShadow = true;
+		// mesh.add(hitSound);
 		scene.add(mesh);
 		body.connectMesh(mesh);
 	}
@@ -461,7 +690,7 @@ function placeBoundaries(boundaries) {
 			pos: boundary.pos,
 			density: 1,
 			move: false,
-			config: [0.2, 0.4,0.1]
+			config: [0.2, 0.4, 0.1]
 		});
 		geometry = new THREE.BoxGeometry(boundary.size[0], boundary.size[1], boundary.size[2]);
 		mesh = new THREE.Mesh(geometry, boundary.color);
@@ -480,8 +709,6 @@ function placeGround(ground) {
 	var mesh = new THREE.Mesh(buffGeoBox, gray);
 	mesh.scale.set(ground.size[0], ground.size[1], ground.size[2]);
 	mesh.position.set(ground.pos[0], ground.pos[1], ground.pos[2]);
-	// if (ground.rotation)
-	// 	mesh.rotation.set(ground.rotation[0]*ToRad, ground.rotation[1]*ToRad, ground.rotation[2]*ToRad);
 	mesh.castShadow = true;
 	mesh.receiveShadow = true;
 	scene.add(mesh);
@@ -526,10 +753,11 @@ function rand(low, high) {
 function hardCollision(name) {
 	var n1, n2;
 	var contact = world.contacts;
+
 	while (contact !== null) {
 		if ((contact.body1.name === name || contact.body2.name === name)
-		&& (contact.body1.linearVelocity.lengthSq() > 300 || contact.body2.linearVelocity.lengthSq() > 300)) {
-			console.log(name, contact.body1.name, contact.body2.name, contact.body1.linearVelocity.lengthSq(), contact.body2.linearVelocity.lengthSq());
+		&& (Math.abs(contact.body1.linearVelocity.lengthSq() - contact.body1.lastVel) > 400
+		||  Math.abs(contact.body2.linearVelocity.lengthSq() - contact.body2.lastVel) > 400)) {
 			return true;
 		} else {
 			contact = contact.next;
@@ -541,19 +769,33 @@ function hardCollision(name) {
 function softCollision(name) {
 	var n1, n2;
 	var contact = world.contacts;
+
 	while (contact !== null) {
-		if (
-			(contact.body1.name === name || contact.body2.name === name)
-			&& (
-				contact.body1.linearVelocity.lengthSq() > 5 && contact.body1.linearVelocity.lengthSq() <= 15
-			) || (
-				contact.body2.linearVelocity.lengthSq() > 5 && contact.body2.linearVelocity.lengthSq() <= 15
-			)
-		) {
+		if ((contact.body1.name === name || contact.body2.name === name)
+		&& (Math.abs(contact.body1.linearVelocity.lengthSq() - contact.body1.lastVel) > 100
+		||  Math.abs(contact.body2.linearVelocity.lengthSq() - contact.body2.lastVel) > 100)) {
 			return true;
 		} else {
 			contact = contact.next;
 		}
+	}
+	return false;
+}
+
+function touchingRod() {
+	var contact = world.contacts;
+
+	while (contact !== null) {
+		if ((contact.body1.name === 'rod' && contact.body2.name === 'bird')
+		|| (contact.body1.name === 'bird' && contact.body2.name === 'rod')) {
+			var rod = contact.body1.name === 'rod' ? contact.body1 : contact.body2;
+			if (Math.abs(rod.linearVelocity.lengthSq() - rod.lastVel) > 200) {
+				return rod;
+			}
+			contact = contact.next;
+			continue;
+		}
+		contact = contact.next;
 	}
 	return false;
 }

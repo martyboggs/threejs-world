@@ -5,10 +5,13 @@ description: Meet Hugbot. A robot designed for expressing affection. It can be y
 example: ex4
 author: Marty Boggs
 category: Tutorials
+redirect_from:
+ - tutorials/character-rigging-in-three-js
+ - tutorials/exporting-a-rigged-monster-robot
 tags:
--  advanced
--  rigging
--  featured
+ - advanced
+ - rigging
+ - featured
 ---
 Meet Hugbot. A robot designed for expressing affection. It can be yours for 9000 dollars US or by
 <!--more-->

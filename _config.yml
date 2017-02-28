@@ -6,6 +6,8 @@ repository: martyboggs/threejs-world
 permalink: /:categories/:title
 excerpt_separator: <!--more-->
 # incremental: true
+gems:
+- jekyll-redirect-from
 exclude:
 -  notes.txt
 -  study.txt

@@ -28,9 +28,9 @@ To create the animation for the wings getting folded in, I used Tween.js. The an
 
 ## Taming the Bird
 
-I didn't realize how complicated the physics of birds flying is until I tried orienting my bird correctly. With little movements of their wings against the force of the wind resistance, birds can control their speed and direction with ease. Since my bird lives in a vacuum, however, I can't use these forces and have to fake it.
+I didn't realize how complicated the physics of birds flying is until I tried orienting my bird correctly. With little movements of their wings against the force of the wind resistance, birds can control their speed and direction with ease. Since my bird lives in a vacuum, so I can't use these forces and have to fake it.
 
-Just controlling the bird's roll (z-axis rotation) was a challenge. I added a constant impulse to an anchor point on its belly. It works, but gives the bird a wobbly movement.
+Just controlling the bird's roll (z-axis rotation) was a challenge. I added a constant impulse to an anchor point on its belly. It works, but makes it wobbly.
 
 ```javascript
 // make bird upright

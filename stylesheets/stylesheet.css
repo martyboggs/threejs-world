@@ -1121,3 +1121,18 @@ dl dd {
 	font-weight: 100;
 }
 
+.gui {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	color: white;
+	z-index: 2147483647;
+}
+.gui > * {
+	width: 33.33333%;
+	text-align: center;
+}

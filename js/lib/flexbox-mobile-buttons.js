@@ -175,10 +175,12 @@ FlexboxMobileButtons.prototype = {
 		function goPointerLock(e) {
 			pointerLock[prefix].request.call(element);
 			document.addEventListener('mousemove', moveCallback);
+			button.style.display = 'none';
 		}
 		function pointerLockChanged(e) {
 			if (!document.pointerLockElement && !document.mozPointerLockElement) {
 				document.removeEventListener('mousemove', moveCallback);
+				button.style.display = '';
 			}
 		}
 		function moveCallback(e) {
