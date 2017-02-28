@@ -58,35 +58,34 @@ function initScene() {
 }
 
 
-var tanks = [];
-var tankSize = [10, 4, 5];
-var tankGeom = new THREE.BoxGeometry(tankSize[0], tankSize[1], tankSize[2]);
+var reactors = [];
+var reactorSize = [10, 4, 5];
+var reactorGeom = new THREE.BoxGeometry(reactorSize[0], reactorSize[1], reactorSize[2]);
 var rodSize = [20, 0.2, 0.2];
 var rodGeom = new THREE.BoxGeometry(rodSize[0], rodSize[1], rodSize[2]);
 var rodMat = new THREE.MeshBasicMaterial({color: 'magenta'});
 
-function Tank() {
-	tanks.push(this);
-	this.number = tanks.length + 1;
+function Reactor() {
+	reactors.push(this);
+	this.number = reactors.length + 1;
 	this.rods = [];
 	this.fireInterval = randInt(5, 15);
-	this.mesh = new THREE.Mesh(tankGeom, tan);
+	this.mesh = new THREE.Mesh(reactorGeom, tan);
 	this.mesh.rotation.order = 'YXZ';
 	this.rodIndex = 0;
-	// var pos = [randInt(-100, 100), 2, randInt(-100, 100)];
-	var pos = [0, 2, 0];
+	var pos = [0, 20, 250];
 	this.mesh.position.set(pos[0], pos[1], pos[2]);
 	scene.add(this.mesh);
 	this.body = world.add({
 		type: 'box',
-		size: tankSize,
+		size: reactorSize,
 		pos: pos,
 		move: true,
-		name: 'tank'
+		name: 'reactor'
 	});
 	this.body.connectMesh(this.mesh);
 }
-Tank.prototype = {
+Reactor.prototype = {
 	drive: function () {
 		tmpVec.set(1, 0, 0);
 		tmpVec.applyEuler(this.mesh.rotation);
@@ -103,7 +102,7 @@ Tank.prototype = {
 		rod.rotation.y = this.mesh.rotation.y;
 		rod.rotation.z = Math.PI / 8;
 		rod.userData.birthday = frame;
-		rod.userData.parent = tanks.length - 1;
+		rod.userData.parent = reactors.length - 1;
 		rod.userData.rodIndex = this.rodIndex; // not used
 		scene.add(rod);
 		var body = world.add({
@@ -298,11 +297,20 @@ function initPhysics() {
 		{pos: [250, 250, 0], size: [1, 500, 500], color: gray},
 		{pos: [0, 250, 250], size: [500, 500, 1], color: gray},
 		{pos: [0, 250, -250], size: [500, 500, 1], color: gray},
-		{pos: [0, 100, 200], size: [500, 60, 10], color: blue1},
-		{pos: [0, 30, 200], size: [500, 60, 10], color: blue1},
-		{pos: [-127.5, 65, 200], size: [245, 10, 10], color: blue1},
-		{pos: [127.5, 65, 200], size: [245, 10, 10], color: blue1},
+
+		//y
+		//30
+		//40 window
+		//30
+
+		//z 100 (40) 220 (40) 100 = 500
+		{pos: [0, 30 + 40 + 15, 100], size: [500, 30, 10], color: blue2},
+		{pos: [0, 15, 100], size: [500, 30, 10], color: blue2},
+		{pos: [250 - 50, 50, 100], size: [100, 40, 10], color: blue2},
+		{pos: [-250 + 50, 50, 100], size: [100, 40, 10], color: blue2},
+		{pos: [0, 50, 100], size: [220, 40, 10], color: blue2},
 	];
+
 	placeBoundaries(boundaries);
 }
 
@@ -435,7 +443,11 @@ function render() {
 		bodies[0].resetPosition(0, 40, 0);
 	}
 
-	camera.lookAt(bird.position);
+	if (keyboard.pressed('k') && nest.children.length > 20) {
+		THREE.SceneUtils.detach(nest, bird, scene);
+		nest = new THREE.Object3D();
+		bird.add(nest);
+	}
 
 	// make bird upright
 	birdUpright.position.copy(bird.position);
@@ -450,7 +462,12 @@ function render() {
 
 
 
-
+	if (bird.position.z > 100 && camera.position.z === 40) {
+		new TWEEN.Tween(camera.position).to({z: 200}, 1000).easing(TWEEN.Easing.Bounce.Out).start();
+	} else if (bird.position.z < 100 && camera.position.z === 200) {
+		new TWEEN.Tween(camera.position).to({z: 40}, 1000).easing(TWEEN.Easing.Bounce.Out).start();
+	}
+	camera.lookAt(bird.position);
 
 
 
@@ -475,14 +492,14 @@ function render() {
 	}
 
 	loop1:
-	for (var i = 0; i < tanks.length; i += 1) {
-		tanks[i].step();
-		for (var j = 0; j < tanks[i].rods.length; j += 1) {
-			if (frame - tanks[i].rods[j].mesh.userData.birthday > 360) {
+	for (var i = 0; i < reactors.length; i += 1) {
+		reactors[i].step();
+		for (var j = 0; j < reactors[i].rods.length; j += 1) {
+			if (frame - reactors[i].rods[j].mesh.userData.birthday > 360) {
 				bodyRemoved = true;
-				scene.remove(tanks[i].rods[j].mesh);
-				world.removeRigidBody(tanks[i].rods[j]);
-				tanks[i].rods.splice(j, 1);
+				scene.remove(reactors[i].rods[j].mesh);
+				world.removeRigidBody(reactors[i].rods[j]);
+				reactors[i].rods.splice(j, 1);
 				break loop1;
 			}
 		}
@@ -491,7 +508,7 @@ function render() {
 	rod = null;
 	if (rod = touchingRod()) {
 		bodyRemoved = true;
-		var parent = tanks[rod.mesh.userData.parent];
+		var parent = reactors[rod.mesh.userData.parent];
 		parent.rods.splice(parent.rods.indexOf(rod), 1);
 		world.removeRigidBody(rod);
 		THREE.SceneUtils.attach(rod.mesh, scene, nest);
@@ -553,7 +570,7 @@ var tmpVec2 = new THREE.Vector3();
 var tmpMatrix = new THREE.Matrix4();
 var tmpQuat = new THREE.Quaternion();
 var tmpEuler = new THREE.Euler();
-var tanks = [];
+var reactors = [];
 var bodyRemoved = false;
 
 // tmpQuat.setFromEuler(rod.position);
@@ -574,12 +591,11 @@ initBird();
 initTable();
 initChair();
 initPhysics();
-
-new Tank();
-// new Tank();
-// new Tank();
-// new Tank();
-// new Tank();
+new Reactor();
+// new Reactor();
+// new Reactor();
+// new Reactor();
+// new Reactor();
 sound.init({
 	drag: {type: 'loop'},
 	flap: {type: 'loop'},

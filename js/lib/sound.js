@@ -1,52 +1,72 @@
 var sound = (function () {
 	'use strict';
-	var urls = ['climb', 'drag', 'flap', 'hit', 'jump'];
-	var snd = [];
 	var callback = null;
 	var pool = [];
 	var playing = {};
+	var index = 0;
+	var sounds = {};
 	sound = {
-		init: function (Callback) {
+		init: function (Sounds, Callback) {
+			sounds = Sounds;
 			callback = Callback || function () {};
-			this.load(urls[0]);
+			this.keys = Object.keys(sounds);
+			if (!this.keys.length) return;
+			this.load_next(this.keys[index]);
 		},
 		load_next: function () {
-			urls.shift();
-			if (urls.length === 0) callback();
-			else sound.load(urls[0]);
+			if (index < this.keys.length) {
+				console.log(index, this.keys[index]);
+				this.load(this.keys[index]);
+			} else {
+				callback();
+			}
 		},
 		load: function (name) {
 			var audio = document.createElement('audio');
 			audio.style.display = 'none';
 			audio.src = '/sounds/'+ name +'.wav';
 			audio.autoplay = false;
-			audio.loop = true;
+			if (sounds[name].type === 'loop') {
+				audio.loop = true;
+			}
+			sounds[name].lastFrame = false;
+			var self = this;
 			audio.addEventListener('loadeddata', function () {
-				snd[name] = audio;
-				sound.load_next();
+				sounds[name].audio = audio;
+				index += 1;
+				self.load_next();
 			}, false);
 		},
 		play: function (name) {
-			if (snd[name]) {
-				snd[name].play();
-				// var id = pool.length;
-				// pool.push(snd[name].cloneNode());
-				// pool[id].play();
-				// pool[id].onended = function () {
-				// 	pool.splice(pool.indexOf(this), 1);
-				// 	delete this;
-				// }
+			if (sounds[name] && sounds[name].audio) {
+				if (sounds[name].type === 'overlap') {
+					if (sounds[name].lastFrame) return;
+					sounds[name].lastFrame = true;
+					setTimeout(function () {
+						sounds[name].lastFrame = false;
+					}, 40);
+					var id = pool.length;
+					pool.push(sounds[name].audio.cloneNode());
+					pool[id].play();
+					pool[id].onended = function () {
+						pool.splice(pool.indexOf(this), 1);
+						delete this;
+					}
+				}
+				sounds[name].audio.play();
 			}
 		},
 		stop: function (name) {
-			if (snd[name]) {
-				snd[name].pause();
-				snd[name].currentTime = 0;
-			}
+			sounds[name].audio.pause();
+			sounds[name].audio.currentTime = 0;
 		},
 		isPlaying: function (name) {
-			if (snd[name]) return !snd[name].paused || snd[name].currentTime;
-			else return false;
+			if (sounds[name]) {
+				if (sounds[name].audio) return !sounds[name].audio.paused || sounds[name].audio.currentTime;
+				else return false;
+			} else {
+				return false;
+			}
 		}
 	}
 	return sound;
