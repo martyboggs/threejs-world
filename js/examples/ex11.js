@@ -309,6 +309,8 @@ function initPhysics() {
 		{pos: [250 - 50, 50, 100], size: [100, 40, 10], color: blue2},
 		{pos: [-250 + 50, 50, 100], size: [100, 40, 10], color: blue2},
 		{pos: [0, 50, 100], size: [220, 40, 10], color: blue2},
+
+		{pos: [0, 30 / 2, 250 - 10 / 2], size: [120, 30, 10], color: blue2},
 	];
 
 	placeBoundaries(boundaries);
@@ -804,12 +806,12 @@ function touchingRod() {
 	while (contact !== null) {
 		if ((contact.body1.name === 'rod' && contact.body2.name === 'bird')
 		|| (contact.body1.name === 'bird' && contact.body2.name === 'rod')) {
-			var rod = contact.body1.name === 'rod' ? contact.body1 : contact.body2;
-			if (Math.abs(rod.linearVelocity.lengthSq() - rod.lastVel) > 200) {
+			// var rod = contact.body1.name === 'rod' ? contact.body1 : contact.body2;
+			// if (Math.abs(rod.linearVelocity.lengthSq() - rod.lastVel) > 200) {
 				return rod;
-			}
-			contact = contact.next;
-			continue;
+			// }
+			// contact = contact.next;
+			// continue;
 		}
 		contact = contact.next;
 	}

@@ -22,20 +22,20 @@ var sound = (function () {
 			}
 		},
 		load: function (name) {
+			var self = this;
 			var audio = document.createElement('audio');
 			audio.style.display = 'none';
-			audio.src = '/sounds/'+ name +'.wav';
 			audio.autoplay = false;
 			if (sounds[name].type === 'loop') {
 				audio.loop = true;
 			}
 			sounds[name].lastFrame = false;
-			var self = this;
 			audio.addEventListener('loadeddata', function () {
 				sounds[name].audio = audio;
 				index += 1;
 				self.load_next();
 			}, false);
+			audio.src = '/sounds/'+ name +'.wav';
 		},
 		play: function (name) {
 			if (sounds[name] && sounds[name].audio) {
