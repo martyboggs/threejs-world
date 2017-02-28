@@ -330,7 +330,7 @@ EasyGui.prototype = {
 };
 
 function render() {
-	document.getElementById('info').innerHTML = world.getInfo();
+	// document.getElementById('info').innerHTML = world.getInfo();
 
 	wingAction = 'hover';
 	// wingsAway = false

@@ -15,7 +15,7 @@ tags:
 ---
 <div id="info"></div>
 Like most people, I love animated violence. It feels good to break things or knock them over. Maybe it's to assert our dominance. Maybe it's to destroy the weak making way for the strong. I don't know, but here's how I programmed a bird.
-
+<!--more-->
 ## Building It
 
 Keeping in mind the challenges I dealt with for Climber, I had the idea to build a fun, physics based game that would work on mobile and possibly in VR. First, I build the bird with primitive objects: a sphere for the head, cylinders for the eyes, cones for the beak and boxes for the body and wings. This saved me from having to work with Blender or other modeling tool. I noticed three.js has extrude and bevel methods, so I could create more complex shapes in the future.
