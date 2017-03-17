@@ -70,7 +70,7 @@ redirect_from:
 				{% include structured-data-loop.html %}
 				<article class="link">
 					<a href="{{ post.url }}">{{ post.title }}</a>
-					<p><strong>{{ post.date | date: "%B %e, %Y" }}</strong> {{ post.category }} <a href="{{site.url}}{{post.url}}"></a></p>
+					<p>{{ post.category }} <a href="{{site.url}}{{post.url}}"></a></p>
 				</article>
 			{% endfor %}
 		</div>

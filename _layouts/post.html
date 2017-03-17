@@ -10,7 +10,7 @@ layout: default
 		<div class="share-placeholder"></div>
 	</div>
 	<div class="post-meta">
-		<p class="category"><a href="{{site.url}}/category/{{page.category}}"></i>{{page.category}}</a></p>
+		<p class="category"><a href="{{site.url}}/category/{{page.category}}">{{page.category}}</a></p>
 		<div class="tags">
 			{% for tag in page.tags %}
 				<a class="tag" href="{{site.url}}/tag/{{tag | slugify}}"><i class="fa fa-tag"></i>{{tag}}</a>

@@ -78,7 +78,7 @@
 	{{content}}
 
 	<footer>
-		<a href="{{site.url}}/"><h1>Three<span class="accent-color">.</span>js <span class="accent-color">World</span></h1></a>
+		<a class="footer-logo" href="{{site.url}}/"><h1>Three<span class="accent-color">.</span>js <span class="accent-color">World</span></h1></a>
 		<div class="">
 			{% for category in site.categories limit: 3 %}
 				<a href="{{site.url}}/category/{{category | first | slugify}}">{{category | first}}</a>{% unless forloop.last %}{% endunless %}

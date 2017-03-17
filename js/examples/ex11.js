@@ -10,7 +10,8 @@ function initScene() {
 	var n = navigator.userAgent;
 	var antialias = true;
 	if (n.match(/Android/i) || n.match(/webOS/i) || n.match(/iPhone/i) || n.match(/iPad/i) || n.match(/iPod/i) || n.match(/BlackBerry/i) || n.match(/Windows Phone/i)) { isMobile = true;  antialias = false; }
-	renderer = new THREE.WebGLRenderer({antialias: antialias, precision: 'mediump'});
+	// precision: 'mediump'
+	renderer = new THREE.WebGLRenderer({antialias: antialias});
 	renderer.setClearColor('white', 1);
 	document.getElementById('canvases').appendChild(renderer.domElement);
 	onWindowResize();
@@ -386,7 +387,7 @@ function Messages(target) {
 	this.messages = [];
 	this.container = document.createElement('div');
 	this.container.className = this.container.id = 'messages';
-	this.container.innerHTML = ``;
+	this.container.innerHTML = '';
 	target.appendChild(this.container);
 }
 Messages.prototype = {
@@ -461,20 +462,18 @@ function EasyGui(parent) {
 	this.lastRods = this.rods;
 	var guiEl = document.createElement('div');
 	guiEl.className = 'gui';
-	guiEl.innerHTML = `
-	<div class="top-row">
-		<div>Three.js World</div>
-		<div class="holdingBox"><span id="holding">` + this.holding +
-		`</span>/<span id="rodLimit">` + this.rodLimit + `</span></div>
-		<div class="rodsBox"><span id="rods">` + Math.round(this.rods) +`</span> rods</div>
-		<div class="eggsBox"><span id="eggs">` + this.eggs + `</span> eggs</div>
-		<div class="xpBox"><span id="level" class="level">` + this.level +
-		`</span> <div class="xp"><span id="xp-bar" class="bar"></span><span id="xp">` + Math.round(this.xp) + `</span></div></div>
-	</div>
-	<div class="bottom-row">
-		<div class="rate"><span id="rate">0</span> rods/min.</div>
-	</div>
-	`;
+	guiEl.innerHTML = '<div class="top-row">' +
+		'<div>Three.js World</div>' +
+		'<div class="holdingBox"><span id="holding">' + this.holding +
+		'</span>/<span id="rodLimit">' + this.rodLimit + '</span></div>' +
+		'<div class="rodsBox"><span id="rods">' + Math.round(this.rods) + '</span> rods</div>' +
+		'<div class="eggsBox"><span id="eggs">' + this.eggs + '</span> eggs</div>' +
+		'<div class="xpBox"><span id="level" class="level">' + this.level +
+		'</span> <div class="xp"><span id="xp-bar" class="bar"></span><span id="xp">' + Math.round(this.xp) + '</span></div></div>' +
+	'</div>' +
+	'<div class="bottom-row">' +
+		'<div class="rate"><span id="rate">0</span> rods/min.</div>' +
+	'</div>';
 	parent.appendChild(guiEl);
 	this.setBar('xp-bar', this.xp, Math.pow(this.level, 3));
 }
@@ -690,26 +689,37 @@ function render() {
 		bodies[0].resetPosition(0, 40, 0);
 	}
 
-	// stockpile drop
-	if ((keyboard.pressed('k') || fmb.clicking.K) && gui.holding) {
-		gui.holding = 0;
-		document.getElementById('holding').innerHTML = 0;
-		if (bird.position.x > stockpilePos[0] - 20 && bird.position.x < stockpilePos[0] + 20 &&
-		bird.position.z > stockpilePos[1] - 20 && bird.position.z < stockpilePos[1] + 20) {
-			gui.add('rods', nest.children.length);
+	if (keyboard.pressed('k') || fmb.clicking.K) {
+		// tapping
+		if (!kTapped) {
+			kTapped = true;
+			// create rod element w css which flies up toward rods
+			gui.add('rods', 1);
 		}
-		THREE.SceneUtils.detach(nest, bird, scene);
-		var body = world.add({
-			type: 'box',
-			size: [8, 4, 10],
-			pos: [nest.position.x, nest.position.y, nest.position.z],
-			rot: [nest.rotation.x / toRad, nest.rotation.y / toRad, nest.rotation.z / toRad],
-			move: true,
-			name: 'nest'
-		});
-		body.connectMesh(nest);
-		nest = new THREE.Object3D();
-		bird.add(nest);
+		// stockpile drop
+		if (gui.holding) {
+			gui.holding = 0;
+			document.getElementById('holding').innerHTML = 0;
+			if (bird.position.x > stockpilePos[0] - 20 && bird.position.x < stockpilePos[0] + 20 &&
+			bird.position.z > stockpilePos[1] - 20 && bird.position.z < stockpilePos[1] + 20) {
+				gui.add('rods', nest.children.length);
+			}
+			THREE.SceneUtils.detach(nest, bird, scene);
+			var body = world.add({
+				type: 'box',
+				size: [8, 4, 10],
+				pos: [nest.position.x, nest.position.y, nest.position.z],
+				rot: [nest.rotation.x / toRad, nest.rotation.y / toRad, nest.rotation.z / toRad],
+				move: true,
+				collision: false,
+				name: 'nest'
+			});
+			body.connectMesh(nest);
+			nest = new THREE.Object3D();
+			bird.add(nest);
+		}
+	} else {
+		kTapped = false;
 	}
 
 	// make bird upright
@@ -858,6 +868,7 @@ var stockpilePos = [-20, 0]; // x,z
 var challenge = null;
 var nextChallenge = randInt(3600, 8000);
 var lastChallengeCompleted = 0;
+var kTapped = false;
 
 // tmpQuat.setFromEuler(rod.position);
 // tmpVec.applyQuaternion(tmpQuat);
