@@ -1121,18 +1121,138 @@ dl dd {
 	font-weight: 100;
 }
 
+.fmb-container {
+	padding-bottom: 60px;
+}
+
 .gui {
 	position: absolute;
+	z-index: 2147483647;
 	top: 0;
 	left: 0;
+	bottom: 0;
 	width: 100%;
 	display: flex;
-	justify-content: space-around;
+	flex-direction: column;
+	justify-content: space-between;
 	align-items: center;
 	color: white;
-	z-index: 2147483647;
+	line-height: 1;
+	padding: 20px 0;
 }
 .gui > * {
 	width: 33.33333%;
 	text-align: center;
+}
+
+.top-row,
+.bottom-row {
+	width: 100%;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+}
+
+.gui .level {
+	display: inline-block;
+	border: 1px solid white;
+	padding: 2px 4px;
+	margin-right: 6px;
+}
+
+.gui .xpBox {
+	display: flex;
+}
+
+.gui .xp {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	font-size: 12px;
+}
+
+.gui .bar,
+.messages .bar {
+	width: 70px;
+	height: 5px;
+	border: 1px solid white;
+	border-left-width: 10px;
+	padding-right: 40px;
+}
+
+
+.store {
+	text-align: right;
+	position: absolute;
+	z-index: 2147483647;
+	top: 60px;
+	bottom: 0;
+	overflow-y: scroll;
+	width: 66%;
+}
+
+.store .close {
+	align-self: flex-end;
+}
+
+
+.item {
+	width: 100%;
+	text-align: center;
+	background: white;
+	border: 0;
+}
+.item .price {
+	pointer-events: none;
+	margin-left: 10px;
+	border: 2px solid green;
+}
+
+.item:disabled {
+	background: gray;
+}
+
+
+.messages {
+	position: absolute;
+	z-index: 2147483647;
+	top: 10%;
+	right: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+}
+
+.message {
+	display: flex;
+	align-items: center;
+	animation: fadeIn 1s forwards;
+	color: white;
+	padding: 2px 8px;
+	font-size: 12px;
+}
+
+.message img {
+	display: inline-block;
+	width: 100%;
+	max-width: 100px;
+	margin-left: 6px;
+}
+
+@keyframes fadeIn {
+	0% {
+		transform: translateX(100vw);
+	}
+	100% {
+		transform: none;
+	}
+}
+
+@keyframes shrink {
+	0% {
+		height: auto;
+	}
+	100% {
+		height: 0;
+	}
 }

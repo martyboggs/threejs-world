@@ -5,8 +5,8 @@ function FlexboxMobileButtons(args) {
 	this.args = args || {};
 	var defaults = {
 		mobileOnly: false,
-		onclick: onclick,
-		offclick: offclick,
+		onclick: function () {},
+		offclick: function () {},
 		parent: document.body
 	};
 	this.args = Object.assign(defaults, this.args);
@@ -34,18 +34,13 @@ function FlexboxMobileButtons(args) {
 		return target.className.indexOf('fmb-button') !== -1;
 	}
 
-	function onclick(value) {
-		self.clicking[value] = true;
-	}
-	function offclick(value) {
-		self.clicking[value] = false;
-	}
-
 	function buttonOnClick(e) {
 		e.preventDefault();
+
 		if (e.type === 'touchstart') {
 			for (var i = 0; i < e.touches.length; i += 1) {
 				if (isButton(e.touches[i].target)) {
+					self.clicking[e.touches[i].target.value] = true;
 					self.args.onclick(e.touches[i].target.value);
 				}
 			}
@@ -53,6 +48,7 @@ function FlexboxMobileButtons(args) {
 			document.addEventListener('mouseup', buttonOffClick);
 			document.addEventListener('mouseout', buttonOffClick);
 			if (isButton(e.target)) {
+				self.clicking[e.target.value] = true;
 				self.args.onclick(e.target.value);
 			}
 		}
@@ -62,6 +58,7 @@ function FlexboxMobileButtons(args) {
 		if (e.type === 'touchend') {
 			for (var i = 0; i < e.changedTouches.length; i += 1) {
 				if (isButton(e.changedTouches[i].target)) {
+					self.clicking[e.changedTouches[i].target.value] = false;
 					self.args.offclick(e.changedTouches[i].target.value);
 				}
 			}
@@ -69,6 +66,7 @@ function FlexboxMobileButtons(args) {
 		} else {
 			document.removeEventListener('mouseup', buttonOffClick);
 			document.removeEventListener('mouseout', buttonOffClick);
+			self.clicking[e.target.value] = false;
 			self.args.offclick(e.target.value);
 		}
 	}
@@ -84,10 +82,10 @@ FlexboxMobileButtons.prototype = {
 		if (display) button.innerHTML = display;
 		if (value && !display) {
 			switch (value) {
-				case 'UP': button.innerHTML = '<svg viewBox="0 0 100 100" xml:space="preserve"><polygon points="27,64 50,40 73,64" fill="#000000"/></svg>'; break;
-				case 'DOWN': button.innerHTML = '<svg viewBox="0 0 100 100" xml:space="preserve"><polygon transform="rotate(180, 50, 50)" points="27,64 50,40 73,64" fill="#000000"/></svg>'; break;
-				case 'LEFT': button.innerHTML = '<svg viewBox="0 0 100 100" xml:space="preserve"><polygon transform="rotate(270, 50, 50)" points="27,64 50,40 73,64" fill="#000000"/></svg>'; break;
-				case 'RIGHT': button.innerHTML = '<svg viewBox="0 0 100 100" xml:space="preserve"><polygon transform="rotate(90, 50, 50)" points="27,64 50,40 73,64" fill="#000000"/></svg>'; break;
+				case 'UP': button.innerHTML = '<svg viewBox="0 0 100 100"><polygon points="27,64 50,40 73,64" fill="#000000"/></svg>'; break;
+				case 'DOWN': button.innerHTML = '<svg viewBox="0 0 100 100"><polygon transform="rotate(180, 50, 50)" points="27,64 50,40 73,64" fill="#000000"/></svg>'; break;
+				case 'LEFT': button.innerHTML = '<svg viewBox="0 0 100 100"><polygon transform="rotate(270, 50, 50)" points="27,64 50,40 73,64" fill="#000000"/></svg>'; break;
+				case 'RIGHT': button.innerHTML = '<svg viewBox="0 0 100 100"><polygon transform="rotate(90, 50, 50)" points="27,64 50,40 73,64" fill="#000000"/></svg>'; break;
 			}
 		}
 		if (!button.innerHTML && value) button.innerHTML = value;

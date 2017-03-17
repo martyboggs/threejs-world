@@ -26,11 +26,11 @@ function initScene() {
 		scene.add(directionalLight);
 		renderer.shadowMap.enabled = true;
 		renderer.shadowMap.type = THREE.PCFShadowMap;//THREE.BasicShadowMap;
-		scene.add(new THREE.CameraHelper(directionalLight.shadow.camera));
-		var gui = new dat.GUI();
-		gui.add(directionalLight.position, 'x', 0, 500);
-		gui.add(directionalLight.position, 'y', 0, 600);
-		gui.add(directionalLight.position, 'z', 0, 500);
+		// scene.add(new THREE.CameraHelper(directionalLight.shadow.camera));
+		// var datgui = new dat.GUI();
+		// datgui.add(directionalLight.position, 'x', 0, 500);
+		// datgui.add(directionalLight.position, 'y', 0, 600);
+		// datgui.add(directionalLight.position, 'z', 0, 500);
 	}
 	scene.add(directionalLight);
 	var ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
@@ -51,8 +51,8 @@ function initScene() {
 
 	window.addEventListener('resize', onWindowResize, false);
 
-	axisHelper = new THREE.AxisHelper(10);
-	scene.add(axisHelper);
+	// axisHelper = new THREE.AxisHelper(10);
+	// scene.add(axisHelper);
 	var gridHelper = new THREE.GridHelper(500, 50);
 	scene.add(gridHelper);
 }
@@ -72,8 +72,7 @@ function Reactor() {
 	this.fireInterval = randInt(5, 15);
 	this.mesh = new THREE.Mesh(reactorGeom, tan);
 	this.mesh.rotation.order = 'YXZ';
-	this.rodIndex = 0;
-	var pos = [0, 20, 250];
+	var pos = [0, 2, 230];
 	this.mesh.position.set(pos[0], pos[1], pos[2]);
 	scene.add(this.mesh);
 	this.body = world.add({
@@ -103,7 +102,6 @@ Reactor.prototype = {
 		rod.rotation.z = Math.PI / 8;
 		rod.userData.birthday = frame;
 		rod.userData.parent = reactors.length - 1;
-		rod.userData.rodIndex = this.rodIndex; // not used
 		scene.add(rod);
 		var body = world.add({
 			type: 'box',
@@ -116,16 +114,14 @@ Reactor.prototype = {
 		this.rods.push(body);
 		body.connectMesh(rod);
 
-		// tmpVec needs to be reset to 1,0,0 ?
-		tmpVec.set(1, 0, 0);
-		tmpVec.applyEuler(rod.rotation);
-
-		tmpVec.setLength(200);
-		body.applyImpulse(body.getPosition(), tmpVec);
-		this.rodIndex += 1;
+		// // tmpVec needs to be reset to 1,0,0 ?
+		// tmpVec.set(1, 0, 0);
+		// tmpVec.applyEuler(rod.rotation);
+		// tmpVec.setLength(200);
+		// body.applyImpulse(body.getPosition(), tmpVec);
 	},
 	step: function () {
-		this.drive();
+		// this.drive();
 		if (frame % this.fireInterval === 0) {
 			this.fire();
 		}
@@ -247,7 +243,7 @@ function initPhysics() {
 	world = new OIMO.World({
 		timestep: 1/60,
 		iterations: 8,
-		broadphase: 2, // 1: brute force, 2: sweep & prune, 3: volume tree
+		broadphase: 2,
 		worldscale: 1,
 		random: true,
 		info: true // display statistique
@@ -257,7 +253,8 @@ function initPhysics() {
 	// bird body (make compound?)
 	var body = world.add({
 		type: 'box',
-		size: [6, 6, 12], pos: [0, 20, 0],
+		size: [6, 6, 12],
+		pos: [0, 20, 0],
 		move: true,
 		name: 'bird'
 	});
@@ -269,26 +266,17 @@ function initPhysics() {
 	placeGround(ground);
 
 	var tables = [
-		{pos: [15, 16, -50]},
-		{pos: [36, 16, -36]},
-		{pos: [-36, 16, 36]},
+		{pos: [150, 16, 190]},
+		{pos: [170, 16, 196]},
+		{pos: [-136, 16, 196]},
 
-		{pos: [-36, 16, -36]},
-		{pos: [-36, 32, -36]},
-		{pos: [-36, 48, -36]},
-		{pos: [-36, 64, -36]},
-
-		{pos: [-36, 16, 0]},
-		{pos: [-36, 32, 0]},
-		{pos: [-36, 48, 0]},
-		{pos: [-36, 64, 0]},
+		{pos: [-156, 16, 176]},
+		{pos: [216, 16, 186]},
 	];
 	placeCompounds(tables, tableShape, 'table');
+
 	var chairs = [
-		{pos: [-20, 16, 0]},
-		{pos: [-20, 32, 0]},
-		{pos: [-20, 48, 0]},
-		{pos: [-20, 64, 0]}
+		{pos: [-120, 16, 190]},
 	];
 	placeCompounds(chairs, chairShape, 'chair');
 
@@ -297,45 +285,302 @@ function initPhysics() {
 		{pos: [250, 250, 0], size: [1, 500, 500], color: gray},
 		{pos: [0, 250, 250], size: [500, 500, 1], color: gray},
 		{pos: [0, 250, -250], size: [500, 500, 1], color: gray},
-
 		//y
 		//30
 		//40 window
 		//30
 
 		//z 100 (40) 220 (40) 100 = 500
-		{pos: [0, 30 + 40 + 15, 100], size: [500, 30, 10], color: blue2},
-		{pos: [0, 15, 100], size: [500, 30, 10], color: blue2},
-		{pos: [250 - 50, 50, 100], size: [100, 40, 10], color: blue2},
-		{pos: [-250 + 50, 50, 100], size: [100, 40, 10], color: blue2},
-		{pos: [0, 50, 100], size: [220, 40, 10], color: blue2},
+		{pos: [0, 30 + 40 + 15, 100], size: [500, 30, 10], color: white},
+		{pos: [0, 15, 100], size: [500, 30, 10], color: white},
+		{pos: [250 - 50, 50, 100], size: [100, 40, 10], color: white},
+		{pos: [-250 + 50, 50, 100], size: [100, 40, 10], color: white},
+		{pos: [0, 50, 100], size: [220, 40, 10], color: white}, // between windows
+		{pos: [0, 100 + 5, 175], size: [510, 10, 160], color: white}, // ceiling
+		{pos: [0, 30 / 2, 250 - 10 / 2], size: [120, 30, 10], color: white}, // interior
 
-		{pos: [0, 30 / 2, 250 - 10 / 2], size: [120, 30, 10], color: blue2},
+		{pos: [20, 60, -50], size: [50, 5, 5], rot: [0, 25, 45], color: tan}, // tree branch right
+		{pos: [-20, 60, -50], size: [50, 5, 5], rot: [0, 25, 135], color: tan}, // tree branch left
+		{pos: [0, 30, -35], size: [10, 60, 10], color: tan}, // tree trunk
+
+		{pos: [stockpilePos[0] + 10, 5, stockpilePos[1]], size: [2, 10, 22], color: black}, // stockpile
+		{pos: [stockpilePos[0] - 10, 5, stockpilePos[1]], size: [2, 10, 22], color: black}, // stockpile
+		{pos: [stockpilePos[0], 5, stockpilePos[1] + 10], size: [22, 10, 2], color: black}, // stockpile
+		{pos: [stockpilePos[0], 5, stockpilePos[1] - 10], size: [22, 10, 2], color: black}, // stockpile
+
 	];
-
 	placeBoundaries(boundaries);
 }
 
+function Store(target) {
+	if (!target) console.warn('no target element provided');
+	var store = document.createElement('div');
+	store.className = store.id = 'store';
+	store.innerHTML = '<button class="close" value="close">X</button>';
+	var products = {
+		beak1: {description: 'Increase the number of rods you can carry to ',
+			key: 'rodLimit', value: 4, seconds: 5,
+			priceKey: 'rods', priceValue: 40, level: 1},
+		beak2: {description: 'Increase the number of rods you can carry to ',
+			key: 'rodLimit', value: 6, seconds: 60,
+			priceKey: 'rods', priceValue: 200, level: 9},
+		beak3: {description: 'Increase the number of rods you can carry to ',
+			key: 'rodLimit', value: 8, seconds: 160,
+			priceKey: 'rods', priceValue: 400, level: 12},
+		beak4: {description: 'Increase the number of rods you can carry to ',
+			key: 'rodLimit', value: 10, seconds: 300,
+			priceKey: 'rods', priceValue: 2000, level: 20},
+		beak5: {description: 'Increase the number of rods you can carry to ',
+			key: 'rodLimit', value: 12, seconds: 160,
+			priceKey: 'rods', priceValue: 5000, level: 25},
+		rate1: {description: 'Increase rods per minute by ', key: 'rate', value: 2,
+			priceKey: 'rods', priceValue: 200, level: 8},
+		rate2: {description: 'Increase rods per minute by ', key: 'rate', value: 4,
+			priceKey: 'rods', priceValue: 500, level: 19},
+		rate3: {description: 'Increase rods per minute by ', key: 'rate', value: 2,
+			priceKey: 'rods', priceValue: 1000, level: 21},
+		rate4: {description: 'Increase rods per minute by ', key: 'rate', value: 4,
+			priceKey: 'rods', priceValue: 5000, level: 24}
+	};
+	for (var key in products) {
+		// purchased already, or level not met
+		var locked = products[key].level > gui.level;
+		var purchased = gui.purchased[key];
+		var disabled = locked || purchased ? 'disabled="disabled"' : '';
+		var text = locked ? 'Unlocked at level ' + products[key].level : products[key].priceValue + ' ' + products[key].priceKey;
+		store.innerHTML += '<button class="item" value="' + key + '" ' +
+		disabled + '>' + products[key].description + products[key].value +
+		'<br><span class="price">' + text + '</span></button>';
+	}
+	target.appendChild(store);
+
+	document.addEventListener('click', storeHandler);
+
+	var self = this;
+	function storeHandler(e) {
+		if (e.target.className.indexOf('item') !== -1) {
+			var key = e.target.value;
+			if (confirm('Buy ' + key + ' upgrade for ' + products[key].priceValue + ' ' + products[key].priceKey + '?')) {
+				if (products[key].priceValue > gui[products[key].priceKey]) {
+					alert('Not enough rods');
+					return;
+				}
+				// buy item
+				gui.purchased[key] = Object.assign({}, products[key]);
+				if (products[key].priceKey === 'rods') gui.lastRods -= products[key].priceValue;
+				if (gui.purchased[key].seconds) {
+					gui.purchased[key].timer = new Date().getTime();
+				} else {
+					gui.add(products[key].priceKey, -products[key].priceValue);
+					gui.add(products[key].key, products[key].value);
+				}
+			}
+		} else if (e.target.className.indexOf('close') !== -1) {
+			document.removeEventListener('click', storeHandler);
+			target.removeChild(document.getElementById('store'));
+		}
+	}
+}
+
+function Messages(target) {
+	this.messages = [];
+	this.container = document.createElement('div');
+	this.container.className = this.container.id = 'messages';
+	this.container.innerHTML = ``;
+	target.appendChild(this.container);
+}
+Messages.prototype = {
+	add: function (message, icon) {
+		var m = document.createElement('div');
+		m.className = 'message';
+		m.innerHTML =
+			message +
+			'<img src="/images/' + icon + '.jpg">';
+		this.container.appendChild(m);
+		var message = {el: m, birthday: frame ? frame : 0};
+		this.messages.push(message);
+		return m;
+	},
+	addChallenge: function (message, icon, rewardUnit, reward) {
+		var m = document.createElement('div');
+		m.className = 'message';
+		m.innerHTML =
+			message +
+			'<span id="challenge-bar" class="bar"></span>' +
+			'<img src="/images/' + icon + '.jpg">';
+		this.container.appendChild(m);
+		challenge = {
+			el: m,
+			goal: gui.level * 2,
+			collected: 0,
+			rewardUnit: rewardUnit,
+			reward: reward
+		};
+		return m;
+	},
+	step: function () {
+		for (var i = 0; i < this.messages.length; i += 1) {
+			if (this.messages[i].birthday) {
+				if (frame - this.messages[i].birthday === 180) {
+					this.shrink(this.messages[i], i);
+				} else if (frame - this.messages[i].birthday === 360) {
+					this.container.removeChild(this.messages[i].el);
+					this.messages.splice(i, 1);
+					i -= 1;
+				}
+			}
+		}
+	},
+	shrink: function (message, i) {
+		message.className += ' shrink';
+	}
+};
+
 function EasyGui(parent) {
+	this.rods = 0;
+	this.holding = 0;
+	this.eggs = 0;
+	this.xp = 0;
+	this.level = 1;
+	this.babies = 0;
+	this.rodLimit = 2;
+	this.rate = 0;
+	this.readRate = 0;
+	this.purchased = {};
+	this.nextEgg = new Date().getTime() + 24 * 60 * 60 * 1000;
+	// some items can be purchased, but take time before getting acquired
+	// some items can be purchased many times
+	// babies can be upgraded to take less time, increase rate more
+	// babies need to be refreshed... but there's lots of babies...
+	this.saveQueued = false;
+	var saved = localStorage.getItem('mr feathers');
+	if (saved) {
+		saved = JSON.parse(saved);
+		Object.assign(this, saved);
+	}
+	this.lastRods = this.rods;
 	var guiEl = document.createElement('div');
 	guiEl.className = 'gui';
 	guiEl.innerHTML = `
-	<div class="scoreBox"><span id="score">0</span> pts.</div>
-	<div>Three.js World</div>
-	<div class="livesBox"><span id="lives">3</span> lives</div>
+	<div class="top-row">
+		<div>Three.js World</div>
+		<div class="holdingBox"><span id="holding">` + this.holding +
+		`</span>/<span id="rodLimit">` + this.rodLimit + `</span></div>
+		<div class="rodsBox"><span id="rods">` + Math.round(this.rods) +`</span> rods</div>
+		<div class="eggsBox"><span id="eggs">` + this.eggs + `</span> eggs</div>
+		<div class="xpBox"><span id="level" class="level">` + this.level +
+		`</span> <div class="xp"><span id="xp-bar" class="bar"></span><span id="xp">` + Math.round(this.xp) + `</span></div></div>
+	</div>
+	<div class="bottom-row">
+		<div class="rate"><span id="rate">0</span> rods/min.</div>
+	</div>
 	`;
 	parent.appendChild(guiEl);
-	this.score = 0;
-	this.lives = 3;
+	this.setBar('xp-bar', this.xp, Math.pow(this.level, 3));
 }
 EasyGui.prototype = {
-	scoreAdd: function (points) {
-		this.score += points;
-		document.getElementById('score').innerHTML = this.score;
+	add: function (name, points) {
+		if (name === 'rodLimit') {
+			this[name] = points;
+			this.addXp(Math.pow(points, 2));
+		} else if (name === 'eggs') {
+			this[name] += points;
+			this.addXp(20);
+		} else {
+			this[name] += points;
+			if (points > 0) {
+				if (challenge && name === 'rods') {
+					challenge.collected += points;
+					gui.setBar('challenge-bar', challenge.collected, challenge.goal);
+					// completed challenge
+					if (challenge.collected >= challenge.goal) {
+						gui[challenge.rewardUnit] += challenge.reward;
+						messages.add('Challenge complete! Received ' + challenge.reward + ' ' + challenge.rewardUnit, 'success');
+						messages.container.removeChild(challenge.el);
+						challenge = null;
+						lastChallengeCompleted = frame;
+						nextChallenge = randInt(3600, 8000);
+					}
+				}
+				this.addXp(points);
+			}
+		}
+		document.getElementById(name).innerHTML = Math.round(this[name]);
 	},
-	livesAdd: function (lives) {
-		this.score += lives;
-		document.getElementById('lives').innerHTML = this.lives;
+	addXp: function (points) {
+		this.xp += points;
+		document.getElementById('xp').innerHTML = Math.round(this.xp);
+		var goal = Math.pow(this.level, 3);
+		if (this.xp >= goal) {
+			this.level += 1;
+			document.getElementById('level').innerHTML = this.level;
+			this.xp -= goal;
+			messages.add('You made it to level ' + this.level + '!', 'level');
+		}
+		this.setBar('xp-bar', this.xp, goal);
+		this.saveQueued = true;
+	},
+	setBar: function (id, xp, goal) {
+		var bar = document.getElementById(id);
+		bar.style.width = 26 - (26 * xp / goal) + 'px';
+		bar.style.borderLeftWidth = 26 * xp / goal + 'px';
+	},
+	step: function () {
+		// sacrifice your baby to cash in on ransom reward
+		if ((frame - lastChallengeCompleted) % nextChallenge === 0) { // challenges, random times
+			if (!challenge && confirm('Diablo Power Station is putting us out of business! Steal more of their fuel rods and we\'ll give you a reward!')) {
+				if (Math.random() < 0.95) {
+					messages.addChallenge('Challenge', 'building', 'rods', gui.level * 10);
+				} else {
+					messages.addChallenge('Challenge', 'building', 'eggs', 1);
+				}
+				// check value
+			}
+		}
+		if (frame % (60 * 59 * 3) && frameS > this.nextEgg) { // at start and every ~3min
+			this.nextEgg = frameS + 24 * 60 * 60 * 1000;
+			gui.add('eggs', 1);
+		}
+		if (frame % 360 === 0) { // every 6 seconds, interpolate average rods/min
+			this.readRate = Math.round((this.rods - this.lastRods) * 10);
+			document.getElementById('rate').innerHTML = this.readRate;
+			this.lastRods = this.rods;
+		}
+		if (frame % 60 === 0) {
+			if (this.saveQueued) {
+				this.saveQueued = false;
+				this.save();
+			}
+			var frameS = new Date().getTime();
+			for (var productKey in this.purchased) {
+				if (this.purchased[productKey].timer) {
+					if (frameS < this.purchased[productKey].timer + this.purchased[productKey].seconds * 1000) {
+						console.log(frameS - this.purchased[productKey].timer);
+					} else {
+						this.purchased[productKey].timer = null;
+						gui.add(this.purchased[productKey].priceKey, -this.purchased[productKey].priceValue);
+						gui.add(this.purchased[productKey].key, this.purchased[productKey].value);
+					}
+				}
+			}
+			if (this.rate > 0) {
+				gui.add('rods', this.rate / 60);
+			}
+		}
+	},
+	save: function () {
+		localStorage.setItem('mr feathers', JSON.stringify({
+			rods: this.rods,
+			eggs: this.eggs,
+			xp: this.xp,
+			level: this.level,
+			babies: this.babies,
+			rodLimit: this.rodLimit,
+			rate: this.rate,
+			readRate: this.readRate,
+			purchased: this.purchased,
+			nextEgg: this.nextEgg
+		}));
 	}
 };
 
@@ -445,8 +690,24 @@ function render() {
 		bodies[0].resetPosition(0, 40, 0);
 	}
 
-	if (keyboard.pressed('k') && nest.children.length > 20) {
+	// stockpile drop
+	if (keyboard.pressed('k') && gui.holding) {
+		gui.holding = 0;
+		document.getElementById('holding').innerHTML = 0;
+		if (bird.position.x > stockpilePos[0] - 20 && bird.position.x < stockpilePos[0] + 20 &&
+		bird.position.z > stockpilePos[1] - 20 && bird.position.z < stockpilePos[1] + 20) {
+			gui.add('rods', nest.children.length);
+		}
 		THREE.SceneUtils.detach(nest, bird, scene);
+		var body = world.add({
+			type: 'box',
+			size: [8, 4, 10],
+			pos: [nest.position.x, nest.position.y, nest.position.z],
+			rot: [nest.rotation.x / toRad, nest.rotation.y / toRad, nest.rotation.z / toRad],
+			move: true,
+			name: 'nest'
+		});
+		body.connectMesh(nest);
 		nest = new THREE.Object3D();
 		bird.add(nest);
 	}
@@ -465,11 +726,18 @@ function render() {
 
 
 	if (bird.position.z > 100 && camera.position.z === 40) {
-		new TWEEN.Tween(camera.position).to({z: 200}, 1000).easing(TWEEN.Easing.Bounce.Out).start();
+		new TWEEN.Tween(camera.position).to({z: 200}, 1000).easing(TWEEN.Easing.Sinusoidal.Out).start();
 	} else if (bird.position.z < 100 && camera.position.z === 200) {
-		new TWEEN.Tween(camera.position).to({z: 40}, 1000).easing(TWEEN.Easing.Bounce.Out).start();
+		new TWEEN.Tween(camera.position).to({z: 40}, 1000).easing(TWEEN.Easing.Sinusoidal.Out).start();
 	}
+	if (bird.position.y > 250 && camera.position.y === 20) {
+		new TWEEN.Tween(camera.position).to({y: 500}, 1000).easing(TWEEN.Easing.Sinusoidal.Out).start();
+	} else if (bird.position.y < 250 && camera.position.y === 500) {
+		new TWEEN.Tween(camera.position).to({y: 20}, 1000).easing(TWEEN.Easing.Sinusoidal.Out).start();
+	}
+
 	camera.lookAt(bird.position);
+
 
 
 
@@ -488,7 +756,6 @@ function render() {
 
 	if (hardCollision('table')) {
 		sound.play('crash');
-		gui.scoreAdd(1);
 	// } else if (softCollision('table')) {
 	// 	sound.play('crash');
 	}
@@ -507,13 +774,24 @@ function render() {
 		}
 	}
 
-	rod = null;
-	if (rod = touchingRod()) {
-		bodyRemoved = true;
-		var parent = reactors[rod.mesh.userData.parent];
-		parent.rods.splice(parent.rods.indexOf(rod), 1);
-		world.removeRigidBody(rod);
-		THREE.SceneUtils.attach(rod.mesh, scene, nest);
+	// bird and rod collision (check every other frame)
+	if (frame % 2 === 0) {
+		rod = null;
+		if (rod = getFirstContact('rod', 'bird')) {
+			if (nest.children.length < gui.rodLimit) {
+				bodyRemoved = true;
+				gui.add('holding', 1);
+				var parent = reactors[rod.mesh.userData.parent];
+				parent.rods.splice(parent.rods.indexOf(rod), 1);
+				world.removeRigidBody(rod);
+				THREE.SceneUtils.attach(rod.mesh, scene, nest);
+			}
+		}
+
+		if (nestContact = getFirstContact('nest', 'ground')) {
+			bodyRemoved = true;
+			world.removeRigidBody(nestContact);
+		}
 	}
 
 	// set lastVel after calls to hardCollision() or shotbird
@@ -534,6 +812,8 @@ function render() {
 	renderer.render(scene, camera);
 	TWEEN.update();
 	world.step();
+	messages.step();
+	gui.step();
 }
 
 var axisHelper;
@@ -574,20 +854,26 @@ var tmpQuat = new THREE.Quaternion();
 var tmpEuler = new THREE.Euler();
 var reactors = [];
 var bodyRemoved = false;
+var stockpilePos = [-20, 0]; // x,z
+var challenge = null;
+var nextChallenge = randInt(3600, 8000);
+var lastChallengeCompleted = 0;
 
 // tmpQuat.setFromEuler(rod.position);
 // tmpVec.applyQuaternion(tmpQuat);
 
 initScene();
 var gui = new EasyGui(document.getElementById('canvases'));
-var fmb = new FlexboxMobileButtons({parent: document.getElementById('canvases')});
-fmb.row()
-.button('UP')
-.row().button('LEFT')
-.button('DOWN')
-.button('RIGHT')
-.row().button('J', null, 'wide')
-.fullscreen(renderer.domElement)
+var messages = new Messages(document.getElementById('canvases'));
+var fmb = new FlexboxMobileButtons({parent: document.getElementById('canvases'), onclick: function (value) {
+	if (value === 'store') {
+		new Store(document.getElementById('canvases'));
+	}
+}});
+fmb.row().button('UP')
+.row().button('LEFT').button('DOWN').button('RIGHT')
+.row().button('J').button('K')
+.fullscreen(renderer.domElement).button('store')
 .init();
 initBird();
 initTable();
@@ -622,14 +908,13 @@ render();
 	lay eggs of bigger and bigger size... glowing eggs contain multiple birds
 	powerups make bird cloning possible
 	automation: babies created automatically with cloning
-
 	player collects rods to create nests
 	bundle rods
 	nests go in tree, eggs go in nests, babies
 	bigger nests hold more eggs
 	babies increase rods/min linearly
 	if tree full, can stockpile rods
-	automation -- rods added to stockpile
+	automation -- rods/min increases
 	can buy eggs with real money
 	eggs pop out periodically
 	fly into shop for items. there it tells you how many babies
@@ -655,7 +940,14 @@ render();
 			powerups found in lab: garbage dump (dumpster closer to trees)
 			odds of getting glowing egg
 	problems:
-		rods become worthless
+		rods become worthless.. solution --> multiplier
+		placing rods in nest
+		progress of nest?
+		sitting in nest?
+		changing surroundings
+
+		need to calculate rate / min.
+
 */
 
 function onWindowResize() {
@@ -694,7 +986,6 @@ function placeCompounds(items, shape, name) {
 function randomMat() {
 	rand = Math.random();
 	if (rand > 0.7) return black;
-	else if (rand > 0.3) return tan;
 	else return blue1;
 }
 
@@ -706,6 +997,7 @@ function placeBoundaries(boundaries) {
 			type: 'box',
 			size: boundary.size,
 			pos: boundary.pos,
+			rot: boundary.rot ? boundary.rot : [0, 0, 0],
 			density: 1,
 			move: false,
 			config: [0.2, 0.4, 0.1]
@@ -800,13 +1092,12 @@ function softCollision(name) {
 	return false;
 }
 
-function touchingRod() {
+function getFirstContact(name1, name2) {
 	var contact = world.contacts;
-
 	while (contact !== null) {
-		if ((contact.body1.name === 'rod' && contact.body2.name === 'bird')
-		|| (contact.body1.name === 'bird' && contact.body2.name === 'rod')) {
-			// var rod = contact.body1.name === 'rod' ? contact.body1 : contact.body2;
+		if ((contact.body1.name === name1 && contact.body2.name === name2)
+		|| (contact.body1.name === name2 && contact.body2.name === name1)) {
+			var rod = contact.body1.name === name1 ? contact.body1 : contact.body2;
 			// if (Math.abs(rod.linearVelocity.lengthSq() - rod.lastVel) > 200) {
 				return rod;
 			// }
