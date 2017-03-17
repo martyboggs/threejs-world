@@ -691,7 +691,7 @@ function render() {
 	}
 
 	// stockpile drop
-	if (keyboard.pressed('k') && gui.holding) {
+	if (keyboard.pressed('k') && gui.clicking.K) {
 		gui.holding = 0;
 		document.getElementById('holding').innerHTML = 0;
 		if (bird.position.x > stockpilePos[0] - 20 && bird.position.x < stockpilePos[0] + 20 &&
