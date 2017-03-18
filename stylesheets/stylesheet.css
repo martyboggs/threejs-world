@@ -1177,7 +1177,6 @@ dl dd {
 	height: 5px;
 	border: 1px solid white;
 	border-left-width: 10px;
-	padding-right: 40px;
 }
 
 
@@ -1216,7 +1215,7 @@ dl dd {
 .messages {
 	position: absolute;
 	z-index: 2147483647;
-	top: 10%;
+	top: 56px;
 	right: 0;
 	display: flex;
 	flex-direction: column;
@@ -1226,17 +1225,25 @@ dl dd {
 .message {
 	display: flex;
 	align-items: center;
+	justify-content: flex-end;
 	animation: fadeIn 1s forwards;
 	color: white;
 	padding: 2px 8px;
 	font-size: 12px;
+	width: 100%;
+}
+
+.message-text {
+	margin-right: 8px;
+	margin-bottom: 0;
 }
 
 .message img {
 	display: inline-block;
 	width: 100%;
-	max-width: 100px;
-	margin-left: 6px;
+	max-width: 50px;
+	margin: 0 0 0 6px;
+	border: 0;
 }
 
 @keyframes fadeIn {

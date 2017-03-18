@@ -292,11 +292,11 @@ function initPhysics() {
 		//30
 
 		//z 100 (40) 220 (40) 100 = 500
-		{pos: [0, 30 + 40 + 15, 100], size: [500, 30, 10], color: white},
-		{pos: [0, 15, 100], size: [500, 30, 10], color: white},
-		{pos: [250 - 50, 50, 100], size: [100, 40, 10], color: white},
-		{pos: [-250 + 50, 50, 100], size: [100, 40, 10], color: white},
-		{pos: [0, 50, 100], size: [220, 40, 10], color: white}, // between windows
+		{pos: [0, 30 + 40 + 15, 100], size: [500, 30, 10], color: 'wall'},
+		{pos: [0, 15, 100], size: [500, 30, 10], color: 'wall'},
+		{pos: [250 - 50, 50, 100], size: [100, 40, 10], color: 'wall'},
+		{pos: [-250 + 50, 50, 100], size: [100, 40, 10], color: 'wall'},
+		{pos: [0, 50, 100], size: [220, 40, 10], color: 'wall'}, // between windows
 		{pos: [0, 100 + 5, 175], size: [510, 10, 160], color: white}, // ceiling
 		{pos: [0, 30 / 2, 250 - 10 / 2], size: [120, 30, 10], color: white}, // interior
 
@@ -351,7 +351,7 @@ function Store(target) {
 		var text = locked ? 'Unlocked at level ' + products[key].level : products[key].priceValue + ' ' + products[key].priceKey;
 		store.innerHTML += '<button class="item" value="' + key + '" ' +
 		disabled + '>' + products[key].description + products[key].value +
-		'<br><span class="price">' + text + '</span></button>';
+		'<br><span class="price">' + (purchased ? 'sold out' : text) + '</span></button>';
 	}
 	target.appendChild(store);
 
@@ -370,7 +370,7 @@ function Store(target) {
 				gui.purchased[key] = Object.assign({}, products[key]);
 				if (products[key].priceKey === 'rods') gui.lastRods -= products[key].priceValue;
 				if (gui.purchased[key].seconds) {
-					gui.purchased[key].timer = new Date().getTime();
+					gui.purchased[key].boughtTime = new Date().getTime();
 				} else {
 					gui.add(products[key].priceKey, -products[key].priceValue);
 					gui.add(products[key].key, products[key].value);
@@ -395,7 +395,7 @@ Messages.prototype = {
 		var m = document.createElement('div');
 		m.className = 'message';
 		m.innerHTML =
-			message +
+			'<p class="message-text">' + message + '</p>' +
 			'<img src="/images/' + icon + '.jpg">';
 		this.container.appendChild(m);
 		var message = {el: m, birthday: frame ? frame : 0};
@@ -406,7 +406,7 @@ Messages.prototype = {
 		var m = document.createElement('div');
 		m.className = 'message';
 		m.innerHTML =
-			message +
+			'<p class="message-text">' + message + '</p>' +
 			'<span id="challenge-bar" class="bar"></span>' +
 			'<img src="/images/' + icon + '.jpg">';
 		this.container.appendChild(m);
@@ -417,6 +417,16 @@ Messages.prototype = {
 			rewardUnit: rewardUnit,
 			reward: reward
 		};
+		return m;
+	},
+	addCountdown: function (key) {
+		var m = document.createElement('div');
+		m.className = 'message';
+		m.innerHTML =
+			'<p class="message-text">' + key + '</p>' +
+			'<span id="' + key + '" class="countdown"></span>' +
+			'<img src="/images/' + gui.purchased[key].key + '.jpg">';
+		this.container.appendChild(m);
 		return m;
 	},
 	step: function () {
@@ -494,7 +504,7 @@ EasyGui.prototype = {
 					// completed challenge
 					if (challenge.collected >= challenge.goal) {
 						gui[challenge.rewardUnit] += challenge.reward;
-						messages.add('Challenge complete! Received ' + challenge.reward + ' ' + challenge.rewardUnit, 'success');
+						messages.add('Challenge complete! Received ' + challenge.reward + ' ' + challenge.rewardUnit, challenge.rewardUnit);
 						messages.container.removeChild(challenge.el);
 						challenge = null;
 						lastChallengeCompleted = frame;
@@ -514,24 +524,24 @@ EasyGui.prototype = {
 			this.level += 1;
 			document.getElementById('level').innerHTML = this.level;
 			this.xp -= goal;
-			messages.add('You made it to level ' + this.level + '!', 'level');
+			messages.add('You made it to level ' + this.level + '!', 'challenge');
 		}
 		this.setBar('xp-bar', this.xp, goal);
 		this.saveQueued = true;
 	},
 	setBar: function (id, xp, goal) {
 		var bar = document.getElementById(id);
-		bar.style.width = 26 - (26 * xp / goal) + 'px';
-		bar.style.borderLeftWidth = 26 * xp / goal + 'px';
+		bar.style.width = 66 - (66 * xp / goal) + 'px';
+		bar.style.borderLeftWidth = 66 * xp / goal + 'px';
 	},
 	step: function () {
 		// sacrifice your baby to cash in on ransom reward
 		if ((frame - lastChallengeCompleted) % nextChallenge === 0) { // challenges, random times
 			if (!challenge && confirm('Diablo Power Station is putting us out of business! Steal more of their fuel rods and we\'ll give you a reward!')) {
 				if (Math.random() < 0.95) {
-					messages.addChallenge('Challenge', 'building', 'rods', gui.level * 10);
+					messages.addChallenge('Challenge', 'challenge', 'rods', gui.level * 10);
 				} else {
-					messages.addChallenge('Challenge', 'building', 'eggs', 1);
+					messages.addChallenge('Challenge', 'challenge', 'eggs', 1);
 				}
 				// check value
 			}
@@ -539,6 +549,7 @@ EasyGui.prototype = {
 		if (frame % (60 * 59 * 3) && frameS > this.nextEgg) { // at start and every ~3min
 			this.nextEgg = frameS + 24 * 60 * 60 * 1000;
 			gui.add('eggs', 1);
+			messages.add('You have a new egg!', 'egg');
 		}
 		if (frame % 360 === 0) { // every 6 seconds, interpolate average rods/min
 			this.readRate = Math.round((this.rods - this.lastRods) * 10);
@@ -550,15 +561,24 @@ EasyGui.prototype = {
 				this.saveQueued = false;
 				this.save();
 			}
-			var frameS = new Date().getTime();
-			for (var productKey in this.purchased) {
-				if (this.purchased[productKey].timer) {
-					if (frameS < this.purchased[productKey].timer + this.purchased[productKey].seconds * 1000) {
-						console.log(frameS - this.purchased[productKey].timer);
+			frameS = new Date().getTime();
+			for (var key in this.purchased) {
+				if (this.purchased[key].seconds && !this.purchased[key].rewarded) {
+					if (frameS < this.purchased[key].boughtTime + this.purchased[key].seconds * 1000) {
+						var countdown = document.getElementById(key);
+						if (!countdown) {
+							messages.addCountdown(key);
+						} else {
+							countdown.innerHTML = Math.round((this.purchased[key].boughtTime + this.purchased[key].seconds * 1000 - frameS) / 1000);
+						}
 					} else {
-						this.purchased[productKey].timer = null;
-						gui.add(this.purchased[productKey].priceKey, -this.purchased[productKey].priceValue);
-						gui.add(this.purchased[productKey].key, this.purchased[productKey].value);
+						var countdown = document.getElementById(key);
+						if (countdown) {
+							messages.container.removeChild(document.getElementById(key).parentNode);
+						}
+						this.purchased[key].rewarded = true;
+						gui.add(this.purchased[key].priceKey, -this.purchased[key].priceValue);
+						gui.add(this.purchased[key].key, this.purchased[key].value);
 					}
 				}
 			}
@@ -690,18 +710,13 @@ function render() {
 	}
 
 	if (keyboard.pressed('k') || fmb.clicking.K) {
-		// tapping
-		if (!kTapped) {
+		if (gui.holding) {	// stockpile drop
 			kTapped = true;
-			// create rod element w css which flies up toward rods
-			gui.add('rods', 1);
-		}
-		// stockpile drop
-		if (gui.holding) {
 			gui.holding = 0;
 			document.getElementById('holding').innerHTML = 0;
 			if (bird.position.x > stockpilePos[0] - 20 && bird.position.x < stockpilePos[0] + 20 &&
 			bird.position.z > stockpilePos[1] - 20 && bird.position.z < stockpilePos[1] + 20) {
+				messages.add('Stockpiled ' + nest.children.length + ' rods!', 'rods');
 				gui.add('rods', nest.children.length);
 			}
 			THREE.SceneUtils.detach(nest, bird, scene);
@@ -717,6 +732,19 @@ function render() {
 			body.connectMesh(nest);
 			nest = new THREE.Object3D();
 			bird.add(nest);
+		} else if (!kTapped) {	// tapping
+			kTapped = true;
+			gui.add('rods', 1);
+
+			var rod = new THREE.Mesh(rodGeom, rodMat);
+			rod.position.copy(bird.position);
+			rod.rotation.copy(bird.rotation);
+			scene.add(rod);
+			tappedRods.push(rod);
+			new TWEEN.Tween(rod.position).to({x: stockpilePos[0], y: [50, 0], z: stockpilePos[1]}, 1000).start().onComplete(function () {
+				scene.remove(tappedRods[0]);
+				tappedRods.splice(0, 1);
+			});
 		}
 	} else {
 		kTapped = false;
@@ -838,6 +866,7 @@ var wingAction = 'hover';
 var lastAction = wingAction;
 var wingImpulse = false;
 var frame = 0;
+var frameS = new Date().getTime();
 var wingAnimations = [];
 var wingsAway = false;
 var blue1 = new THREE.MeshLambertMaterial({color: '#0E1A40'});
@@ -847,6 +876,7 @@ var tan = new THREE.MeshLambertMaterial({color: '#946B2D'});
 var black = new THREE.MeshLambertMaterial({color: 'black'});
 var white = new THREE.MeshLambertMaterial({color: 'white'});
 var yellow = new THREE.MeshLambertMaterial({color: 'yellow'});
+var textureLoader = new THREE.TextureLoader();
 var birdY;
 var tableShape;
 var chairShape;
@@ -869,6 +899,7 @@ var challenge = null;
 var nextChallenge = randInt(3600, 8000);
 var lastChallengeCompleted = 0;
 var kTapped = false;
+var tappedRods = [];
 
 // tmpQuat.setFromEuler(rod.position);
 // tmpVec.applyQuaternion(tmpQuat);
@@ -876,6 +907,18 @@ var kTapped = false;
 initScene();
 var gui = new EasyGui(document.getElementById('canvases'));
 var messages = new Messages(document.getElementById('canvases'));
+// for (var key in gui.purchased) { // create any timers that are still going
+// 	if (gui.purchased[key].seconds) {
+// 		if (!gui.purchased[key].rewarded) {
+// 			if (frameS < gui.purchased[key].boughtTime + gui.purchased[key].seconds * 1000) {
+// 				messages.addCountdown(key);
+// 			} else {
+// 				// reward
+// 				gui.purchased[key].rewarded = true;
+// 			}
+// 		}
+// 	}
+// }
 var fmb = new FlexboxMobileButtons({parent: document.getElementById('canvases'), onclick: function (value) {
 	if (value === 'store') {
 		new Store(document.getElementById('canvases'));
@@ -1014,7 +1057,23 @@ function placeBoundaries(boundaries) {
 			config: [0.2, 0.4, 0.1]
 		});
 		geometry = new THREE.BoxGeometry(boundary.size[0], boundary.size[1], boundary.size[2]);
-		mesh = new THREE.Mesh(geometry, boundary.color);
+		var mat = boundary.color;
+		if (boundary.color === 'wall') {
+			var wallTexture = textureLoader.load('../../images/wall.jpg');
+			wallTexture.wrapS = THREE.RepeatWrapping;
+			wallTexture.wrapT = THREE.RepeatWrapping;
+			mat = new THREE.MeshLambertMaterial({map: wallTexture});
+			mesh = new THREE.Mesh(geometry, mat);
+			mesh.geometry.computeBoundingBox();
+			var max = mesh.geometry.boundingBox.max;
+			var min = mesh.geometry.boundingBox.min;
+			var height = max.y - min.y;
+			var width = max.x - min.x;
+			wallTexture.repeat.set(width / 75, height / 52);
+			wallTexture.needsUpdate = true;
+		} else {
+			mesh = new THREE.Mesh(geometry, mat);
+		}
 		mesh.castShadow = true;
 		mesh.receiveShadow = true;
 		scene.add(mesh);
