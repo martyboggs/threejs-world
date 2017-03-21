@@ -63,24 +63,25 @@ var reactors = [];
 var reactorSize = [10, 4, 5];
 var reactorGeom = new THREE.BoxGeometry(reactorSize[0], reactorSize[1], reactorSize[2]);
 var rodSize = [20, 0.2, 0.2];
+var bundleSize = [20, 0.6, 0.6];
 var rodGeom = new THREE.BoxGeometry(rodSize[0], rodSize[1], rodSize[2]);
+var bundleGeom = new THREE.BoxGeometry(bundleSize[0], bundleSize[1], bundleSize[2]);
 var rodMat = new THREE.MeshBasicMaterial({color: 'magenta'});
+var fireInterval = 255;
 
-function Reactor() {
+function Reactor(pos) {
 	reactors.push(this);
 	this.number = reactors.length + 1;
 	this.rods = [];
-	this.fireInterval = randInt(5, 15);
 	this.mesh = new THREE.Mesh(reactorGeom, tan);
 	this.mesh.rotation.order = 'YXZ';
-	var pos = [0, 2, 230];
 	this.mesh.position.set(pos[0], pos[1], pos[2]);
 	scene.add(this.mesh);
 	this.body = world.add({
 		type: 'box',
 		size: reactorSize,
 		pos: pos,
-		move: true,
+		move: false,
 		name: 'reactor'
 	});
 	this.body.connectMesh(this.mesh);
@@ -96,21 +97,25 @@ Reactor.prototype = {
 
 	},
 	fire: function() {
-		var rod = new THREE.Mesh(rodGeom, rodMat);
+		var bundle = Math.random() < 0.2;
+		var rod = new THREE.Mesh(bundle ? bundleGeom : rodGeom, rodMat);
 		rod.position.copy(this.mesh.position);
-		rod.position.y = this.mesh.position.y + 10;
-		rod.rotation.y = this.mesh.rotation.y;
+		rod.position.y = this.mesh.position.y - reactorSize[1] / 2;
+		// rod.rotation.y = this.mesh.rotation.y;
+		rod.position.z = this.mesh.position.z + randInt(0, -5);
+		rod.rotation.y = randInt(-1, 1) / 4;
 		rod.rotation.z = Math.PI / 8;
 		rod.userData.birthday = frame;
 		rod.userData.parent = reactors.length - 1;
+		rod.name = bundle ? 'bundle' : 'rod';
 		scene.add(rod);
 		var body = world.add({
 			type: 'box',
-			size: rodSize,
+			size: bundle ? bundleSize : rodSize,
 			pos: [rod.position.x, rod.position.y, rod.position.z],
 			rot: [rod.rotation.x / toRad, rod.rotation.y / toRad, rod.rotation.z / toRad],
 			move: true,
-			name: 'rod'
+			name: rod.name
 		});
 		this.rods.push(body);
 		body.connectMesh(rod);
@@ -123,7 +128,7 @@ Reactor.prototype = {
 	},
 	step: function () {
 		// this.drive();
-		if (frame % this.fireInterval === 0) {
+		if (frame % fireInterval === 0) {
 			this.fire();
 		}
 	}
@@ -265,6 +270,10 @@ function initPhysics() {
 
 	var ground = {size: [500, 50, 500], pos: [0, -25, 0]};
 	placeGround(ground);
+	var dirt = new THREE.Mesh(new THREE.PlaneGeometry(500, 350), new THREE.MeshLambertMaterial({color: '#2f221b'}));
+	dirt.rotation.x = -Math.PI / 2;
+	dirt.position.set(0, 0.8, -75);
+	scene.add(dirt);
 
 	var tables = [
 		{pos: [150, 16, 190]},
@@ -298,10 +307,10 @@ function initPhysics() {
 		{pos: [-250 + 50, 50, 100], size: [100, 40, 10], color: 'wall'},
 		{pos: [0, 50, 100], size: [220, 40, 10], color: 'wall'}, // between windows
 		{pos: [0, 100 + 5, 175], size: [510, 10, 160], color: white}, // ceiling
-		{pos: [0, 30 / 2, 250 - 10 / 2], size: [120, 30, 10], color: white}, // interior
+		{pos: [-60, 30 / 2, 105], size: [60, 30, 10], color: white}, // interior
 
-		{pos: [20, 60, -50], size: [50, 5, 5], rot: [0, 25, 45], color: tan}, // tree branch right
-		{pos: [-20, 60, -50], size: [50, 5, 5], rot: [0, 25, 135], color: tan}, // tree branch left
+		{pos: [20, 60, -35], size: [50, 5, 5], rot: [0, 0, 45], color: tan}, // tree branch right
+		{pos: [-20, 60, -35], size: [50, 5, 5], rot: [0, 0, 135], color: tan}, // tree branch left
 		{pos: [0, 30, -35], size: [10, 60, 10], color: tan}, // tree trunk
 
 		{pos: [stockpilePos[0] + 10, 5, stockpilePos[1]], size: [2, 10, 22], color: black}, // stockpile
@@ -321,27 +330,33 @@ function Store(target) {
 	var products = {
 		beak1: {description: 'Increase the number of rods you can carry to ',
 			key: 'rodLimit', value: 4, seconds: 5,
-			priceKey: 'rods', priceValue: 40, level: 1},
+			priceKey: 'rods', priceValue: 200, level: 1},
 		beak2: {description: 'Increase the number of rods you can carry to ',
-			key: 'rodLimit', value: 6, seconds: 60,
-			priceKey: 'rods', priceValue: 200, level: 9},
+			key: 'rodLimit', value: 5, seconds: 160,
+			priceKey: 'rods', priceValue: 2000, level: 9},
 		beak3: {description: 'Increase the number of rods you can carry to ',
-			key: 'rodLimit', value: 8, seconds: 160,
-			priceKey: 'rods', priceValue: 400, level: 12},
+			key: 'rodLimit', value: 6, seconds: 360,
+			priceKey: 'rods', priceValue: 10000, level: 12},
 		beak4: {description: 'Increase the number of rods you can carry to ',
-			key: 'rodLimit', value: 10, seconds: 300,
-			priceKey: 'rods', priceValue: 2000, level: 20},
+			key: 'rodLimit', value: 7, seconds: 900,
+			priceKey: 'rods', priceValue: 100000, level: 20},
 		beak5: {description: 'Increase the number of rods you can carry to ',
-			key: 'rodLimit', value: 12, seconds: 160,
+			key: 'rodLimit', value: 8, seconds: 160,
 			priceKey: 'rods', priceValue: 5000, level: 25},
 		rate1: {description: 'Increase rods per minute by ', key: 'rate', value: 2,
 			priceKey: 'rods', priceValue: 200, level: 8},
 		rate2: {description: 'Increase rods per minute by ', key: 'rate', value: 4,
-			priceKey: 'rods', priceValue: 500, level: 19},
+			priceKey: 'rods', priceValue: 500, level: 10},
 		rate3: {description: 'Increase rods per minute by ', key: 'rate', value: 2,
-			priceKey: 'rods', priceValue: 1000, level: 21},
+			priceKey: 'rods', priceValue: 1000, level: 12},
 		rate4: {description: 'Increase rods per minute by ', key: 'rate', value: 4,
-			priceKey: 'rods', priceValue: 5000, level: 24}
+			priceKey: 'rods', priceValue: 5000, level: 14},
+		rate5: {description: 'Increase rods per minute by ', key: 'rate', value: 2,
+			priceKey: 'rods', priceValue: 10000, level: 16},
+		rate6: {description: 'Increase rods per minute by ', key: 'rate', value: 4,
+			priceKey: 'rods', priceValue: 20000, level: 18},
+		rate7: {description: 'Increase rods per minute by ', key: 'rate', value: 2,
+			priceKey: 'rods', priceValue: 30000, level: 20},
 	};
 	for (var key in products) {
 		// purchased already, or level not met
@@ -349,7 +364,7 @@ function Store(target) {
 		var purchased = gui.purchased[key];
 		var disabled = locked || purchased ? 'disabled="disabled"' : '';
 		var text = locked ? 'Unlocked at level ' + products[key].level : products[key].priceValue + ' ' + products[key].priceKey;
-		store.innerHTML += '<button class="item" value="' + key + '" ' +
+		store.innerHTML += '<button id="' + key + 'button" class="item" value="' + key + '" ' +
 		disabled + '>' + products[key].description + products[key].value +
 		'<br><span class="price">' + (purchased ? 'sold out' : text) + '</span></button>';
 	}
@@ -374,8 +389,11 @@ function Store(target) {
 				} else {
 					gui.add(products[key].priceKey, -products[key].priceValue);
 					gui.add(products[key].key, products[key].value);
+					var item = document.getElementById(key + 'button');
+					if (item) item.disabled = 'disabled';
 				}
 			}
+			sound.play('rod');
 		} else if (e.target.className.indexOf('close') !== -1) {
 			document.removeEventListener('click', storeHandler);
 			target.removeChild(document.getElementById('store'));
@@ -392,6 +410,7 @@ function Messages(target) {
 }
 Messages.prototype = {
 	add: function (message, icon) {
+		sound.play('blip');
 		var m = document.createElement('div');
 		m.className = 'message';
 		m.innerHTML =
@@ -411,12 +430,31 @@ Messages.prototype = {
 			'<img src="/images/' + icon + '.jpg">';
 		this.container.appendChild(m);
 		challenge = {
+			status: 'started',
 			el: m,
 			goal: gui.level * 2,
 			collected: 0,
 			rewardUnit: rewardUnit,
 			reward: reward
 		};
+		return m;
+	},
+	addButton: function (message, icon, callback) {
+		var m = document.createElement('div');
+		m.className = 'message';
+		m.innerHTML =
+			'<img id="challenge-button" class="challenge-button" src="/images/' + icon + '.jpg">';
+		this.container.appendChild(m);
+		challenge.status = 'init';
+		document.getElementById('challenge-button').addEventListener('click', function (e) {
+			if (confirm(message)) {
+				callback();
+			} else {
+				challenge = {status: 'none'};
+			}
+			sound.play('blip');
+			messages.container.removeChild(document.getElementById('challenge-button').parentNode);
+		});
 		return m;
 	},
 	addCountdown: function (key) {
@@ -446,6 +484,36 @@ Messages.prototype = {
 		message.className += ' shrink';
 	}
 };
+
+function Pipe() {
+	var pipe = new THREE.Mesh(new THREE.CylinderGeometry(6, 6, 60), new THREE.MeshLambertMaterial({color: 'gray'}));
+	pipe.rotation.set(-Math.PI / 1.9, 0, 0);
+	pipe.position.set(-60, 9, 70);
+	var river = new THREE.Mesh(new THREE.PlaneGeometry(500, 30), new THREE.MeshLambertMaterial({color: 'darkblue'}));
+	river.rotation.x = -Math.PI / 2;
+	river.position.set(0, 1, 32);
+	scene.add(pipe, river);
+	this.contents = [];
+}
+Pipe.prototype = {
+	step: function () {
+		// pipe pollution
+		if (frame % 10 === 0 && Math.sin(frame / 40) > 0.5) {
+			var rod = new THREE.Mesh(rodGeom, rodMat);
+			rod.position.set(-60, 8, 40);
+			this.contents.push(rod);
+			dropped.push(rod);
+			scene.add(rod);
+			var tween = new TWEEN.Tween(rod.position).to({x: [-60, -26, 8, 42, 76, 110, 144, 178, 212, 250], y: [1, 1, 5, 1, 5, 1, 5, 1, 5, 1], z: [30, randInt(26, 40), randInt(26, 40)]}, 10000).start().onComplete(function () {
+				scene.remove(pipe.contents[0]);
+				dropped.splice(dropped.indexOf(pipe.contents[0]), 1);
+				pipe.contents.splice(0, 1);
+			});
+			rod.userData.tween = tween;
+		}
+	}
+};
+
 
 function EasyGui(parent) {
 	this.rods = 0;
@@ -490,15 +558,15 @@ function EasyGui(parent) {
 EasyGui.prototype = {
 	add: function (name, points) {
 		if (name === 'rodLimit') {
-			this[name] = points;
+			this.rodLimit = points;
 			this.addXp(Math.pow(points, 2));
 		} else if (name === 'eggs') {
-			this[name] += points;
+			this.eggs += points;
 			this.addXp(20);
 		} else {
 			this[name] += points;
 			if (points > 0) {
-				if (challenge && name === 'rods') {
+				if (challenge.status === 'started' && name === 'rods') {
 					challenge.collected += points;
 					gui.setBar('challenge-bar', challenge.collected, challenge.goal);
 					// completed challenge
@@ -506,7 +574,7 @@ EasyGui.prototype = {
 						gui[challenge.rewardUnit] += challenge.reward;
 						messages.add('Challenge complete! Received ' + challenge.reward + ' ' + challenge.rewardUnit, challenge.rewardUnit);
 						messages.container.removeChild(challenge.el);
-						challenge = null;
+						challenge = {status: 'none'};
 						lastChallengeCompleted = frame;
 						nextChallenge = randInt(3600, 8000);
 					}
@@ -535,15 +603,16 @@ EasyGui.prototype = {
 		bar.style.borderLeftWidth = 66 * xp / goal + 'px';
 	},
 	step: function () {
-		// sacrifice your baby to cash in on ransom reward
 		if ((frame - lastChallengeCompleted) % nextChallenge === 0) { // challenges, random times
-			if (!challenge && confirm('Diablo Power Station is putting us out of business! Steal more of their fuel rods and we\'ll give you a reward!')) {
-				if (Math.random() < 0.95) {
-					messages.addChallenge('Challenge', 'challenge', 'rods', gui.level * 10);
-				} else {
-					messages.addChallenge('Challenge', 'challenge', 'eggs', 1);
-				}
-				// check value
+			if (challenge.status === 'none') {
+				sound.play('powerup');
+				messages.addButton('Diablo Power Station is putting us out of business! Steal more of their fuel rods and we\'ll give you a reward!', 'challenge', function () {
+					if (Math.random() < 0.95) {
+						messages.addChallenge('Challenge', 'challenge', 'rods', gui.level * 10);
+					} else {
+						messages.addChallenge('Challenge', 'challenge', 'eggs', 1);
+					}
+				});
 			}
 		}
 		if (frame % (60 * 59 * 3) && frameS > this.nextEgg) { // at start and every ~3min
@@ -579,6 +648,8 @@ EasyGui.prototype = {
 						this.purchased[key].rewarded = true;
 						gui.add(this.purchased[key].priceKey, -this.purchased[key].priceValue);
 						gui.add(this.purchased[key].key, this.purchased[key].value);
+						var item = document.getElementById(key + 'button');
+						if (item) item.disabled = 'disabled';
 					}
 				}
 			}
@@ -716,8 +787,16 @@ function render() {
 			document.getElementById('holding').innerHTML = 0;
 			if (bird.position.x > stockpilePos[0] - 20 && bird.position.x < stockpilePos[0] + 20 &&
 			bird.position.z > stockpilePos[1] - 20 && bird.position.z < stockpilePos[1] + 20) {
-				messages.add('Stockpiled ' + nest.children.length + ' rods!', 'rods');
-				gui.add('rods', nest.children.length);
+				var points = 0;
+				for (var i = 0; i < nest.children.length; i += 1) {
+					if (nest.children[i].name === 'bundle') {
+						points += 50;
+					} else {
+						points += 1;
+					}
+				}
+				messages.add('Stockpiled ' + points + ' rods!', 'rods');
+				gui.add('rods', points);
 			}
 			THREE.SceneUtils.detach(nest, bird, scene);
 			var body = world.add({
@@ -726,14 +805,16 @@ function render() {
 				pos: [nest.position.x, nest.position.y, nest.position.z],
 				rot: [nest.rotation.x / toRad, nest.rotation.y / toRad, nest.rotation.z / toRad],
 				move: true,
-				collision: false,
 				name: 'nest'
 			});
 			body.connectMesh(nest);
+			nest.userData.frame = frame; // prevent immediate re-pickup
+			dropped.push(nest);
 			nest = new THREE.Object3D();
 			bird.add(nest);
 		} else if (!kTapped) {	// tapping
 			kTapped = true;
+			sound.play('rod');
 			gui.add('rods', 1);
 
 			var rod = new THREE.Mesh(rodGeom, rodMat);
@@ -812,22 +893,50 @@ function render() {
 		}
 	}
 
-	// bird and rod collision (check every other frame)
-	if (frame % 2 === 0) {
-		rod = null;
-		if (rod = getFirstContact('rod', 'bird')) {
-			if (nest.children.length < gui.rodLimit) {
+	if (frame % 4 === 0) {
+		if (nest.children.length < gui.rodLimit) {
+			// bird and rod collision (check every 4 frames)
+			rod = getFirstContact('bundle', 'bird') || getFirstContact('rod', 'bird');
+			if (rod) {
 				bodyRemoved = true;
 				gui.add('holding', 1);
 				var parent = reactors[rod.mesh.userData.parent];
 				parent.rods.splice(parent.rods.indexOf(rod), 1);
 				world.removeRigidBody(rod);
 				THREE.SceneUtils.attach(rod.mesh, scene, nest);
+			} else {
+				// river or dropped nests
+				for (var i = 0; i < dropped.length; i += 1) {
+					if (dropped[i].position.distanceTo(bird.position) < 10) {
+						if (dropped[i].userData.frame) { // nest
+							if (frame - dropped[i].userData.frame > 120) {
+								if (gui.rodLimit - nest.children.length >= dropped[i].children.length) {
+										console.log(dropped[i]);
+									gui.add('holding', dropped[i].children.length);
+									for (var j = 0; j < dropped[i].children.length; j += 1) {
+										THREE.SceneUtils.attach(dropped[i].children[j], scene, nest);
+									}
+								}
+							} else {
+								continue;
+							}
+						} else if (dropped[i].userData.tween) { // rod.. pollution
+							dropped[i].userData.tween.onComplete();
+							dropped[i].userData.tween.stop();
+							gui.add('holding', 1);
+							THREE.SceneUtils.attach(dropped[i], scene, nest);
+						}
+						dropped.splice(dropped.indexOf(dropped[i]), 1);
+						break;
+					}
+				}
 			}
 		}
 
 		if (nestContact = getFirstContact('nest', 'ground')) {
 			bodyRemoved = true;
+			var dropping = nestContact.mesh;
+			if (dropping.position.y < 4) dropping.position.y = 4;
 			world.removeRigidBody(nestContact);
 		}
 	}
@@ -851,6 +960,7 @@ function render() {
 	TWEEN.update();
 	world.step();
 	messages.step();
+	pipe.step();
 	gui.step();
 }
 
@@ -895,30 +1005,19 @@ var tmpEuler = new THREE.Euler();
 var reactors = [];
 var bodyRemoved = false;
 var stockpilePos = [-20, 0]; // x,z
-var challenge = null;
+var challenge = {status: 'none'};
 var nextChallenge = randInt(3600, 8000);
 var lastChallengeCompleted = 0;
 var kTapped = false;
 var tappedRods = [];
+var nest;
+var dropped = [];
 
 // tmpQuat.setFromEuler(rod.position);
 // tmpVec.applyQuaternion(tmpQuat);
 
 initScene();
 var gui = new EasyGui(document.getElementById('canvases'));
-var messages = new Messages(document.getElementById('canvases'));
-// for (var key in gui.purchased) { // create any timers that are still going
-// 	if (gui.purchased[key].seconds) {
-// 		if (!gui.purchased[key].rewarded) {
-// 			if (frameS < gui.purchased[key].boughtTime + gui.purchased[key].seconds * 1000) {
-// 				messages.addCountdown(key);
-// 			} else {
-// 				// reward
-// 				gui.purchased[key].rewarded = true;
-// 			}
-// 		}
-// 	}
-// }
 var fmb = new FlexboxMobileButtons({parent: document.getElementById('canvases'), onclick: function (value) {
 	if (value === 'store') {
 		new Store(document.getElementById('canvases'));
@@ -926,14 +1025,17 @@ var fmb = new FlexboxMobileButtons({parent: document.getElementById('canvases'),
 }});
 fmb.row().button('UP')
 .row().button('LEFT').button('DOWN').button('RIGHT')
-.row().button('J').button('K')
+.row().button('J', 'flap').button('K', 'drop')
 .fullscreen(renderer.domElement).button('store')
 .init();
+var messages = new Messages(document.getElementById('canvases'));
+var pipe = new Pipe();
 initBird();
 initTable();
 initChair();
 initPhysics();
-new Reactor();
+new Reactor([0, 40, 250 - 2.5]);
+new Reactor([80, 40, 250 - 2.5]);
 // new Reactor();
 // new Reactor();
 // new Reactor();
@@ -941,7 +1043,10 @@ new Reactor();
 sound.init({
 	drag: {type: 'loop'},
 	flap: {type: 'loop'},
-	crash: {type: 'overlap'}
+	crash: {type: 'overlap'},
+	powerup: {type: 'once'},
+	rod: {type: 'overlap'},
+	blip: {type: 'once'}
 });
 render();
 
@@ -954,11 +1059,9 @@ render();
 	music, sound effects
 	lab
 	multiplier room. navigate to one room for snapshot, new birds show up in other side
-	f
-	camera moves in middle, between house and lab (slerp with bounce)
-	procedurally generated shelves and other items
+	procedurally generated
 	create nests out of fuel rods/bundles
-	lab periodically dumps rods into dumpster
+	lab periodically dumps rods into dumpster, river
 	lay eggs of bigger and bigger size... glowing eggs contain multiple birds
 	powerups make bird cloning possible
 	automation: babies created automatically with cloning
@@ -981,7 +1084,9 @@ render();
 	can't buy nests with rods... need to be built by collecting
 	can sell eggs to get rods
 
-	gui: rods eggs xp
+	pipe for waste and spent rods to leak out
+
+	wanted poster. disguises to bypass security. sacrifice your babies as decoys to get ransom
 
 	factors: (for limited factors, just make achieving the limit nearly impossible)
 		number of trees (1 tree - 5 trees) buy with rods or eggs
@@ -1177,4 +1282,8 @@ function getFirstContact(name1, name2) {
 		contact = contact.next;
 	}
 	return false;
+}
+
+function distanceTo() {
+
 }

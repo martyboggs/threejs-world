@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en" class="wf-loading">
+
+<head>
+	<meta charset='utf-8'>
+
+	<!--[if lt IE 9]>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+	<![endif]-->
+	<meta name="google" content="notranslate">
+	<meta http-equiv="Content-Language" content="en">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta id="viewport" name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	<link rel="canonical" href="http://www.threejsworld.com/tutorials/how-i-made-a-3d-ragdoll-game-with-javascript" />
+	<meta itemprop="name" content="Three.js World">
+	<meta property="og:title" content="Three.js World">
+	<meta property="og:url" content="http://www.threejsworld.com">
+	<meta property="og:site_name" content="Three.js World">
+	<meta name="description" content="birds">
+	<meta itemprop="description" content="The place fo three.js tutorials and showcases">
+	<link rel="icon" sizes="192x192" href="http://www.threejsworld.com/images/icons/launcher-icon-4x.png">
+
+		<link rel="stylesheet" type="text/css" href="http://www.threejsworld.com/stylesheets/pygment_trac.css" media="screen">
+		<link rel="stylesheet" type="text/css" href="http://www.threejsworld.com/stylesheets/print.css" media="print">
+		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" type="text/css" href="http://www.threejsworld.com/stylesheets/monokai.css">
+		<link rel="stylesheet" type="text/css" href="http://www.threejsworld.com/stylesheets/dat.gui.css">
+		<link rel="stylesheet" type="text/css" href="http://www.threejsworld.com/stylesheets/slick.css">
+		<link rel="stylesheet" type="text/css" href="http://www.threejsworld.com/stylesheets/slick-theme.css">
+		<link rel="stylesheet" type="text/css" href="http://www.threejsworld.com/stylesheets/flexbox-mobile-buttons.css">
+		<link rel="stylesheet" type="text/css" href="http://www.threejsworld.com/stylesheets/stylesheet.css">
+		<link rel="stylesheet" type="text/css" href="http://www.threejsworld.com/stylesheets/custom.css">
+		<style>
+		.wf-loading h1,
+		.wf-loading h2,
+		.wf-loading h3,
+		.wf-loading h4,
+		.wf-loading h5,
+		.wf-loading h6,
+		.wf-loading p,
+		.wf-loading a,
+		.wf-loading .boxes,
+		.wf-loading canvas {
+			opacity: 0;
+		}
+		</style>
+
+	<script type="application/ld+json">
+	{"@context": "http://schema.org",
+	"@type": "WebPage",
+	"headline": "How I Made a 3D Ragdoll Game with JavaScript",
+	"url": "http://www.threejsworld.com/tutorials/how-i-made-a-3d-ragdoll-game-with-javascript"}
+	</script>
+	<title>Mr. Feathers</title>
+</head>
+
+<body>
+	<script src="https://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js"></script>
+	<script src="http://www.threejsworld.com/js/lib/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/84/three.js"></script>
+	<!--<script src="http://www.threejsworld.com/js/lib/three85dev.min.js"></script>-->
+	<script src="http://www.threejsworld.com/js/lib/slick.min.js"></script>
+	<script id="dsq-count-scr" src="https://three-js-world.disqus.com/count.js"></script>
+	<script src="http://www.threejsworld.com/js/lib/oimo1.0.9.js"></script>
+	<script src="http://www.threejsworld.com/js/lib/THREEx.KeyboardState.js"></script>
+	<script src="http://www.threejsworld.com/js/lib/THREEx.FullScreen.js"></script>
+	<script src="http://www.threejsworld.com/js/lib/dat.gui.js"></script>
+	<script src="http://www.threejsworld.com/js/lib/flexbox-mobile-buttons.js"></script>
+	<script src="http://www.threejsworld.com/js/lib/stats.min.js"></script>
+	<script src="http://www.threejsworld.com/js/lib/Tween.js"></script>
+	<script src="http://www.threejsworld.com/js/lib/howler.core.js"></script>
+	<script src="http://www.threejsworld.com/js/lib/adapter-latest.js"></script>
+	<script src="http://www.threejsworld.com/js/lib/js-aruco/svd.js"></script>
+	<script src="http://www.threejsworld.com/js/lib/js-aruco/posit1-patched.js"></script>
+	<script src="http://www.threejsworld.com/js/lib/js-aruco/cv.js"></script>
+	<script src="http://www.threejsworld.com/js/lib/js-aruco/aruco.js"></script>
+	<script src="http://www.threejsworld.com/js/lib/threex.jsarucomarker.js"></script>
+	<script src="http://www.threejsworld.com/js/lib/threex.webcamgrabbing.js"></script>
+	<script src="http://www.threejsworld.com/js/lib/sound.js"></script>
+
+	<script src="http://www.threejsworld.com/js/lib/visibility.js"></script>
+	<script src="http://www.threejsworld.com/js/main.js"></script>
+
+<script type="application/ld+json">
+{ "@context": "http://schema.org",
+ "@type": "TechArticle",
+ "headline": "How I Made a 3D Ragdoll Game with JavaScript",
+ "dependencies": "For everyone",
+ "proficiencyLevel": "Advanced",
+ "alternativeHeadline": "",
+ "image": "http://www.threejsworld.com/images/ex11.jpg",
+ "author": "Marty Boggs",
+ "award": "",
+ "editor": "Marty Boggs",
+ "genre": "Tutorials",
+ "keywords": "advanced physics featured sound lighting shadows",
+ "wordcount": "580",
+ "publisher": "Three.js World",
+ "url": "http://www.threejsworld.com/tutorials/how-i-made-a-3d-ragdoll-game-with-javascript",
+ "datePublished": "2017-02-14",
+ "dateCreated": "2017-02-14",
+ "dateModified": "2017-02-14",
+ "description": "birds",
+ "articleBody": " Like most people, I love animated violence. It feels good to break things or knock them over. Maybe it’s to assert our dominance. Maybe it’s to destroy the weak making way for the strong. I don’t know, but here’s how I programmed a bird.Building ItKeeping in mind the challenges I dealt with for Climber, I had the idea to build a fun, physics based game that would work on mobile and possibly in VR. First, I build the bird with primitive objects: a sphere for the head, cylinders for the eyes, cones for the beak and boxes for the body and wings. This saved me from having to work with Blender or other modeling tool. I noticed three.js has extrude and bevel methods, so I could create more complex shapes in the future.Here’s the ol’ color palette I used: To make sure eyes stay in the head and wings stay attached to the body I used an elaborate system of nested anchoring Object3D()s to group parts together. These groups made it easy to rotate around their centers rather than the world center, but they may have created some overhead as well.Tween.js wingsTo create the animation for the wings getting folded in, I used Tween.js. The animations begin when the bird starts to land and get deleted if the bird falls or begins to take off.Taming the BirdI didn’t realize how complicated the physics of birds flying is until I tried orienting my bird correctly. With little movements of their wings against the force of the wind resistance, birds can control their speed and direction with ease. Since my bird lives in a vacuum, so I can’t use these forces and have to fake it.Just controlling the bird’s roll (z-axis rotation) was a challenge. I added a constant impulse to an anchor point on its belly. It works, but makes it wobbly.// make bird upright birdUpright.position.copy(bird.position); birdUpright.rotation.copy(bird.rotation); birdUpright.translateOnAxis(tmpVec.set(0, 1, 0), -10); bodies[0].applyImpulse(birdUpright.position, {x: 0, y: -100, z: 0});I liked the way the camera follows the bird using the lookat() function. This means that the controls need to change with the direction of the camera. I opted for a polar coordinate system for movement where up will move the bird away from the camera and down will move it toward the camera. To get the proper camera “yaw” I changed its rotation order to YXZ.camera.rotation.order = 'YXZ';I knew I wanted mobile buttons, so I added some simple ones to the screen with click events– it didn’t work. I needed touchstart and touchend events. So I wrote a little library to help with adding on-screen buttons with touch support and Fullscreen API integration. Check it out here: flexbox-mobile-buttons.js.Physicsworker oimo new version collisions with world.checkContact() compound objects keeping upright translateOnAxis performancepositional audioloth’s pooling audio "
+ }
+</script>
+
+		<h1>How I Made a 3D Ragdoll Game with JavaScript</h1>
+		<div id="canvases"></div>
+		<script src="http://localhost:4000/js/examples/ex11.js"></script>
+
+</body>
+</html>

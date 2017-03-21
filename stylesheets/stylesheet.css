@@ -1139,6 +1139,7 @@ dl dd {
 	color: white;
 	line-height: 1;
 	padding: 20px 0;
+	user-select: none;
 }
 .gui > * {
 	width: 33.33333%;
@@ -1204,7 +1205,6 @@ dl dd {
 .item .price {
 	pointer-events: none;
 	margin-left: 10px;
-	border: 2px solid green;
 }
 
 .item:disabled {
@@ -1220,6 +1220,7 @@ dl dd {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-end;
+	user-select: none;
 }
 
 .message {
