@@ -14,6 +14,7 @@ function initScene() {
 	renderer = new THREE.WebGLRenderer({antialias: antialias});
 	renderer.setClearColor('white', 1);
 	document.getElementById('canvases').appendChild(renderer.domElement);
+	renderer.domElement.focus();
 	onWindowResize();
 
 	outsideLight = new THREE.DirectionalLight(0xffffff, 0.7);
