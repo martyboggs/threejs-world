@@ -1057,6 +1057,9 @@ fmb.row().button('UP')
 .row().button('J', 'flap').button('K', 'drop')
 .fullscreen(renderer.domElement).button('store')
 .init();
+
+fmb.container.addEventListener('click', renderer.domElement.focus);
+
 var messages = new Messages(document.getElementById('canvases'));
 var pipe = new Pipe();
 initBird();
@@ -1312,8 +1315,3 @@ function getFirstContact(name1, name2) {
 	}
 	return false;
 }
-
-document.addEventListener('DOMContentLoaded', function() {
-	console.log('body focused');
-	renderer.domElement.focus();
-});
