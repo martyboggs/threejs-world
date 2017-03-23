@@ -1058,7 +1058,9 @@ fmb.row().button('UP')
 .fullscreen(renderer.domElement).button('store')
 .init();
 
-fmb.container.addEventListener('click', renderer.domElement.focus);
+fmb.container.addEventListener('click', function () {
+	renderer.domElement.focus();
+});
 
 var messages = new Messages(document.getElementById('canvases'));
 var pipe = new Pipe();
