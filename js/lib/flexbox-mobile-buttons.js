@@ -35,7 +35,7 @@ function FlexboxMobileButtons(args) {
 	}
 
 	function buttonOnClick(e) {
-		e.preventDefault();
+		if (e.type === 'touchstart') e.preventDefault();
 
 		if (e.type === 'touchstart') {
 			for (var i = 0; i < e.touches.length; i += 1) {

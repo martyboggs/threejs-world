@@ -1019,8 +1019,7 @@ var chairShape;
 var geoBox = new THREE.BoxGeometry(1, 1, 1);
 var buffGeoBox = new THREE.BufferGeometry();
 buffGeoBox.fromGeometry(new THREE.BoxGeometry(1, 1, 1));
-var realWindow = window.parent || window;
-var keyboard = new THREEx.KeyboardState(realWindow);
+var keyboard = new THREEx.KeyboardState();
 var isMobile;
 var flapSound;
 var fullscreen = false;
@@ -1057,11 +1056,6 @@ fmb.row().button('UP')
 .row().button('J', 'flap').button('K', 'drop')
 .fullscreen(renderer.domElement).button('store')
 .init();
-
-document.getElementById('fmb-container').addEventListener('click', function () {
-	document.body.focus();
-});
-
 var messages = new Messages(document.getElementById('canvases'));
 var pipe = new Pipe();
 initBird();
