@@ -16,26 +16,42 @@ function initScene() {
 	document.getElementById('canvases').appendChild(renderer.domElement);
 	onWindowResize();
 
-	var directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
-	directionalLight.position.set(115, 600, 100);
+	outsideLight = new THREE.DirectionalLight(0xffffff, 0.7);
+	outsideLight.position.set(115, 600, 100);
+
+	labLight = new THREE.DirectionalLight(0xffffff, 1.4);
+	labLight.position.set(0, 90, 175);
+
+	var labLightTarget = new THREE.Object3D();
+	labLightTarget.position.set(0, 0, 175);
+	scene.add(labLightTarget);
+	labLight.target = labLightTarget;
+
 	if (!isMobile) {
-		directionalLight.castShadow = true;
-		var d = 200;
-		directionalLight.shadow.camera = new THREE.OrthographicCamera(-d, d, d, -d, 0, 700);
-		directionalLight.shadow.bias = 0.0001;
-		directionalLight.shadow.mapSize.width = directionalLight.shadow.mapSize.height = 1024;
-		scene.add(directionalLight);
+		outsideLight.castShadow = true;
+		var d = 400;
+		outsideLight.shadow.camera = new THREE.OrthographicCamera(-d, d, d, -d, 0, 700);
+		outsideLight.shadow.bias = 0.0001;
+		outsideLight.shadow.mapSize.width = outsideLight.shadow.mapSize.height = 1024;
+
+		labLight.castShadow = true;
+		labLight.shadow.camera = new THREE.OrthographicCamera(-250, 250, 80, -80, 0, 700);
+		labLight.shadow.bias = 0.0001;
+		labLight.shadow.mapSize.width = labLight.shadow.mapSize.height = 1024;
+
 		renderer.shadowMap.enabled = true;
 		renderer.shadowMap.type = THREE.PCFShadowMap;//THREE.BasicShadowMap;
-		// scene.add(new THREE.CameraHelper(directionalLight.shadow.camera));
-		// var datgui = new dat.GUI();
-		// datgui.add(directionalLight.position, 'x', 0, 500);
-		// datgui.add(directionalLight.position, 'y', 0, 600);
-		// datgui.add(directionalLight.position, 'z', 0, 500);
+		var datGui = new dat.GUI();
+
+		// datGui.add(outsideLight.position, 'x', -200, 200);
+		// datGui.add(outsideLight.position, 'y', 400, 800);
+		// datGui.add(outsideLight.position, 'z', -200, 200);
+		// scene.add(new THREE.CameraHelper(outsideLight.shadow.camera));
 	}
-	scene.add(directionalLight);
 	var ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
 	scene.add(ambientLight);
+	scene.add(outsideLight);
+	scene.add(labLight);
 
 	// audio
 	var listener = new THREE.AudioListener();
@@ -55,6 +71,7 @@ function initScene() {
 	// axisHelper = new THREE.AxisHelper(10);
 	// scene.add(axisHelper);
 	var gridHelper = new THREE.GridHelper(500, 50);
+	gridHelper.position.z = 250 + 106;
 	scene.add(gridHelper);
 }
 
@@ -68,6 +85,8 @@ var rodGeom = new THREE.BoxGeometry(rodSize[0], rodSize[1], rodSize[2]);
 var bundleGeom = new THREE.BoxGeometry(bundleSize[0], bundleSize[1], bundleSize[2]);
 var rodMat = new THREE.MeshBasicMaterial({color: 'magenta'});
 var fireInterval = 255;
+var outsideLight;
+var labLight;
 
 function Reactor(pos) {
 	reactors.push(this);
@@ -101,12 +120,11 @@ Reactor.prototype = {
 		var rod = new THREE.Mesh(bundle ? bundleGeom : rodGeom, rodMat);
 		rod.position.copy(this.mesh.position);
 		rod.position.y = this.mesh.position.y - reactorSize[1] / 2;
-		// rod.rotation.y = this.mesh.rotation.y;
 		rod.position.z = this.mesh.position.z + randInt(0, -5);
 		rod.rotation.y = randInt(-1, 1) / 4;
 		rod.rotation.z = Math.PI / 8;
 		rod.userData.birthday = frame;
-		rod.userData.parent = reactors.length - 1;
+		rod.userData.parent = this.rods;
 		rod.name = bundle ? 'bundle' : 'rod';
 		scene.add(rod);
 		var body = world.add({
@@ -260,7 +278,7 @@ function initPhysics() {
 	var body = world.add({
 		type: 'box',
 		size: [6, 6, 12],
-		pos: [0, 20, 0],
+		pos: [0, 20, 100],
 		move: true,
 		name: 'bird'
 	});
@@ -268,12 +286,13 @@ function initPhysics() {
 	bodies.push(body);
 	body.connectMesh(bird);
 
-	var ground = {size: [500, 50, 500], pos: [0, -25, 0]};
+	var ground = {size: [500, 50, 150], pos: [0, -25, 175]};
 	placeGround(ground);
-	var dirt = new THREE.Mesh(new THREE.PlaneGeometry(500, 350), new THREE.MeshLambertMaterial({color: '#2f221b'}));
-	dirt.rotation.x = -Math.PI / 2;
-	dirt.position.set(0, 0.8, -75);
-	scene.add(dirt);
+	var ground = {size: [500, 50, 350], pos: [0, -25, -75], color: new THREE.MeshLambertMaterial({color: '#2f221b'})};
+	placeGround(ground);
+	// dirt.rotation.x = -Math.PI / 2;
+	// dirt.position.set(0, 0.8, -75);
+	// scene.add(dirt);
 
 	var tables = [
 		{pos: [150, 16, 190]},
@@ -498,15 +517,16 @@ function Pipe() {
 Pipe.prototype = {
 	step: function () {
 		// pipe pollution
-		if (frame % 10 === 0 && Math.sin(frame / 40) > 0.5) {
+		if (frame % 30 === 0 && Math.sin(frame / 200) > 0.96) {
 			var rod = new THREE.Mesh(rodGeom, rodMat);
+			rod.name = 'rod';
 			rod.position.set(-60, 8, 40);
 			this.contents.push(rod);
-			dropped.push(rod);
+			fromPipe.push(rod);
 			scene.add(rod);
 			var tween = new TWEEN.Tween(rod.position).to({x: [-60, -26, 8, 42, 76, 110, 144, 178, 212, 250], y: [1, 1, 5, 1, 5, 1, 5, 1, 5, 1], z: [30, randInt(26, 40), randInt(26, 40)]}, 10000).start().onComplete(function () {
 				scene.remove(pipe.contents[0]);
-				dropped.splice(dropped.indexOf(pipe.contents[0]), 1);
+				fromPipe.splice(fromPipe.indexOf(pipe.contents[0]), 1);
 				pipe.contents.splice(0, 1);
 			});
 			rod.userData.tween = tween;
@@ -618,7 +638,7 @@ EasyGui.prototype = {
 		if (frame % (60 * 59 * 3) && frameS > this.nextEgg) { // at start and every ~3min
 			this.nextEgg = frameS + 24 * 60 * 60 * 1000;
 			gui.add('eggs', 1);
-			messages.add('You have a new egg!', 'egg');
+			messages.add('You have a new egg!', 'eggs');
 		}
 		if (frame % 360 === 0) { // every 6 seconds, interpolate average rods/min
 			this.readRate = Math.round((this.rods - this.lastRods) * 10);
@@ -781,37 +801,28 @@ function render() {
 	}
 
 	if (keyboard.pressed('k') || fmb.clicking.K) {
-		if (gui.holding) {	// stockpile drop
+		if (gui.holding) {	// drop rods
 			kTapped = true;
 			gui.holding = 0;
 			document.getElementById('holding').innerHTML = 0;
-			if (bird.position.x > stockpilePos[0] - 20 && bird.position.x < stockpilePos[0] + 20 &&
-			bird.position.z > stockpilePos[1] - 20 && bird.position.z < stockpilePos[1] + 20) {
-				var points = 0;
-				for (var i = 0; i < nest.children.length; i += 1) {
-					if (nest.children[i].name === 'bundle') {
-						points += 50;
-					} else {
-						points += 1;
-					}
-				}
-				messages.add('Stockpiled ' + points + ' rods!', 'rods');
-				gui.add('rods', points);
+			for (var i = 0; i < nest.children.length; i += 1) {
+				var mesh = nest.children[i];
+				THREE.SceneUtils.detach(nest.children[i], nest, scene);
+				var body = world.add({
+					type: 'box',
+					size: mesh.name === 'bundle' ? bundleSize : rodSize,
+					pos: [mesh.position.x, mesh.position.y, mesh.position.z],
+					rot: [mesh.rotation.x / toRad, mesh.rotation.y / toRad, mesh.rotation.z / toRad],
+					move: true,
+					name: mesh.name
+				});
+				body.linearVelocity.copy(bodies[0].linearVelocity);
+				body.angularVelocity.copy(bodies[0].angularVelocity);
+				body.connectMesh(mesh);
+				mesh.userData.dropping = true;
+				dropping.push(body); // track till they drop
+				i -= 1;
 			}
-			THREE.SceneUtils.detach(nest, bird, scene);
-			var body = world.add({
-				type: 'box',
-				size: [8, 4, 10],
-				pos: [nest.position.x, nest.position.y, nest.position.z],
-				rot: [nest.rotation.x / toRad, nest.rotation.y / toRad, nest.rotation.z / toRad],
-				move: true,
-				name: 'nest'
-			});
-			body.connectMesh(nest);
-			nest.userData.frame = frame; // prevent immediate re-pickup
-			dropped.push(nest);
-			nest = new THREE.Object3D();
-			bird.add(nest);
 		} else if (!kTapped) {	// tapping
 			kTapped = true;
 			sound.play('rod');
@@ -843,7 +854,7 @@ function render() {
 
 
 
-
+	// position camera
 	if (bird.position.z > 100 && camera.position.z === 40) {
 		new TWEEN.Tween(camera.position).to({z: 200}, 1000).easing(TWEEN.Easing.Sinusoidal.Out).start();
 	} else if (bird.position.z < 100 && camera.position.z === 200) {
@@ -853,6 +864,15 @@ function render() {
 		new TWEEN.Tween(camera.position).to({y: 500}, 1000).easing(TWEEN.Easing.Sinusoidal.Out).start();
 	} else if (bird.position.y < 250 && camera.position.y === 500) {
 		new TWEEN.Tween(camera.position).to({y: 20}, 1000).easing(TWEEN.Easing.Sinusoidal.Out).start();
+	}
+
+	// toggle lights
+	if (camera.position.z > 100 && camera.position.y < 250) {
+		outsideLight.visible = false;
+		labLight.visible = true;
+	} else {
+		outsideLight.visible = true;
+		labLight.visible = false;
 	}
 
 	camera.lookAt(bird.position);
@@ -897,47 +917,53 @@ function render() {
 		if (nest.children.length < gui.rodLimit) {
 			// bird and rod collision (check every 4 frames)
 			rod = getFirstContact('bundle', 'bird') || getFirstContact('rod', 'bird');
-			if (rod) {
-				bodyRemoved = true;
+			// pick up rod from reactor, or something dropped from beak
+			if (rod && !rod.mesh.userData.dropping) {
 				gui.add('holding', 1);
-				var parent = reactors[rod.mesh.userData.parent];
-				parent.rods.splice(parent.rods.indexOf(rod), 1);
+				rod.mesh.userData.parent.splice(rod.mesh.userData.parent.indexOf(rod), 1);
 				world.removeRigidBody(rod);
+				bodyRemoved = true;
 				THREE.SceneUtils.attach(rod.mesh, scene, nest);
 			} else {
-				// river or dropped nests
-				for (var i = 0; i < dropped.length; i += 1) {
-					if (dropped[i].position.distanceTo(bird.position) < 10) {
-						if (dropped[i].userData.frame) { // nest
-							if (frame - dropped[i].userData.frame > 120) {
-								if (gui.rodLimit - nest.children.length >= dropped[i].children.length) {
-										console.log(dropped[i]);
-									gui.add('holding', dropped[i].children.length);
-									for (var j = 0; j < dropped[i].children.length; j += 1) {
-										THREE.SceneUtils.attach(dropped[i].children[j], scene, nest);
-									}
-								}
-							} else {
-								continue;
-							}
-						} else if (dropped[i].userData.tween) { // rod.. pollution
-							dropped[i].userData.tween.onComplete();
-							dropped[i].userData.tween.stop();
+				// collision with river rods
+				for (var i = 0; i < fromPipe.length; i += 1) {
+					if (fromPipe[i].position.distanceTo(bird.position) < 10) {
+						if (fromPipe[i].userData.tween) { // rod.. pollution
+							fromPipe[i].userData.tween.onComplete();
+							fromPipe[i].userData.tween.stop();
 							gui.add('holding', 1);
-							THREE.SceneUtils.attach(dropped[i], scene, nest);
+							THREE.SceneUtils.attach(fromPipe[i], scene, nest);
 						}
-						dropped.splice(dropped.indexOf(dropped[i]), 1);
+						fromPipe.splice(fromPipe.indexOf(fromPipe[i]), 1);
 						break;
 					}
 				}
 			}
 		}
 
-		if (nestContact = getFirstContact('nest', 'ground')) {
-			bodyRemoved = true;
-			var dropping = nestContact.mesh;
-			if (dropping.position.y < 4) dropping.position.y = 4;
-			world.removeRigidBody(nestContact);
+		for (var i = 0; i < dropping.length; i += 1) {
+			if (dropping[i].linearVelocity.lengthSq() < 5) {
+				// stockpile rods
+				var mesh = dropping[i].mesh;
+				if (mesh.position.x > stockpilePos[0] - 20 && mesh.position.x < stockpilePos[0] + 20 &&
+				mesh.position.z > stockpilePos[1] - 20 && mesh.position.z < stockpilePos[1] + 20) {
+					if (mesh.name === 'bundle') {
+						var points = 50;
+					} else {
+						var points = 1;
+					}
+					messages.add('Stockpiled ' + points + ' rods!', 'rods');
+					gui.add('rods', points);
+					bodyRemoved = true;
+					world.removeRigidBody(dropping[i]);
+				} else {
+					fromBeak.push(dropping[i]);
+					dropping[i].mesh.userData.parent = fromBeak;
+				}
+				delete dropping[i].mesh.userData.dropping;
+				dropping.splice(dropping.indexOf(dropping[i]), 1);
+				i -= 1;
+			}
 		}
 	}
 
@@ -993,7 +1019,8 @@ var chairShape;
 var geoBox = new THREE.BoxGeometry(1, 1, 1);
 var buffGeoBox = new THREE.BufferGeometry();
 buffGeoBox.fromGeometry(new THREE.BoxGeometry(1, 1, 1));
-var keyboard = new THREEx.KeyboardState();
+var realWindow = window.parent || window;
+var keyboard = new THREEx.KeyboardState(realWindow);
 var isMobile;
 var flapSound;
 var fullscreen = false;
@@ -1011,7 +1038,9 @@ var lastChallengeCompleted = 0;
 var kTapped = false;
 var tappedRods = [];
 var nest;
-var dropped = [];
+var fromBeak = [];
+var fromPipe = [];
+var dropping = [];
 
 // tmpQuat.setFromEuler(rod.position);
 // tmpVec.applyQuaternion(tmpQuat);
@@ -1191,7 +1220,7 @@ function placeGround(ground) {
 	ground.config = [0.2, 0.4, 0.1]; // reuse object
 	var body = world.add(ground);
 	bodies.push(body);
-	var mesh = new THREE.Mesh(buffGeoBox, gray);
+	var mesh = new THREE.Mesh(buffGeoBox, ground.color ? ground.color : gray);
 	mesh.scale.set(ground.size[0], ground.size[1], ground.size[2]);
 	mesh.position.set(ground.pos[0], ground.pos[1], ground.pos[2]);
 	mesh.castShadow = true;
