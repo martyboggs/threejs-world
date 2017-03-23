@@ -1058,8 +1058,7 @@ fmb.row().button('UP')
 .fullscreen(renderer.domElement).button('store')
 .init();
 
-fmb.container.addEventListener('click', function () {
-	console.log('como se what');
+document.getElementById('fmb-container').addEventListener('click', function () {
 	renderer.domElement.focus();
 });
 
