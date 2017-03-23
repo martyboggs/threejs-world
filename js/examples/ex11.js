@@ -1315,5 +1315,5 @@ function getFirstContact(name1, name2) {
 
 document.addEventListener('DOMContentLoaded', function() {
 	console.log('body focused');
-	document.body.focus();
+	renderer.domElement.focus();
 });
