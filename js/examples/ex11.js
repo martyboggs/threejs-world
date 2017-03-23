@@ -1059,6 +1059,7 @@ fmb.row().button('UP')
 .init();
 
 fmb.container.addEventListener('click', function () {
+	console.log('como se what');
 	renderer.domElement.focus();
 });
 
