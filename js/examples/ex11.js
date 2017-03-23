@@ -1059,7 +1059,7 @@ fmb.row().button('UP')
 .init();
 
 document.getElementById('fmb-container').addEventListener('click', function () {
-	renderer.domElement.focus();
+	document.body.focus();
 });
 
 var messages = new Messages(document.getElementById('canvases'));
