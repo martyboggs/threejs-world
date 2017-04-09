@@ -5,6 +5,8 @@ description: Let's import this sweet bowling pin into three.js! I created it in 
 example: ex6
 author: Marty Boggs
 category: Tutorials
+redirect_from:
+ - tutorials/working-with-materials-in-threejs
 tags:
 -  materials
 ---

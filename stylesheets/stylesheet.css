@@ -1200,17 +1200,26 @@ dl dd {
 	width: 100%;
 	text-align: center;
 	background: white;
-	border: 0;
+	border-bottom: 1px solid gray;
+	padding-bottom: 6px;
 }
 .item .price {
 	pointer-events: none;
 	margin-left: 10px;
 }
 
-.item:disabled {
+.item.disabled {
 	background: gray;
 }
-
+.item button {
+	border: 1px solid darkslategray;
+}
+.item button:disabled {
+	background: gray;
+}
+.item .rods {
+	margin-right: 3px;
+}
 
 .messages {
 	position: absolute;
@@ -1256,11 +1265,15 @@ dl dd {
 	}
 }
 
+.shrink {
+	animation: shrink 1s forwards;
+}
+
 @keyframes shrink {
 	0% {
-		height: auto;
+		opacity: 1;
 	}
 	100% {
-		height: 0;
+		opacity: 0;
 	}
 }

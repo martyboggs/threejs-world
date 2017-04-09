@@ -41,7 +41,8 @@ function initScene() {
 
 		renderer.shadowMap.enabled = true;
 		renderer.shadowMap.type = THREE.PCFShadowMap;//THREE.BasicShadowMap;
-		var datGui = new dat.GUI();
+
+		// var datGui = new dat.GUI();
 
 		// datGui.add(outsideLight.position, 'x', -200, 200);
 		// datGui.add(outsideLight.position, 'y', 400, 800);
@@ -74,19 +75,6 @@ function initScene() {
 	gridHelper.position.z = 250 + 106;
 	scene.add(gridHelper);
 }
-
-
-var reactors = [];
-var reactorSize = [10, 4, 5];
-var reactorGeom = new THREE.BoxGeometry(reactorSize[0], reactorSize[1], reactorSize[2]);
-var rodSize = [20, 0.2, 0.2];
-var bundleSize = [20, 0.6, 0.6];
-var rodGeom = new THREE.BoxGeometry(rodSize[0], rodSize[1], rodSize[2]);
-var bundleGeom = new THREE.BoxGeometry(bundleSize[0], bundleSize[1], bundleSize[2]);
-var rodMat = new THREE.MeshBasicMaterial({color: 'magenta'});
-var fireInterval = 255;
-var outsideLight;
-var labLight;
 
 function Reactor(pos) {
 	reactors.push(this);
@@ -204,11 +192,12 @@ function initBird() {
 	head.position.set(0, 1, 7.8);
 
 	birdUpright = new THREE.Object3D();
-	nest = new THREE.Object3D();
+	beak = new THREE.Object3D();
 	// birdUpright.position.y = -10;
 	// scene.add(birdUpright);
 
-	bird = new THREE.Object3D().add(wingR, wingL, birdBody, head, nest);
+	bird = new THREE.Object3D().add(wingR, wingL, birdBody, head, beak);
+	bird.userData.lastY = bird.position.y;
 	scene.add(bird);
 	bird.add(flapSound);
 }
@@ -278,7 +267,7 @@ function initPhysics() {
 	var body = world.add({
 		type: 'box',
 		size: [6, 6, 12],
-		pos: [0, 20, 100],
+		pos: [0, 20, 0],
 		move: true,
 		name: 'bird'
 	});
@@ -328,10 +317,6 @@ function initPhysics() {
 		{pos: [0, 100 + 5, 175], size: [510, 10, 160], color: white}, // ceiling
 		{pos: [-60, 30 / 2, 105], size: [60, 30, 10], color: white}, // interior
 
-		{pos: [20, 60, -35], size: [50, 5, 5], rot: [0, 0, 45], color: tan}, // tree branch right
-		{pos: [-20, 60, -35], size: [50, 5, 5], rot: [0, 0, 135], color: tan}, // tree branch left
-		{pos: [0, 30, -35], size: [10, 60, 10], color: tan}, // tree trunk
-
 		{pos: [stockpilePos[0] + 10, 5, stockpilePos[1]], size: [2, 10, 22], color: black}, // stockpile
 		{pos: [stockpilePos[0] - 10, 5, stockpilePos[1]], size: [2, 10, 22], color: black}, // stockpile
 		{pos: [stockpilePos[0], 5, stockpilePos[1] + 10], size: [22, 10, 2], color: black}, // stockpile
@@ -339,6 +324,9 @@ function initPhysics() {
 
 	];
 	placeBoundaries(boundaries);
+
+	if (gui.trees.length >= 0) new Tree({pos: [0, 30, -35], size: [10, 60, 10], color: tan});
+	if (gui.trees.length > 1) new Tree({pos: [100, 30, -35], size: [10, 60, 10], color: tan});
 }
 
 function Store(target) {
@@ -348,44 +336,58 @@ function Store(target) {
 	store.innerHTML = '<button class="close" value="close">X</button>';
 	var products = {
 		beak1: {description: 'Increase the number of rods you can carry to ',
-			key: 'rodLimit', value: 4, seconds: 5,
-			priceKey: 'rods', priceValue: 200, level: 1},
+			key: 'rodLimit', value: 3, seconds: 5,
+			rods: 200, eggs: 1, level: 1},
 		beak2: {description: 'Increase the number of rods you can carry to ',
-			key: 'rodLimit', value: 5, seconds: 160,
-			priceKey: 'rods', priceValue: 2000, level: 9},
+			key: 'rodLimit', value: 4, seconds: 5,
+			rods: 1000, eggs: 1, level: 7},
 		beak3: {description: 'Increase the number of rods you can carry to ',
-			key: 'rodLimit', value: 6, seconds: 360,
-			priceKey: 'rods', priceValue: 10000, level: 12},
+			key: 'rodLimit', value: 5, seconds: 160,
+			rods: 2000, eggs: 2, level: 9},
 		beak4: {description: 'Increase the number of rods you can carry to ',
-			key: 'rodLimit', value: 7, seconds: 900,
-			priceKey: 'rods', priceValue: 100000, level: 20},
+			key: 'rodLimit', value: 6, seconds: 360,
+			rods: 10000, eggs: 10, level: 12},
 		beak5: {description: 'Increase the number of rods you can carry to ',
-			key: 'rodLimit', value: 8, seconds: 160,
-			priceKey: 'rods', priceValue: 5000, level: 25},
+			key: 'rodLimit', value: 7, seconds: 900,
+			rods: 20000, eggs: 20, level: 14},
+		beak6: {description: 'Increase the number of rods you can carry to ',
+			key: 'rodLimit', value: 8, seconds: 1000,
+			rods: 25000, eggs: 25, level: 16},
 		rate1: {description: 'Increase rods per minute by ', key: 'rate', value: 2,
-			priceKey: 'rods', priceValue: 200, level: 8},
+			rods: 200, eggs: 1, level: 8},
 		rate2: {description: 'Increase rods per minute by ', key: 'rate', value: 4,
-			priceKey: 'rods', priceValue: 500, level: 10},
+			rods: 1000, eggs: 1, level: 10},
 		rate3: {description: 'Increase rods per minute by ', key: 'rate', value: 2,
-			priceKey: 'rods', priceValue: 1000, level: 12},
+			rods: 2000, eggs: 1, level: 12},
 		rate4: {description: 'Increase rods per minute by ', key: 'rate', value: 4,
-			priceKey: 'rods', priceValue: 5000, level: 14},
+			rods: 5000, eggs: 5, level: 14},
 		rate5: {description: 'Increase rods per minute by ', key: 'rate', value: 2,
-			priceKey: 'rods', priceValue: 10000, level: 16},
+			rods: 10000, eggs: 10, level: 16},
 		rate6: {description: 'Increase rods per minute by ', key: 'rate', value: 4,
-			priceKey: 'rods', priceValue: 20000, level: 18},
+			rods: 20000, eggs: 20, level: 18},
 		rate7: {description: 'Increase rods per minute by ', key: 'rate', value: 2,
-			priceKey: 'rods', priceValue: 30000, level: 20},
+			rods: 30000, eggs: 30, level: 20},
+		tree1: {description: 'Increase trees by ', key: 'tree', value: 1,
+			rods: 1000, eggs: 10, level: 1, },
 	};
 	for (var key in products) {
 		// purchased already, or level not met
 		var locked = products[key].level > gui.level;
 		var purchased = gui.purchased[key];
 		var disabled = locked || purchased ? 'disabled="disabled"' : '';
-		var text = locked ? 'Unlocked at level ' + products[key].level : products[key].priceValue + ' ' + products[key].priceKey;
-		store.innerHTML += '<button id="' + key + 'button" class="item" value="' + key + '" ' +
-		disabled + '>' + products[key].description + products[key].value +
-		'<br><span class="price">' + (purchased ? 'sold out' : text) + '</span></button>';
+		var item = '<div class="item' + (locked || purchased ? ' disabled' : '') + '">';
+		item += products[key].description + products[key].value + '<br>';
+		if (locked) {
+			item += 'Unlocked at level ' + products[key].level + '<br>';
+		} else if (purchased) {
+			item += 'sold out<br>';
+		}
+		if (products[key].rods)
+			item += '<button class="item-button rods" value="' + key + '" ' + disabled + '>' + products[key].rods + ' rods<span class="price">' + '</span></button>';
+		if (products[key].eggs)
+			item += '<button class="item-button eggs" value="' + key + '" ' + disabled + '>' + products[key].eggs + ' eggs<span class="price">' + '</span></button>';
+		item += '</div>';
+		store.innerHTML += item;
 	}
 	target.appendChild(store);
 
@@ -393,23 +395,32 @@ function Store(target) {
 
 	var self = this;
 	function storeHandler(e) {
-		if (e.target.className.indexOf('item') !== -1) {
+		var item = e.target.parentNode;
+		if (item && e.target.className.indexOf('item-button') !== -1) {
+			var unit = e.target.className.indexOf('rods') !== -1 ? 'rods' : 'eggs';
 			var key = e.target.value;
-			if (confirm('Buy ' + key + ' upgrade for ' + products[key].priceValue + ' ' + products[key].priceKey + '?')) {
-				if (products[key].priceValue > gui[products[key].priceKey]) {
-					alert('Not enough rods');
+			if (confirm('Buy ' + key + ' upgrade for ' + products[key].rods + ' rods?')) {
+				if (products[key][unit] > gui[unit]) {
+					alert('Not enough ' + unit);
 					return;
 				}
 				// buy item
+				if (item) {
+					item.className += ' disabled';
+					if (item.children[0]) item.children[0].disabled = 'disabled';
+					if (item.children[1]) item.children[1].disabled = 'disabled';
+					if (item.children[2]) item.children[2].disabled = 'disabled';
+				}
 				gui.purchased[key] = Object.assign({}, products[key]);
-				if (products[key].priceKey === 'rods') gui.lastRods -= products[key].priceValue;
+				gui.purchased[key].unit = unit;
+				if (unit === 'rods') gui.lastRods -= products[key].rods;
+
+				gui.add(unit, -products[key][unit]);
 				if (gui.purchased[key].seconds) {
 					gui.purchased[key].boughtTime = new Date().getTime();
+					gui.addXp(1); // force save
 				} else {
-					gui.add(products[key].priceKey, -products[key].priceValue);
 					gui.add(products[key].key, products[key].value);
-					var item = document.getElementById(key + 'button');
-					if (item) item.disabled = 'disabled';
 				}
 			}
 			sound.play('rod');
@@ -425,6 +436,8 @@ function Messages(target) {
 	this.container = document.createElement('div');
 	this.container.className = this.container.id = 'messages';
 	this.container.innerHTML = '';
+	this.challenge = {status: 'none', next: randInt(3600, 8000), last: 0};
+
 	target.appendChild(this.container);
 }
 Messages.prototype = {
@@ -448,10 +461,10 @@ Messages.prototype = {
 			'<span id="challenge-bar" class="bar"></span>' +
 			'<img src="/images/' + icon + '.jpg">';
 		this.container.appendChild(m);
-		challenge = {
+		messages.challenge = {
 			status: 'started',
 			el: m,
-			goal: gui.level * 2,
+			goal: Math.pow(gui.level, 2) + 200,
 			collected: 0,
 			rewardUnit: rewardUnit,
 			reward: reward
@@ -464,12 +477,12 @@ Messages.prototype = {
 		m.innerHTML =
 			'<img id="challenge-button" class="challenge-button" src="/images/' + icon + '.jpg">';
 		this.container.appendChild(m);
-		challenge.status = 'init';
+		messages.challenge.status = 'init';
 		document.getElementById('challenge-button').addEventListener('click', function (e) {
 			if (confirm(message)) {
 				callback();
 			} else {
-				challenge = {status: 'none'};
+				messages.challenge = {status: 'none'};
 			}
 			sound.play('blip');
 			messages.container.removeChild(document.getElementById('challenge-button').parentNode);
@@ -486,21 +499,31 @@ Messages.prototype = {
 		this.container.appendChild(m);
 		return m;
 	},
+	addEggCountdown: function (index) {
+		var m = document.createElement('div');
+		m.className = 'message';
+		m.innerHTML =
+			'<p class="message-text">Egg hatching in ' + '</p>' +
+			'<span id="egg-countdown' + index + '" class="egg-countdown"></span>s' +
+			'<img src="/images/eggs.jpg">';
+		this.container.appendChild(m);
+		trees[index].eggCountdown = document.getElementById('egg-countdown' + index);
+		return m;
+	},
 	step: function () {
-		for (var i = 0; i < this.messages.length; i += 1) {
-			if (this.messages[i].birthday) {
-				if (frame - this.messages[i].birthday === 180) {
-					this.shrink(this.messages[i], i);
-				} else if (frame - this.messages[i].birthday === 360) {
-					this.container.removeChild(this.messages[i].el);
-					this.messages.splice(i, 1);
-					i -= 1;
+		if (frame % 60 === 0) {
+			for (var i = 0; i < this.messages.length; i += 1) {
+				if (this.messages[i].birthday) {
+					if (frame - this.messages[i].birthday >= 300) {
+						this.container.removeChild(this.messages[i].el);
+						this.messages.splice(i, 1);
+						i -= 1;
+					} else if (frame - this.messages[i].birthday >= 180) {
+						this.messages[i].el.className += ' shrink';
+					}
 				}
 			}
 		}
-	},
-	shrink: function (message, i) {
-		message.className += ' shrink';
 	}
 };
 
@@ -524,7 +547,7 @@ Pipe.prototype = {
 			this.contents.push(rod);
 			fromPipe.push(rod);
 			scene.add(rod);
-			var tween = new TWEEN.Tween(rod.position).to({x: [-60, -26, 8, 42, 76, 110, 144, 178, 212, 250], y: [1, 1, 5, 1, 5, 1, 5, 1, 5, 1], z: [30, randInt(26, 40), randInt(26, 40)]}, 10000).start().onComplete(function () {
+			var tween = new TWEEN.Tween(rod.position).to({x: [-60, -26, 8, 42, 76, 110, 144, 178, 212, 260], y: [1, 1, 5, 1, 5, 1, 5, 1, 5, 1], z: [30, randInt(26, 40), randInt(26, 40)]}, 10000).start().onComplete(function () {
 				scene.remove(pipe.contents[0]);
 				fromPipe.splice(fromPipe.indexOf(pipe.contents[0]), 1);
 				pipe.contents.splice(0, 1);
@@ -536,17 +559,22 @@ Pipe.prototype = {
 
 
 function EasyGui(parent) {
-	this.rods = 0;
 	this.holding = 0;
+	this.readRate = 0;
+
+	this.rods = 0;
 	this.eggs = 0;
 	this.xp = 0;
 	this.level = 1;
 	this.babies = 0;
 	this.rodLimit = 2;
 	this.rate = 0;
-	this.readRate = 0;
 	this.purchased = {};
 	this.nextEgg = new Date().getTime() + 24 * 60 * 60 * 1000;
+	this.trees = [{rods: 0, hasEgg: false, goal: 2000}];
+	// have you ever wondered why you can't put gifs in your butt?
+	// now you can! with AssGiffer
+
 	// some items can be purchased, but take time before getting acquired
 	// some items can be purchased many times
 	// babies can be upgraded to take less time, increase rate more
@@ -576,7 +604,20 @@ function EasyGui(parent) {
 	this.setBar('xp-bar', this.xp, Math.pow(this.level, 3));
 }
 EasyGui.prototype = {
-	add: function (name, points) {
+	reset: function () {
+		this.rods = 0;
+		this.eggs = 0;
+		this.xp = 0;
+		this.level = 1;
+		this.babies = 0;
+		this.rodLimit = 2;
+		this.rate = 0;
+		this.purchased = {};
+		trees = [];
+		babies = [];
+		this.addXp(0);
+	},
+	add: function (name, points, bypassSave) {
 		if (name === 'rodLimit') {
 			this.rodLimit = points;
 			this.addXp(Math.pow(points, 2));
@@ -585,26 +626,24 @@ EasyGui.prototype = {
 			this.addXp(20);
 		} else {
 			this[name] += points;
-			if (points > 0) {
-				if (challenge.status === 'started' && name === 'rods') {
-					challenge.collected += points;
-					gui.setBar('challenge-bar', challenge.collected, challenge.goal);
-					// completed challenge
-					if (challenge.collected >= challenge.goal) {
-						gui[challenge.rewardUnit] += challenge.reward;
-						messages.add('Challenge complete! Received ' + challenge.reward + ' ' + challenge.rewardUnit, challenge.rewardUnit);
-						messages.container.removeChild(challenge.el);
-						challenge = {status: 'none'};
-						lastChallengeCompleted = frame;
-						nextChallenge = randInt(3600, 8000);
-					}
-				}
-				this.addXp(points);
+			this.addXp(points > 0 ? points : 1, bypassSave);
+		}
+
+		if (messages.challenge.status === 'started' && (name === 'rods' || name === 'eggs')) {
+			messages.challenge.collected += points;
+			gui.setBar('challenge-bar', messages.challenge.collected, messages.challenge.goal);
+			// completed challenge
+			if (messages.challenge.collected >= messages.challenge.goal) {
+				gui[messages.challenge.rewardUnit] += messages.challenge.reward;
+				messages.add('Challenge complete! Received ' + messages.challenge.reward + ' ' + messages.challenge.rewardUnit, messages.challenge.rewardUnit);
+				messages.container.removeChild(messages.challenge.el);
+				messages.challenge = {status: 'none', last: frame, next: randInt(3600, 8000)};
 			}
 		}
-		document.getElementById(name).innerHTML = Math.round(this[name]);
+
+		document.getElementById(name).innerHTML = abbrNum(Math.round(this[name]), 2);
 	},
-	addXp: function (points) {
+	addXp: function (points, bypassSave) {
 		this.xp += points;
 		document.getElementById('xp').innerHTML = Math.round(this.xp);
 		var goal = Math.pow(this.level, 3);
@@ -615,7 +654,7 @@ EasyGui.prototype = {
 			messages.add('You made it to level ' + this.level + '!', 'challenge');
 		}
 		this.setBar('xp-bar', this.xp, goal);
-		this.saveQueued = true;
+		if (!bypassSave) this.saveQueued = true;
 	},
 	setBar: function (id, xp, goal) {
 		var bar = document.getElementById(id);
@@ -623,12 +662,13 @@ EasyGui.prototype = {
 		bar.style.borderLeftWidth = 66 * xp / goal + 'px';
 	},
 	step: function () {
-		if ((frame - lastChallengeCompleted) % nextChallenge === 0) { // challenges, random times
+		var challenge = messages.challenge;
+		if ((frame - challenge.last) % challenge.next === 0) { // challenges, random times
 			if (challenge.status === 'none') {
 				sound.play('powerup');
 				messages.addButton('Diablo Power Station is putting us out of business! Steal more of their fuel rods and we\'ll give you a reward!', 'challenge', function () {
 					if (Math.random() < 0.95) {
-						messages.addChallenge('Challenge', 'challenge', 'rods', gui.level * 10);
+						messages.addChallenge('Challenge', 'challenge', 'rods', Math.pow(gui.level, 2) + 200);
 					} else {
 						messages.addChallenge('Challenge', 'challenge', 'eggs', 1);
 					}
@@ -651,8 +691,10 @@ EasyGui.prototype = {
 				this.save();
 			}
 			frameS = new Date().getTime();
+
 			for (var key in this.purchased) {
 				if (this.purchased[key].seconds && !this.purchased[key].rewarded) {
+					console.log('check', frameS - (this.purchased[key].boughtTime + this.purchased[key].seconds * 1000));
 					if (frameS < this.purchased[key].boughtTime + this.purchased[key].seconds * 1000) {
 						var countdown = document.getElementById(key);
 						if (!countdown) {
@@ -663,22 +705,36 @@ EasyGui.prototype = {
 					} else {
 						var countdown = document.getElementById(key);
 						if (countdown) {
-							messages.container.removeChild(document.getElementById(key).parentNode);
+							messages.container.removeChild(countdown.parentNode);
 						}
 						this.purchased[key].rewarded = true;
-						gui.add(this.purchased[key].priceKey, -this.purchased[key].priceValue);
 						gui.add(this.purchased[key].key, this.purchased[key].value);
-						var item = document.getElementById(key + 'button');
-						if (item) item.disabled = 'disabled';
 					}
 				}
 			}
+
 			if (this.rate > 0) {
-				gui.add('rods', this.rate / 60);
+				gui.add('rods', this.rate / 60, true);
 			}
 		}
 	},
 	save: function () {
+		var treesLocal = [];
+		for (var i = 0; i < trees.length; i += 1) {
+			treesLocal.push({});
+			for (var j = 0; j < treeSave.length; j += 1) {
+				treesLocal[treesLocal.length - 1][treeSave[j]] = trees[i][treeSave[j]];
+			}
+		}
+
+		var babiesLocal = [];
+		for (var i = 0; i < babies.length; i += 1) {
+			babiesLocal.push({});
+			for (var j = 0; j < babySave.length; j += 1) {
+				babiesLocal[babiesLocal.length - 1][babySave[j]] = babies[i][babySave[j]];
+			}
+		}
+
 		localStorage.setItem('mr feathers', JSON.stringify({
 			rods: this.rods,
 			eggs: this.eggs,
@@ -689,43 +745,44 @@ EasyGui.prototype = {
 			rate: this.rate,
 			readRate: this.readRate,
 			purchased: this.purchased,
-			nextEgg: this.nextEgg
+			nextEgg: this.nextEgg,
+			trees: treesLocal,
+			babies: babiesLocal
 		}));
 	}
 };
 
+function Egg() {
+
+}
+
 function render() {
 	// document.getElementById('info').innerHTML = world.getInfo();
 
-	wingAction = 'hover';
-	// wingsAway = false
-	// bird lands, wingsAway switched on
-	//
-
-	if (bird.position.y < 9) { // needs to be foot collisiond
-		wingAction = 'walking';
+	if (Math.abs(bird.position.y - bird.userData.lastY) < 0.1) {
+		if (birdAction !== NESTING) {
+			birdAction = WALKING;
+		}
 	} else {
-		if (wingsAway) {
-			openWings();
+		if (birdAction === WALKING) {
+			birdAction = HOVER;
 		}
 	}
+	bird.userData.lastY = bird.position.y;
 
 	if (keyboard.pressed('j') || fmb.clicking.J) {
 		if (!flapSound.isPlaying) flapSound.play();
-		if (wingsAway) {
-			openWings();
-		}
-
-		if (wingAction !== 'flapping') {
-			wingAction = 'flapping';
-			wingsAway = false;
-		}
+		birdAction = FLAPPING;
 	} else {
 		if (flapSound.isPlaying) flapSound.stop();
+		if (birdAction === FLAPPING) birdAction = HOVER;
 	}
 
-	switch (wingAction) {
-		case 'hover':
+	switch (birdAction) {
+		case HOVER:
+			if (wingsAway) {
+				openWings();
+			}
 			if (up && wingL.rotation.z < 1) {
 				wingL.rotation.z += 0.1;
 				wingR.rotation.z -= 0.1;
@@ -751,7 +808,10 @@ function render() {
 				up = true;
 			}
 		break;
-		case 'flapping':
+		case FLAPPING:
+			if (wingsAway) {
+				openWings();
+			}
 			if (up && wingL.rotation.z < 1) {
 				wingL.rotation.z += 0.5;
 				wingR.rotation.z -= 0.5;
@@ -773,12 +833,16 @@ function render() {
 				up = true;
 			}
 		break;
-		case 'gliding':
-		break;
-		case 'walking':
+		case WALKING:
 			if (!wingsAway) {
 				putWingsAway();
 			}
+		break;
+		case NESTING:
+			if (!wingsAway) {
+				putWingsAway();
+			}
+			bodies[0].resetPosition(tree.nest.position.x, tree.nest.position.y, tree.nest.position.z);
 		break;
 	}
 
@@ -801,45 +865,99 @@ function render() {
 	}
 
 	if (keyboard.pressed('k') || fmb.clicking.K) {
-		if (gui.holding) {	// drop rods
-			kTapped = true;
-			gui.holding = 0;
-			document.getElementById('holding').innerHTML = 0;
-			for (var i = 0; i < nest.children.length; i += 1) {
-				var mesh = nest.children[i];
-				THREE.SceneUtils.detach(nest.children[i], nest, scene);
-				var body = world.add({
-					type: 'box',
-					size: mesh.name === 'bundle' ? bundleSize : rodSize,
-					pos: [mesh.position.x, mesh.position.y, mesh.position.z],
-					rot: [mesh.rotation.x / toRad, mesh.rotation.y / toRad, mesh.rotation.z / toRad],
-					move: true,
-					name: mesh.name
-				});
-				body.linearVelocity.copy(bodies[0].linearVelocity);
-				body.angularVelocity.copy(bodies[0].angularVelocity);
-				body.connectMesh(mesh);
-				mesh.userData.dropping = true;
-				dropping.push(body); // track till they drop
-				i -= 1;
-			}
-		} else if (!kTapped) {	// tapping
-			kTapped = true;
-			sound.play('rod');
-			gui.add('rods', 1);
+		if (kOnce) {
+			kOnce = false;
 
-			var rod = new THREE.Mesh(rodGeom, rodMat);
-			rod.position.copy(bird.position);
-			rod.rotation.copy(bird.rotation);
-			scene.add(rod);
-			tappedRods.push(rod);
-			new TWEEN.Tween(rod.position).to({x: stockpilePos[0], y: [50, 0], z: stockpilePos[1]}, 1000).start().onComplete(function () {
-				scene.remove(tappedRods[0]);
-				tappedRods.splice(0, 1);
-			});
+			// stick to tree, or lay egg if already stuck
+			if (birdAction === NESTING) {
+				if (!tree.hasEgg && tree.rods >= tree.goal) {
+					layMeter += 1;
+					console.log(layMeter);
+					if (layMeter === 1) {
+						messages.add('Tap the drop button repeatedly to lay egg!', 'eggs');
+					} else if (layMeter === 10) {
+						messages.add('You laid an egg!', 'eggs');
+						gui.add('eggs', -1);
+						tree.birthday = new Date().getTime();
+						tree.addEgg();
+					}
+				}
+			} else {
+				tree = null;
+				for (var i = 0; i < trees.length; i += 1) {
+					if (bird.position.distanceTo(trees[i].nest.position) < 20) {
+						birdAction = NESTING;
+						bodies[0].resetRotation(0, 20, 0);
+						tree = trees[i];
+					}
+				}
+			}
+
+			// tapping
+			if (!tree && !gui.holding) { // prevent tapping if holding or nesting
+				sound.play('rod');
+				gui.add('rods', 1);
+
+				var rod = new THREE.Mesh(rodGeom, rodMat);
+				rod.position.copy(bird.position);
+				rod.rotation.copy(bird.rotation);
+				scene.add(rod);
+				tappedRods.push(rod);
+				new TWEEN.Tween(rod.position).to({x: stockpilePos[0], y: [50, 0], z: stockpilePos[1]}, 1000).start().onComplete(function () {
+					scene.remove(tappedRods[0]);
+					tappedRods.splice(0, 1);
+				});
+			}
+
+			// drop rods in nest or on ground
+			if (gui.holding) {
+				if (tree) {
+					if (tree.rods < tree.goal) {
+						gui.holding = 0;
+						document.getElementById('holding').innerHTML = 0;
+						var addedToNest = 0;
+						for (var i = 0; i < beak.children.length; i += 1) {
+							var mesh = beak.children[i];
+							THREE.SceneUtils.detach(mesh, beak, scene);
+							i -= 1;
+							THREE.SceneUtils.attach(mesh, scene, tree.nest);
+							var points = mesh.name === 'bundle' ? 50 : 1;
+							tree.rods += points;
+							gui.addXp(points);
+							addedToNest += points;
+						}
+						if (tree.rods < tree.goal) {
+							messages.add(addedToNest + ' rod' + (addedToNest > 1 ? 's' : '') + ' added to nest! Need ' + (tree.goal - tree.rods) + ' more', 'rods');
+						} else {
+							messages.add('Your nest is complete!', 'rods');
+						}
+					}
+				} else {
+					gui.holding = 0;
+					document.getElementById('holding').innerHTML = 0;
+					for (var i = 0; i < beak.children.length; i += 1) {
+						var mesh = beak.children[i];
+						THREE.SceneUtils.detach(mesh, beak, scene);
+						i -= 1;
+						var body = world.add({
+							type: 'box',
+							size: mesh.name === 'bundle' ? bundleSize : rodSize,
+							pos: [mesh.position.x, mesh.position.y, mesh.position.z],
+							rot: [mesh.rotation.x / toRad, mesh.rotation.y / toRad, mesh.rotation.z / toRad],
+							move: true,
+							name: mesh.name
+						});
+						body.linearVelocity.copy(bodies[0].linearVelocity);
+						body.angularVelocity.copy(bodies[0].angularVelocity);
+						body.connectMesh(mesh);
+						mesh.userData.dropping = true;
+						dropping.push(body); // track till they drop
+					}
+				}
+			}
 		}
 	} else {
-		kTapped = false;
+		kOnce = true;
 	}
 
 	// make bird upright
@@ -849,10 +967,6 @@ function render() {
 	birdUpright.translateOnAxis(tmpVec, -10);
 
 	bodies[0].applyImpulse(birdUpright.position, {x: 0, y: -100, z: 0});
-
-
-
-
 
 	// position camera
 	if (bird.position.z > 100 && camera.position.z === 40) {
@@ -877,11 +991,7 @@ function render() {
 
 	camera.lookAt(bird.position);
 
-
-
-
-
-	// // collisions
+	// collisions
 	bodyRemoved = false;
 
 	var birdCollide = world.checkContact('bird', 'ground');
@@ -914,7 +1024,28 @@ function render() {
 	}
 
 	if (frame % 4 === 0) {
-		if (nest.children.length < gui.rodLimit) {
+
+		if (frame % 60 === 0) {
+			if (babies.length < gui.babies.length) {
+				new Baby();
+			}
+
+			if (layMeter > 0) layMeter -= 1;
+
+			for (var i = 0; i < trees.length; i += 1) {
+				if (trees[i].hasEgg) {
+					if (frameS - trees[i].birthday > 24 * 60 * 60 * 1000) {
+						trees[i].hatch();
+						messages.container.removeChild(trees[i].eggCountdown.parentNode);
+						delete trees[i].eggCountdown;
+					} else {
+						trees[i].eggCountdown.innerHTML = Math.round((24 * 60 * 60 * 1000 - (frameS - trees[i].birthday)) / 1000);
+					}
+				}
+			}
+		}
+
+		if (beak.children.length < gui.rodLimit) {
 			// bird and rod collision (check every 4 frames)
 			rod = getFirstContact('bundle', 'bird') || getFirstContact('rod', 'bird');
 			// pick up rod from reactor, or something dropped from beak
@@ -923,7 +1054,7 @@ function render() {
 				rod.mesh.userData.parent.splice(rod.mesh.userData.parent.indexOf(rod), 1);
 				world.removeRigidBody(rod);
 				bodyRemoved = true;
-				THREE.SceneUtils.attach(rod.mesh, scene, nest);
+				THREE.SceneUtils.attach(rod.mesh, scene, beak);
 			} else {
 				// collision with river rods
 				for (var i = 0; i < fromPipe.length; i += 1) {
@@ -932,7 +1063,7 @@ function render() {
 							fromPipe[i].userData.tween.onComplete();
 							fromPipe[i].userData.tween.stop();
 							gui.add('holding', 1);
-							THREE.SceneUtils.attach(fromPipe[i], scene, nest);
+							THREE.SceneUtils.attach(fromPipe[i], scene, beak);
 						}
 						fromPipe.splice(fromPipe.indexOf(fromPipe[i]), 1);
 						break;
@@ -941,17 +1072,16 @@ function render() {
 			}
 		}
 
+		// dropping rods, check if velocity < 5
 		for (var i = 0; i < dropping.length; i += 1) {
 			if (dropping[i].linearVelocity.lengthSq() < 5) {
 				// stockpile rods
 				var mesh = dropping[i].mesh;
+				// if (Math.abs(mesh.position.x - stockpilePos[0]) < 20 &&
+				// Math.abs(mesh.position.z - stockpilePos[1]) < 20) {
 				if (mesh.position.x > stockpilePos[0] - 20 && mesh.position.x < stockpilePos[0] + 20 &&
 				mesh.position.z > stockpilePos[1] - 20 && mesh.position.z < stockpilePos[1] + 20) {
-					if (mesh.name === 'bundle') {
-						var points = 50;
-					} else {
-						var points = 1;
-					}
+					var points = mesh.name === 'bundle' ? 50 : 1;
 					messages.add('Stockpiled ' + points + ' rods!', 'rods');
 					gui.add('rods', points);
 					bodyRemoved = true;
@@ -990,19 +1120,169 @@ function render() {
 	gui.step();
 }
 
+function Baby(pos) {
+	babies.push(this);
+
+	// load
+	var saved = gui.babies[babies.length - 1];
+	if (saved) {
+		for (var i = 0; i < babySave.length; i += 1) {
+			this[babySave[i]] = saved[babySave[i]];
+		}
+	}
+
+	if (!this.pos) this.pos = pos;
+	this.mesh = new THREE.Mesh(babyGeom, blue1);
+	this.mesh.position.set(this.pos[0], 60, this.pos[2]);
+	scene.add(this.mesh);
+	if (!this.birthday) this.birthday = new Date().getTime();
+	if (!this.lapTime) this.lapTime = 6000 + randInt(0, 6000);
+	var tween1 = new TWEEN.Tween(this.mesh.position).to({x: 125, y: 40, z: 100}, this.lapTime / 4);
+	var tween2 = new TWEEN.Tween(this.mesh.position).to({x: 20, y: 5, z: 250}, this.lapTime / 4);
+	var tween3 = new TWEEN.Tween(this.mesh.position).to({x: -125, y: 40, z: 100}, this.lapTime / 4);
+	var tween4 = new TWEEN.Tween(this.mesh.position).to({x: stockpilePos[0], y: 10, z: stockpilePos[1]}, this.lapTime / 4);
+	tween1.chain(tween2);
+	tween2.chain(tween3);
+	tween3.chain(tween4);
+	tween4.chain(tween1);
+	tween1.start();
+
+	// .start();
+}
+Baby.prototype = {
+	fight: function () {
+
+	},
+	steal: function () {
+
+	}
+};
+
+function Tree(t) {
+	trees.push(this);
+	this.pos = t.pos;
+	this.nest = new THREE.Object3D();
+	this.rods = 0;
+	this.hasEgg = false;
+	this.index = trees.length - 1;
+	this.eggCountdown;
+	// load
+	var saved = gui.trees[this.index];
+	if (saved) {
+		for (var i = 0; i < treeSave.length; i += 1) {
+			this[treeSave[i]] = saved[treeSave[i]];
+		}
+	}
+
+	if (this.rods > 0) this.populateNest();
+	if (this.hasEgg) this.addEgg();
+	if (!this.goal) this.addGoal();
+
+	// this.goal = gui.level * 169 > gui.rods / 2 ? gui.level * 169 : gui.rods / 2;
+	scene.add(this.nest);
+	this.nest.position.set(t.pos[0], 65, t.pos[2]);
+
+	this.placeTree(t);
+}
+Tree.prototype = {
+	placeTree: function (t) {
+		var geometry, body, mesh;
+		var tsLocal = [t];
+		tsLocal.push({ // branches
+			pos : [t.pos[0] + 20, t.pos[1] + 30, t.pos[2]],
+			size: [50, 5, 5], rot: [0, 0, 45], color: tan
+		});
+		tsLocal.push({
+			pos : [t.pos[0] - 20, t.pos[1] + 30, t.pos[2]],
+			size: [50, 5, 5], rot: [0, 0, 135], color: tan
+		});
+		for (var i = 0; i < tsLocal.length; i += 1) {
+			t = tsLocal[i];
+			body = world.add({
+				type: 'box',
+				size: t.size,
+				pos: t.pos,
+				rot: t.rot ? t.rot : [0, 0, 0],
+				density: 1,
+				move: false,
+				config: [0.2, 0.4, 0.1]
+			});
+			geometry = new THREE.BoxGeometry(t.size[0], t.size[1], t.size[2]);
+			var mat = t.color;
+			if (t.color === 'wall') {
+				var wallTexture = textureLoader.load('../../images/wall.jpg');
+				wallTexture.wrapS = THREE.RepeatWrapping;
+				wallTexture.wrapT = THREE.RepeatWrapping;
+				mat = new THREE.MeshLambertMaterial({map: wallTexture});
+				mesh = new THREE.Mesh(geometry, mat);
+				mesh.geometry.computeBoundingBox();
+				var max = mesh.geometry.boundingBox.max;
+				var min = mesh.geometry.boundingBox.min;
+				var height = max.y - min.y;
+				var width = max.x - min.x;
+				wallTexture.repeat.set(width / 75, height / 52);
+				wallTexture.needsUpdate = true;
+			} else {
+				mesh = new THREE.Mesh(geometry, mat);
+			}
+			mesh.castShadow = true;
+			mesh.receiveShadow = true;
+			scene.add(mesh);
+			body.connectMesh(mesh);
+		}
+	},
+	populateNest: function () {
+		for (var i = 0; i < 10; i += 1) {
+			var rod = new THREE.Mesh(rodGeom, rodMat);
+			rod.position.copy(this.nest.position);
+			rod.position.x += randInt(-10, 10);
+			rod.position.y += randInt(-5, 5);
+			rod.position.z += randInt(-10, 10);
+			rod.rotation.y = Math.random() * Math.PI;
+			this.nest.add(rod);
+		}
+	},
+	addEgg: function () {
+		if (!this.egg) {
+			this.hasEgg = true;
+			this.egg = new THREE.Mesh(eggGeom, white);
+			this.egg.name = 'egg';
+			this.egg.scale.y = 1.4;
+			this.egg.position.y += 3;
+			this.nest.add(this.egg);
+			messages.addEggCountdown(this.index);
+		}
+	},
+	hatch: function () {
+		var nest = new THREE.Object3D();
+		nest.position.copy(this.nest.position);
+		scene.remove(this.nest);
+		this.nest = nest;
+
+		delete this.egg;
+		delete this.birthday;
+		this.hasEgg = false;
+		this.rods = 0;
+		this.addGoal();
+		new Baby(this.pos);
+		gui.addXp(50);
+	},
+	addGoal: function () {
+		this.goal = (babies.length + 1) * 200;
+	}
+};
+
 var axisHelper;
 var scene, camera, renderer;
-var bird, birdBody, wingL, wingR, wingtipL, wingtipR, head, birdUpright, nest;
+var bird, birdBody, wingL, wingR, wingtipL, wingtipR, head, birdUpright, beak;
 var bodyWidth;
 var world, bodies = [], editor;
 var wingTimer = 0;
 var toRad = Math.PI / 180;
 var up = false;
-var wingAction = 'hover';
-var lastAction = wingAction;
 var wingImpulse = false;
 var frame = 0;
-var frameS = new Date().getTime();
+var frameS = new Date().getTime(); // ms
 var wingAnimations = [];
 var wingsAway = false;
 var blue1 = new THREE.MeshLambertMaterial({color: '#0E1A40'});
@@ -1031,15 +1311,39 @@ var tmpEuler = new THREE.Euler();
 var reactors = [];
 var bodyRemoved = false;
 var stockpilePos = [-20, 0]; // x,z
-var challenge = {status: 'none'};
-var nextChallenge = randInt(3600, 8000);
-var lastChallengeCompleted = 0;
-var kTapped = false;
 var tappedRods = [];
-var nest;
+var trees = [];
+var treeSave = ['rods', 'hasEgg', 'birthday', 'goal'];
+var tree = null;
+var nest = null;
+var babies = [];
+var babySave = ['pos', 'birthday', 'lapTime'];
+var beak;
 var fromBeak = [];
 var fromPipe = [];
 var dropping = [];
+var reactors = [];
+var reactorSize = [10, 4, 5];
+var reactorGeom = new THREE.BoxGeometry(reactorSize[0], reactorSize[1], reactorSize[2]);
+var rodSize = [20, 0.2, 0.2];
+var bundleSize = [20, 0.6, 0.6];
+var rodGeom = new THREE.BoxGeometry(rodSize[0], rodSize[1], rodSize[2]);
+var bundleGeom = new THREE.BoxGeometry(bundleSize[0], bundleSize[1], bundleSize[2]);
+var rodMat = new THREE.MeshBasicMaterial({color: 'magenta'});
+var eggGeom = new THREE.SphereGeometry(4, 8, 8);
+var babyGeom = new THREE.BoxGeometry(4, 8, 8);
+var fireInterval = 255;
+var outsideLight;
+var labLight;
+var kOnce = true;
+var layMeter = 0;
+
+var birdAction = 1;
+var WALKING = 0;
+var HOVER = 1;
+var FLAPPING = 2;
+var NESTING = 3;
+var lastAction = birdAction;
 
 // tmpQuat.setFromEuler(rod.position);
 // tmpVec.applyQuaternion(tmpQuat);
@@ -1064,10 +1368,7 @@ initChair();
 initPhysics();
 new Reactor([0, 40, 250 - 2.5]);
 new Reactor([80, 40, 250 - 2.5]);
-// new Reactor();
-// new Reactor();
-// new Reactor();
-// new Reactor();
+
 sound.init({
 	drag: {type: 'loop'},
 	flap: {type: 'loop'},
@@ -1078,7 +1379,6 @@ sound.init({
 });
 render();
 
-
 /*
 	goals:
 	fun game,
@@ -1086,35 +1386,27 @@ render();
 	how to fly without clicking?? not important. If no bluetooth, user can use mobile buttons
 	music, sound effects
 	lab
-	multiplier room. navigate to one room for snapshot, new birds show up in other side
-	procedurally generated
-	create nests out of fuel rods/bundles
-	lab periodically dumps rods into dumpster, river
-	lay eggs of bigger and bigger size... glowing eggs contain multiple birds
-	powerups make bird cloning possible
-	automation: babies created automatically with cloning
-	player collects rods to create nests
-	bundle rods
-	nests go in tree, eggs go in nests, babies
-	bigger nests hold more eggs
-	babies increase rods/min linearly
-	if tree full, can stockpile rods
-	automation -- rods/min increases
-	can buy eggs with real money
-	eggs pop out periodically
-	fly into shop for items. there it tells you how many babies
 
 	rods are coins
 	eggs are virtual cards
 	babies are employees
 	xp pts
+
+	event ideas
+	pipe rate goes up for a little while
+	need to refresh babies' routes
+	wanted poster. disguises to bypass security. sacrifice your babies as decoys to get ransom
+
+	powerup ideas
+	cloning room.
+	automation -- rods/min increases
+	babies increase rods/min linearly
+	buy trees with rods
+	buy eggs, can only buy eggs with real money
+
 	can't trade rods to get eggs (doesn't make sense anyway)
 	can't buy nests with rods... need to be built by collecting
 	can sell eggs to get rods
-
-	pipe for waste and spent rods to leak out
-
-	wanted poster. disguises to bypass security. sacrifice your babies as decoys to get ransom
 
 	factors: (for limited factors, just make achieving the limit nearly impossible)
 		number of trees (1 tree - 5 trees) buy with rods or eggs
@@ -1126,15 +1418,6 @@ render();
 			egg hatch rate (from 10 hours to 1 hour) glowing egg (20hrs - 2 hrs)
 			powerups found in lab: garbage dump (dumpster closer to trees)
 			odds of getting glowing egg
-	problems:
-		rods become worthless.. solution --> multiplier
-		placing rods in nest
-		progress of nest?
-		sitting in nest?
-		changing surroundings
-
-		need to calculate rate / min.
-
 */
 
 function onWindowResize() {
@@ -1167,9 +1450,7 @@ function placeCompounds(items, shape, name) {
 		body.connectMesh(mesh);
 	}
 }
-// animals attached to the end of balloons
-// balloon impulse up,
-// animal locomotion
+
 function randomMat() {
 	rand = Math.random();
 	if (rand > 0.7) return black;
@@ -1310,4 +1591,22 @@ function getFirstContact(name1, name2) {
 		contact = contact.next;
 	}
 	return false;
+}
+
+function abbrNum (number, decPlaces) {
+	decPlaces = Math.pow(10,decPlaces);
+	var abbrev = [ "k", "m", "b", "t" ];
+	for (var i = abbrev.length - 1; i>=0; i--) {
+		var size = Math.pow(10,(i+1)*3);
+		if (size <= number) {
+			number = Math.round(number*decPlaces/size)/decPlaces;
+			if ((number == 1000) && (i < abbrev.length - 1)) {
+				number = 1;
+				i++;
+			}
+			number += abbrev[i];
+			break;
+		}
+	}
+	return number;
 }
