@@ -12,6 +12,7 @@ exclude:
 -  notes.txt
 -  study.txt
 -  pablo.js
+-  gifs
 collections:
   archive_category:
     permalink: /category/:name

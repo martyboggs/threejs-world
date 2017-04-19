@@ -1154,6 +1154,13 @@ dl dd {
 	align-items: center;
 }
 
+.top-row {
+	flex-wrap: wrap;
+}
+.top-row > * {
+	margin: 0 10px 20px;
+}
+
 .gui .level {
 	display: inline-block;
 	border: 1px solid white;
@@ -1224,7 +1231,7 @@ dl dd {
 .messages {
 	position: absolute;
 	z-index: 2147483647;
-	top: 56px;
+	top: 98px;
 	right: 0;
 	display: flex;
 	flex-direction: column;
@@ -1254,6 +1261,10 @@ dl dd {
 	max-width: 50px;
 	margin: 0 0 0 6px;
 	border: 0;
+}
+
+button.webvr-ui-button {
+	position: absolute;
 }
 
 @keyframes fadeIn {

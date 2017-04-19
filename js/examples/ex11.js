@@ -69,11 +69,44 @@ function initScene() {
 
 	window.addEventListener('resize', onWindowResize, false);
 
-	// axisHelper = new THREE.AxisHelper(10);
-	// scene.add(axisHelper);
+	// lab floor
 	var gridHelper = new THREE.GridHelper(500, 50);
 	gridHelper.position.z = 250 + 106;
 	scene.add(gridHelper);
+}
+
+function setupVR() {
+	controls = new THREE.VRControls(camera);
+	controls.standing = true;
+	camera.position.y = controls.userHeight;
+
+	// Apply VR stereo rendering to renderer.
+	effect = new THREE.VREffect(renderer);
+	effect.setSize(window.innerWidth, window.innerHeight);
+
+	window.addEventListener('vrdisplaypresentchange', onWindowResize, true);
+	document.getElementById('canvases').innerHTML += '<div id="ui"><div id="vr-button"></div><div id="magic-window"></div></div>';
+
+	// Initialize the WebVR UI.
+	var uiOptions = {
+		color: 'white'
+	};
+	vrButton = new webvrui.EnterVRButton(renderer.domElement, uiOptions);
+
+	vrButton.on('exit', function() {
+		camera.quaternion.set(0, 0, 0, 1);
+		camera.position.set(0, controls.userHeight, 0);
+	});
+	vrButton.on('hide', function() {
+		document.getElementById('ui').style.display = 'none';
+	});
+	vrButton.on('show', function() {
+		document.getElementById('ui').style.display = 'inherit';
+	});
+	document.getElementById('vr-button').appendChild(vrButton.domElement);
+	document.getElementById('magic-window').addEventListener('click', function() {
+		vrButton.requestEnterFullscreen();
+	});
 }
 
 function Reactor(pos) {
@@ -279,6 +312,8 @@ function initPhysics() {
 	placeGround(ground);
 	var ground = {size: [500, 50, 350], pos: [0, -25, -75], color: new THREE.MeshLambertMaterial({color: '#2f221b'})};
 	placeGround(ground);
+	var ground = {size: [500, 50, 500], pos: [0, 525, 0], invisible: true};
+	placeGround(ground);
 	// dirt.rotation.x = -Math.PI / 2;
 	// dirt.position.set(0, 0.8, -75);
 	// scene.add(dirt);
@@ -315,7 +350,7 @@ function initPhysics() {
 		{pos: [-250 + 50, 50, 100], size: [100, 40, 10], color: 'wall'},
 		{pos: [0, 50, 100], size: [220, 40, 10], color: 'wall'}, // between windows
 		{pos: [0, 100 + 5, 175], size: [510, 10, 160], color: white}, // ceiling
-		{pos: [-60, 30 / 2, 105], size: [60, 30, 10], color: white}, // interior
+		{pos: [-60, 30 / 2, 105], size: [60, 30, 10], color: gray}, // interior
 
 		{pos: [stockpilePos[0] + 10, 5, stockpilePos[1]], size: [2, 10, 22], color: black}, // stockpile
 		{pos: [stockpilePos[0] - 10, 5, stockpilePos[1]], size: [2, 10, 22], color: black}, // stockpile
@@ -344,6 +379,7 @@ function Store(target) {
 		beak3: {description: 'Increase the number of rods you can carry to ',
 			key: 'rodLimit', value: 5, seconds: 160,
 			rods: 2000, eggs: 2, level: 9},
+			// 10000 is a lot, but babies make it reachable?
 		beak4: {description: 'Increase the number of rods you can carry to ',
 			key: 'rodLimit', value: 6, seconds: 360,
 			rods: 10000, eggs: 10, level: 12},
@@ -361,6 +397,7 @@ function Store(target) {
 			rods: 2000, eggs: 1, level: 12},
 		rate4: {description: 'Increase rods per minute by ', key: 'rate', value: 4,
 			rods: 5000, eggs: 5, level: 14},
+			// rate increases are too small?
 		rate5: {description: 'Increase rods per minute by ', key: 'rate', value: 2,
 			rods: 10000, eggs: 10, level: 16},
 		rate6: {description: 'Increase rods per minute by ', key: 'rate', value: 4,
@@ -437,7 +474,7 @@ function Messages(target) {
 	this.container.className = this.container.id = 'messages';
 	this.container.innerHTML = '';
 	this.challenge = {status: 'none', next: randInt(3600, 8000), last: 0};
-
+	this.bonuses = []; // uses seconds instead of Date (only runs during gameplay)
 	target.appendChild(this.container);
 }
 Messages.prototype = {
@@ -499,12 +536,24 @@ Messages.prototype = {
 		this.container.appendChild(m);
 		return m;
 	},
-	addEggCountdown: function (index) {
+	addEggCountdown: function (treeIndex) {
 		var m = document.createElement('div');
 		m.className = 'message';
 		m.innerHTML =
 			'<p class="message-text">Egg hatching in ' + '</p>' +
-			'<span id="egg-countdown' + index + '" class="egg-countdown"></span>s' +
+			'<span id="egg-countdown' + treeIndex + '" class="egg-countdown"></span>s' +
+			'<img src="/images/eggs.jpg">';
+		this.container.appendChild(m);
+		trees[treeIndex].eggCountdown = document.getElementById('egg-countdown' + treeIndex);
+		return m;
+	},
+	addBonusCountdown: function (index) {
+		var m = document.createElement('div');
+		m.className = 'message ';
+		m.className += ['xp', 'rods', 'tapping', 'meltdown'][randInt(0, 3)];
+		m.innerHTML =
+			'<p class="message-text">Egg hatching in ' + '</p>' +
+			'<span class="bonus-countdown"></span>s' +
 			'<img src="/images/eggs.jpg">';
 		this.container.appendChild(m);
 		trees[index].eggCountdown = document.getElementById('egg-countdown' + index);
@@ -580,7 +629,8 @@ function EasyGui(parent) {
 	// babies can be upgraded to take less time, increase rate more
 	// babies need to be refreshed... but there's lots of babies...
 	this.saveQueued = false;
-	var saved = localStorage.getItem('mr feathers');
+	var saved = false;
+	saved = localStorage.getItem('mr feathers');
 	if (saved) {
 		saved = JSON.parse(saved);
 		Object.assign(this, saved);
@@ -756,8 +806,11 @@ function Egg() {
 
 }
 
-function render() {
+function render(timestamp) {
 	// document.getElementById('info').innerHTML = world.getInfo();
+
+	var delta = Math.min(timestamp - lastRenderTime, 500);
+	lastRenderTime = timestamp;
 
 	if (Math.abs(bird.position.y - bird.userData.lastY) < 0.1) {
 		if (birdAction !== NESTING) {
@@ -872,7 +925,6 @@ function render() {
 			if (birdAction === NESTING) {
 				if (!tree.hasEgg && tree.rods >= tree.goal) {
 					layMeter += 1;
-					console.log(layMeter);
 					if (layMeter === 1) {
 						messages.add('Tap the drop button repeatedly to lay egg!', 'eggs');
 					} else if (layMeter === 10) {
@@ -969,15 +1021,16 @@ function render() {
 	bodies[0].applyImpulse(birdUpright.position, {x: 0, y: -100, z: 0});
 
 	// position camera
-	if (bird.position.z > 100 && camera.position.z === 40) {
-		new TWEEN.Tween(camera.position).to({z: 200}, 1000).easing(TWEEN.Easing.Sinusoidal.Out).start();
-	} else if (bird.position.z < 100 && camera.position.z === 200) {
-		new TWEEN.Tween(camera.position).to({z: 40}, 1000).easing(TWEEN.Easing.Sinusoidal.Out).start();
-	}
 	if (bird.position.y > 250 && camera.position.y === 20) {
 		new TWEEN.Tween(camera.position).to({y: 500}, 1000).easing(TWEEN.Easing.Sinusoidal.Out).start();
 	} else if (bird.position.y < 250 && camera.position.y === 500) {
 		new TWEEN.Tween(camera.position).to({y: 20}, 1000).easing(TWEEN.Easing.Sinusoidal.Out).start();
+	}
+
+	if (bird.position.z > 100 && camera.position.z === 40 && bird.position.y < 100) {
+		new TWEEN.Tween(camera.position).to({z: 200}, 1000).easing(TWEEN.Easing.Sinusoidal.Out).start();
+	} else if (bird.position.z < 100 && camera.position.z === 200) {
+		new TWEEN.Tween(camera.position).to({z: 40}, 1000).easing(TWEEN.Easing.Sinusoidal.Out).start();
 	}
 
 	// toggle lights
@@ -1122,6 +1175,10 @@ function render() {
 
 function Baby(pos) {
 	babies.push(this);
+	this.pos = pos;
+	this.birthday = new Date().getTime();
+	this.lapTime = 6000 + randInt(0, 6000);
+	this.rate = 10;
 
 	// load
 	var saved = gui.babies[babies.length - 1];
@@ -1131,23 +1188,20 @@ function Baby(pos) {
 		}
 	}
 
-	if (!this.pos) this.pos = pos;
 	this.mesh = new THREE.Mesh(babyGeom, blue1);
 	this.mesh.position.set(this.pos[0], 60, this.pos[2]);
 	scene.add(this.mesh);
-	if (!this.birthday) this.birthday = new Date().getTime();
-	if (!this.lapTime) this.lapTime = 6000 + randInt(0, 6000);
+
 	var tween1 = new TWEEN.Tween(this.mesh.position).to({x: 125, y: 40, z: 100}, this.lapTime / 4);
 	var tween2 = new TWEEN.Tween(this.mesh.position).to({x: 20, y: 5, z: 250}, this.lapTime / 4);
 	var tween3 = new TWEEN.Tween(this.mesh.position).to({x: -125, y: 40, z: 100}, this.lapTime / 4);
-	var tween4 = new TWEEN.Tween(this.mesh.position).to({x: stockpilePos[0], y: 10, z: stockpilePos[1]}, this.lapTime / 4);
+	var self = this;
+	var tween4 = new TWEEN.Tween(this.mesh.position).to({x: stockpilePos[0], y: 10, z: stockpilePos[1]}, this.lapTime / 4).onComplete(function () { gui.add('rods', self.rate); });
 	tween1.chain(tween2);
 	tween2.chain(tween3);
 	tween3.chain(tween4);
 	tween4.chain(tween1);
 	tween1.start();
-
-	// .start();
 }
 Baby.prototype = {
 	fight: function () {
@@ -1155,6 +1209,14 @@ Baby.prototype = {
 	},
 	steal: function () {
 
+	},
+	changeRate: function (points) {
+		this.rate += points;
+		gui.addXp(100);
+	},
+	changeLapTime: function (points) {
+		this.lapTime -= points;
+		gui.addXp(100);
 	}
 };
 
@@ -1164,10 +1226,10 @@ function Tree(t) {
 	this.nest = new THREE.Object3D();
 	this.rods = 0;
 	this.hasEgg = false;
-	this.index = trees.length - 1;
+	this.treeIndex = trees.length - 1;
 	this.eggCountdown;
 	// load
-	var saved = gui.trees[this.index];
+	var saved = gui.trees[this.treeIndex];
 	if (saved) {
 		for (var i = 0; i < treeSave.length; i += 1) {
 			this[treeSave[i]] = saved[treeSave[i]];
@@ -1209,22 +1271,7 @@ Tree.prototype = {
 			});
 			geometry = new THREE.BoxGeometry(t.size[0], t.size[1], t.size[2]);
 			var mat = t.color;
-			if (t.color === 'wall') {
-				var wallTexture = textureLoader.load('../../images/wall.jpg');
-				wallTexture.wrapS = THREE.RepeatWrapping;
-				wallTexture.wrapT = THREE.RepeatWrapping;
-				mat = new THREE.MeshLambertMaterial({map: wallTexture});
-				mesh = new THREE.Mesh(geometry, mat);
-				mesh.geometry.computeBoundingBox();
-				var max = mesh.geometry.boundingBox.max;
-				var min = mesh.geometry.boundingBox.min;
-				var height = max.y - min.y;
-				var width = max.x - min.x;
-				wallTexture.repeat.set(width / 75, height / 52);
-				wallTexture.needsUpdate = true;
-			} else {
-				mesh = new THREE.Mesh(geometry, mat);
-			}
+			mesh = new THREE.Mesh(geometry, mat);
 			mesh.castShadow = true;
 			mesh.receiveShadow = true;
 			scene.add(mesh);
@@ -1250,7 +1297,7 @@ Tree.prototype = {
 			this.egg.scale.y = 1.4;
 			this.egg.position.y += 3;
 			this.nest.add(this.egg);
-			messages.addEggCountdown(this.index);
+			messages.addEggCountdown(this.treeIndex);
 		}
 	},
 	hatch: function () {
@@ -1258,6 +1305,7 @@ Tree.prototype = {
 		nest.position.copy(this.nest.position);
 		scene.remove(this.nest);
 		this.nest = nest;
+		scene.add(this.nest);
 
 		delete this.egg;
 		delete this.birthday;
@@ -1275,6 +1323,7 @@ Tree.prototype = {
 var axisHelper;
 var scene, camera, renderer;
 var bird, birdBody, wingL, wingR, wingtipL, wingtipR, head, birdUpright, beak;
+var controls, effect, vrButton, vrDisplay, lastRenderTime = 0;
 var bodyWidth;
 var world, bodies = [], editor;
 var wingTimer = 0;
@@ -1317,7 +1366,7 @@ var treeSave = ['rods', 'hasEgg', 'birthday', 'goal'];
 var tree = null;
 var nest = null;
 var babies = [];
-var babySave = ['pos', 'birthday', 'lapTime'];
+var babySave = ['pos', 'birthday', 'lapTime', 'rate'];
 var beak;
 var fromBeak = [];
 var fromPipe = [];
@@ -1350,6 +1399,7 @@ var lastAction = birdAction;
 
 initScene();
 var gui = new EasyGui(document.getElementById('canvases'));
+setupVR();
 var fmb = new FlexboxMobileButtons({parent: document.getElementById('canvases'), onclick: function (value) {
 	if (value === 'store') {
 		new Store(document.getElementById('canvases'));
@@ -1422,11 +1472,14 @@ render();
 
 function onWindowResize() {
 	var w = parseInt(getComputedStyle(renderer.domElement).width);
+	console.log(w);
+	w = w > 600 ? 600 : w;
 	var h = window.innerHeight;
 	camera.aspect = w / h;
 	camera.updateProjectionMatrix();
 	renderer.setSize(w, h);
-	renderer.domElement.style.width = '100%';
+	renderer.domElement.parentNode.style.width = '100%';
+	renderer.domElement.parentNode.style.maxWidth = w + 'px';
 }
 
 function placeCompounds(items, shape, name) {
@@ -1473,7 +1526,7 @@ function placeBoundaries(boundaries) {
 		geometry = new THREE.BoxGeometry(boundary.size[0], boundary.size[1], boundary.size[2]);
 		var mat = boundary.color;
 		if (boundary.color === 'wall') {
-			var wallTexture = textureLoader.load('../../images/wall.jpg');
+			var wallTexture = textureLoader.load('../../images/wall2.jpg');
 			wallTexture.wrapS = THREE.RepeatWrapping;
 			wallTexture.wrapT = THREE.RepeatWrapping;
 			mat = new THREE.MeshLambertMaterial({map: wallTexture});
@@ -1484,7 +1537,7 @@ function placeBoundaries(boundaries) {
 			var height = max.y - min.y;
 			var width = max.x - min.x;
 			wallTexture.repeat.set(width / 75, height / 52);
-			wallTexture.needsUpdate = true;
+			// wallTexture.needsUpdate = true;
 		} else {
 			mesh = new THREE.Mesh(geometry, mat);
 		}
@@ -1503,8 +1556,12 @@ function placeGround(ground) {
 	var mesh = new THREE.Mesh(buffGeoBox, ground.color ? ground.color : gray);
 	mesh.scale.set(ground.size[0], ground.size[1], ground.size[2]);
 	mesh.position.set(ground.pos[0], ground.pos[1], ground.pos[2]);
-	mesh.castShadow = true;
-	mesh.receiveShadow = true;
+	if (ground.invisible) {
+		mesh.visible = false;
+	} else {
+		mesh.castShadow = true;
+		mesh.receiveShadow = true;
+	}
 	scene.add(mesh);
 	body.connectMesh(mesh);
 }

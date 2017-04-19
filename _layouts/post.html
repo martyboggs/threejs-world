@@ -36,7 +36,9 @@ layout: default
 		{% endif %}
 		{% include email-form.html %}
 		{% include related.html %}
-		{% include disqus.html %}
+		{% if site.github != nil %}
+			{% include disqus.html %}
+		{% endif %}
 	</div>
 </div>
 <script src="{{site.url}}/js/examples/{{page.example}}.js"></script>
