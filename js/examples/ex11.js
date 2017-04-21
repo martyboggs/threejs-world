@@ -89,7 +89,7 @@ function setupVR() {
 
 	// Initialize the WebVR UI.
 	var uiOptions = {
-		color: 'white'
+		color: 'gray'
 	};
 	vrButton = new webvrui.EnterVRButton(renderer.domElement, uiOptions);
 
@@ -106,6 +106,22 @@ function setupVR() {
 	document.getElementById('vr-button').appendChild(vrButton.domElement);
 	document.getElementById('magic-window').addEventListener('click', function() {
 		vrButton.requestEnterFullscreen();
+	});
+
+	setupStage();
+}
+
+// Get the HMD, and if we're dealing with something that specifies
+// stageParameters, rearrange the scene.
+function setupStage() {
+	navigator.getVRDisplays().then(function(displays) {
+		if (displays.length > 0) {
+			vrDisplay = displays[0];
+			if (vrDisplay.stageParameters) {
+				setStageDimensions(vrDisplay.stageParameters);
+			}
+			vrDisplay.requestAnimationFrame(render);
+		}
 	});
 }
 
@@ -807,10 +823,8 @@ function Egg() {
 }
 
 function render(timestamp) {
+	// replace time with timestamp
 	// document.getElementById('info').innerHTML = world.getInfo();
-
-	var delta = Math.min(timestamp - lastRenderTime, 500);
-	lastRenderTime = timestamp;
 
 	if (Math.abs(bird.position.y - bird.userData.lastY) < 0.1) {
 		if (birdAction !== NESTING) {
@@ -1163,9 +1177,20 @@ function render(timestamp) {
 			world.removeContact(world.contacts);
 	}
 
+
 	frame += 1;
-	requestAnimationFrame(render);
-	renderer.render(scene, camera);
+
+	if (effect) {
+		// Only update controls if we're presenting.
+		if (vrButton.isPresenting()) {
+			controls.update();
+		}
+		effect.render(scene, camera);
+		vrDisplay.requestAnimationFrame(render);
+	} else {
+		requestAnimationFrame(render);
+		renderer.render(scene, camera);
+	}
 	TWEEN.update();
 	world.step();
 	messages.step();
@@ -1323,7 +1348,7 @@ Tree.prototype = {
 var axisHelper;
 var scene, camera, renderer;
 var bird, birdBody, wingL, wingR, wingtipL, wingtipR, head, birdUpright, beak;
-var controls, effect, vrButton, vrDisplay, lastRenderTime = 0;
+var controls, effect, vrButton, vrDisplay;
 var bodyWidth;
 var world, bodies = [], editor;
 var wingTimer = 0;
@@ -1427,7 +1452,7 @@ sound.init({
 	rod: {type: 'overlap'},
 	blip: {type: 'once'}
 });
-render();
+if (!effect) render();
 
 /*
 	goals:
@@ -1472,14 +1497,11 @@ render();
 
 function onWindowResize() {
 	var w = parseInt(getComputedStyle(renderer.domElement).width);
-	console.log(w);
-	w = w > 600 ? 600 : w;
 	var h = window.innerHeight;
 	camera.aspect = w / h;
 	camera.updateProjectionMatrix();
 	renderer.setSize(w, h);
-	renderer.domElement.parentNode.style.width = '100%';
-	renderer.domElement.parentNode.style.maxWidth = w + 'px';
+	renderer.domElement.style.width = '100%';
 }
 
 function placeCompounds(items, shape, name) {
