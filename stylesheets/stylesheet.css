@@ -1259,7 +1259,7 @@ dl dd {
 
 #ui {
 	position: absolute;
-	bottom: 50%;
+	bottom: 40%;
 	left: 50%;
 	transform: translate(-50%, -50%);
 	text-align: center;
@@ -1269,6 +1269,9 @@ a#magic-window {
   display: block;
   color: white;
   margin-top: 1em;
+}
+a#magic-window:hover {
+	background: yellow;
 }
 
 @keyframes fadeIn {

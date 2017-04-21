@@ -85,7 +85,7 @@ function setupVR() {
 	effect.setSize(window.innerWidth, window.innerHeight);
 
 	window.addEventListener('vrdisplaypresentchange', onWindowResize, true);
-	fmb.container.innerHTML += '<div id="ui"><div id="vr-button"></div><a id="magic-window" href="#">Try it without a headset</a></div>';
+	fmb.element.innerHTML += '<div id="ui"><div id="vr-button"></div><a id="magic-window" href="#">Try it without a headset</a></div>';
 
 	// Initialize the WebVR UI.
 	var uiOptions = {
