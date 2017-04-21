@@ -3,7 +3,7 @@ function initScene() {
 	camera = new THREE.PerspectiveCamera(
 		75, window.innerWidth / window.innerHeight, 0.1, 1000
 	);
-	camera.position.set(40, 20, 40);
+	camera.position.set(cameraPos[0], cameraPos[1], cameraPos[2]);
 	camera.rotation.y = Math.PI / 4;
 	camera.rotation.order = 'YXZ';
 
@@ -12,6 +12,7 @@ function initScene() {
 	if (n.match(/Android/i) || n.match(/webOS/i) || n.match(/iPhone/i) || n.match(/iPad/i) || n.match(/iPod/i) || n.match(/BlackBerry/i) || n.match(/Windows Phone/i)) { isMobile = true;  antialias = false; }
 	// precision: 'mediump'
 	renderer = new THREE.WebGLRenderer({antialias: antialias});
+	renderer.setPixelRatio(window.devicePixelRatio);
 	renderer.setClearColor('white', 1);
 	document.getElementById('canvases').appendChild(renderer.domElement);
 	onWindowResize();
@@ -78,14 +79,13 @@ function initScene() {
 function setupVR() {
 	controls = new THREE.VRControls(camera);
 	controls.standing = true;
-	camera.position.y = controls.userHeight;
 
 	// Apply VR stereo rendering to renderer.
 	effect = new THREE.VREffect(renderer);
 	effect.setSize(window.innerWidth, window.innerHeight);
 
 	window.addEventListener('vrdisplaypresentchange', onWindowResize, true);
-	document.getElementById('canvases').innerHTML += '<div id="ui"><div id="vr-button"></div><div id="magic-window"></div></div>';
+	fmb.container.innerHTML += '<div id="ui"><div id="vr-button"></div><a id="magic-window" href="#">Try it without a headset</a></div>';
 
 	// Initialize the WebVR UI.
 	var uiOptions = {
@@ -95,13 +95,14 @@ function setupVR() {
 
 	vrButton.on('exit', function() {
 		camera.quaternion.set(0, 0, 0, 1);
-		camera.position.set(0, controls.userHeight, 0);
+		camera.position.set(cameraPos[0], cameraPos[1], cameraPos[2]);
+		// camera.position.set(0, controls.userHeight, 0);
 	});
 	vrButton.on('hide', function() {
 		document.getElementById('ui').style.display = 'none';
 	});
 	vrButton.on('show', function() {
-		document.getElementById('ui').style.display = 'inherit';
+		document.getElementById('ui').style.display = 'block';
 	});
 	document.getElementById('vr-button').appendChild(vrButton.domElement);
 	document.getElementById('magic-window').addEventListener('click', function() {
@@ -1353,6 +1354,7 @@ var bodyWidth;
 var world, bodies = [], editor;
 var wingTimer = 0;
 var toRad = Math.PI / 180;
+var cameraPos = [40, 20, 40];
 var up = false;
 var wingImpulse = false;
 var frame = 0;
@@ -1419,12 +1421,12 @@ var FLAPPING = 2;
 var NESTING = 3;
 var lastAction = birdAction;
 
+
 // tmpQuat.setFromEuler(rod.position);
 // tmpVec.applyQuaternion(tmpQuat);
 
 initScene();
 var gui = new EasyGui(document.getElementById('canvases'));
-setupVR();
 var fmb = new FlexboxMobileButtons({parent: document.getElementById('canvases'), onclick: function (value) {
 	if (value === 'store') {
 		new Store(document.getElementById('canvases'));
@@ -1435,6 +1437,7 @@ fmb.row().button('UP')
 .row().button('J', 'flap').button('K', 'drop')
 .fullscreen(renderer.domElement).button('store')
 .init();
+setupVR();
 var messages = new Messages(document.getElementById('canvases'));
 var pipe = new Pipe();
 initBird();

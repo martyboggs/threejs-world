@@ -697,19 +697,12 @@ canvas {
 	transition: opacity 0.2s;
 }
 
-.home #canvases {
-	width: 100%;
-	display: flex;
-	justify-content: center;
-}
 #canvases {
+	width: 100%;
 	margin-bottom: 30px;
 }
 #canvases canvas {
 	width: 100% !important;
-}
-.home #canvases canvas {
-	width: 240px !important;
 }
 
 header {
@@ -1264,8 +1257,18 @@ dl dd {
 	border: 0;
 }
 
-button.webvr-ui-button {
+#ui {
 	position: absolute;
+	bottom: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	text-align: center;
+	z-index: 1;
+}
+a#magic-window {
+  display: block;
+  color: white;
+  margin-top: 1em;
 }
 
 @keyframes fadeIn {
