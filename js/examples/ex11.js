@@ -89,7 +89,7 @@ function setupVR() {
 
 	// Initialize the WebVR UI.
 	var uiOptions = {
-		color: 'gray'
+		color: 'white'
 	};
 	vrButton = new webvrui.EnterVRButton(renderer.domElement, uiOptions);
 

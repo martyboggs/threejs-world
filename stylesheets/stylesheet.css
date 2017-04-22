@@ -1263,15 +1263,11 @@ dl dd {
 	left: 50%;
 	transform: translate(-50%, -50%);
 	text-align: center;
-	z-index: 1;
 }
 a#magic-window {
   display: block;
   color: white;
   margin-top: 1em;
-}
-a#magic-window:hover {
-	background: yellow;
 }
 
 @keyframes fadeIn {

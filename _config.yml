@@ -1,9 +1,11 @@
 title: Three.js World
 description: The place fo three.js tutorials and showcases
-three_version: 84
+three_version: 85
 timezone: America/Los_Angeles
 repository: martyboggs/threejs-world
 permalink: /:categories/:title
+host: 0.0.0.0
+port: 3000
 excerpt_separator: <!--more-->
 # incremental: true
 gems:
