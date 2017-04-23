@@ -14,7 +14,7 @@ function initScene() {
 	renderer = new THREE.WebGLRenderer({antialias: antialias});
 	renderer.setPixelRatio(window.devicePixelRatio);
 	renderer.setClearColor('white', 1);
-	document.getElementById('canvases').appendChild(renderer.domElement);
+	canvasParent.appendChild(renderer.domElement);
 	onWindowResize();
 
 	outsideLight = new THREE.DirectionalLight(0xffffff, 0.7);
@@ -85,7 +85,7 @@ function setupVR() {
 	effect.setSize(window.innerWidth, window.innerHeight);
 
 	window.addEventListener('vrdisplaypresentchange', onWindowResize, true);
-	fmb.element.innerHTML += '<div id="ui"><div id="vr-button"></div><a id="magic-window" href="#">Try it without a headset</a></div>';
+	fmb.element.innerHTML += '<div id="ui"><div id="vr-button"></div></div>';
 
 	// Initialize the WebVR UI.
 	var uiOptions = {
@@ -93,21 +93,31 @@ function setupVR() {
 	};
 	vrButton = new webvrui.EnterVRButton(renderer.domElement, uiOptions);
 
-	vrButton.on('exit', function() {
-		camera.quaternion.set(0, 0, 0, 1);
-		camera.position.set(cameraPos[0], cameraPos[1], cameraPos[2]);
+	vrButton.on('enter', function () {
+		if (vrButton.state === 'presenting') {
+			canvasParent.className = 'vr-active';
+			navigator.bluetooth.requestDevice({filters: [
+				{services: ['indoor_positioning', 'device_information']}
+			]}).then(function (d, e) {
+				console.dir(d, e);
+			});
+		}
+	});
+	vrButton.on('exit', function () {
+		canvasParent.className = '';
+		// camera.quaternion.set(0, 0, 0, 1);
 		// camera.position.set(0, controls.userHeight, 0);
 	});
-	vrButton.on('hide', function() {
+	vrButton.on('hide', function () {
 		document.getElementById('ui').style.display = 'none';
 	});
-	vrButton.on('show', function() {
+	vrButton.on('show', function () {
 		document.getElementById('ui').style.display = 'block';
 	});
 	document.getElementById('vr-button').appendChild(vrButton.domElement);
-	document.getElementById('magic-window').addEventListener('click', function() {
-		vrButton.requestEnterFullscreen();
-	});
+	// document.getElementById('magic-window').addEventListener('click', function () {
+	// 	vrButton.requestEnterFullscreen();
+	// });
 
 	setupStage();
 }
@@ -115,7 +125,8 @@ function setupVR() {
 // Get the HMD, and if we're dealing with something that specifies
 // stageParameters, rearrange the scene.
 function setupStage() {
-	navigator.getVRDisplays().then(function(displays) {
+	navigator.getVRDisplays().then(function (displays) {
+		console.log(displays);
 		if (displays.length > 0) {
 			vrDisplay = displays[0];
 			if (vrDisplay.stageParameters) {
@@ -1036,16 +1047,16 @@ function render(timestamp) {
 	bodies[0].applyImpulse(birdUpright.position, {x: 0, y: -100, z: 0});
 
 	// position camera
-	if (bird.position.y > 250 && camera.position.y === 20) {
+	if (bird.position.y > 250 && camera.position.y === cameraPos[1]) {
 		new TWEEN.Tween(camera.position).to({y: 500}, 1000).easing(TWEEN.Easing.Sinusoidal.Out).start();
 	} else if (bird.position.y < 250 && camera.position.y === 500) {
-		new TWEEN.Tween(camera.position).to({y: 20}, 1000).easing(TWEEN.Easing.Sinusoidal.Out).start();
+		new TWEEN.Tween(camera.position).to({y: cameraPos[1]}, 1000).easing(TWEEN.Easing.Sinusoidal.Out).start();
 	}
 
-	if (bird.position.z > 100 && camera.position.z === 40 && bird.position.y < 100) {
+	if (bird.position.z > 100 && camera.position.z === cameraPos[2] && bird.position.y < 100) {
 		new TWEEN.Tween(camera.position).to({z: 200}, 1000).easing(TWEEN.Easing.Sinusoidal.Out).start();
 	} else if (bird.position.z < 100 && camera.position.z === 200) {
-		new TWEEN.Tween(camera.position).to({z: 40}, 1000).easing(TWEEN.Easing.Sinusoidal.Out).start();
+		new TWEEN.Tween(camera.position).to({z: cameraPos[2]}, 1000).easing(TWEEN.Easing.Sinusoidal.Out).start();
 	}
 
 	// toggle lights
@@ -1183,7 +1194,7 @@ function render(timestamp) {
 
 	if (effect) {
 		// Only update controls if we're presenting.
-		if (vrButton.isPresenting()) {
+		if (vrButton.state === 'presenting') {
 			controls.update();
 		}
 		effect.render(scene, camera);
@@ -1348,6 +1359,7 @@ Tree.prototype = {
 
 var axisHelper;
 var scene, camera, renderer;
+var canvasParent = document.getElementById('canvases');
 var bird, birdBody, wingL, wingR, wingtipL, wingtipR, head, birdUpright, beak;
 var controls, effect, vrButton, vrDisplay;
 var bodyWidth;
@@ -1363,7 +1375,7 @@ var wingAnimations = [];
 var wingsAway = false;
 var blue1 = new THREE.MeshLambertMaterial({color: '#0E1A40'});
 var blue2 = new THREE.MeshLambertMaterial({color: '#222F5B'});
-var gray = new THREE.MeshLambertMaterial({color: '#5D5D5D'});
+var gray = new THREE.MeshLambertMaterial({color: '#666666'});
 var tan = new THREE.MeshLambertMaterial({color: '#946B2D'});
 var black = new THREE.MeshLambertMaterial({color: 'black'});
 var white = new THREE.MeshLambertMaterial({color: 'white'});
@@ -1421,24 +1433,22 @@ var FLAPPING = 2;
 var NESTING = 3;
 var lastAction = birdAction;
 
-
 // tmpQuat.setFromEuler(rod.position);
 // tmpVec.applyQuaternion(tmpQuat);
 
 initScene();
-var gui = new EasyGui(document.getElementById('canvases'));
-var fmb = new FlexboxMobileButtons({parent: document.getElementById('canvases'), onclick: function (value) {
+var gui = new EasyGui(canvasParent);
+var fmb = new FlexboxMobileButtons({parent: canvasParent, onclick: function (value) {
 	if (value === 'store') {
-		new Store(document.getElementById('canvases'));
+		new Store(canvasParent);
 	}
 }});
+setupVR();
 fmb.row().button('UP')
 .row().button('LEFT').button('DOWN').button('RIGHT')
 .row().button('J', 'flap').button('K', 'drop')
-.fullscreen(renderer.domElement).button('store')
-.init();
-setupVR();
-var messages = new Messages(document.getElementById('canvases'));
+.fullscreen(renderer.domElement).button('store');
+var messages = new Messages(canvasParent);
 var pipe = new Pipe();
 initBird();
 initTable();
@@ -1448,11 +1458,11 @@ new Reactor([0, 40, 250 - 2.5]);
 new Reactor([80, 40, 250 - 2.5]);
 
 sound.init({
-	drag: {type: 'loop'},
-	flap: {type: 'loop'},
-	crash: {type: 'overlap'},
+	drag: {type: 'once'}, // loop
+	flap: {type: 'once'}, // loop
+	crash: {type: 'once'}, // 'overlap'
 	powerup: {type: 'once'},
-	rod: {type: 'overlap'},
+	rod: {type: 'once'}, //'overlap'
 	blip: {type: 'once'}
 });
 if (!effect) render();
@@ -1549,12 +1559,12 @@ function placeBoundaries(boundaries) {
 			config: [0.2, 0.4, 0.1]
 		});
 		geometry = new THREE.BoxGeometry(boundary.size[0], boundary.size[1], boundary.size[2]);
-		var mat = boundary.color;
 		if (boundary.color === 'wall') {
 			var wallTexture = textureLoader.load('../../images/wall2.jpg');
 			wallTexture.wrapS = THREE.RepeatWrapping;
 			wallTexture.wrapT = THREE.RepeatWrapping;
-			mat = new THREE.MeshLambertMaterial({map: wallTexture});
+			var wallMat = new THREE.MeshLambertMaterial({map: wallTexture});
+			var mat = new THREE.MultiMaterial([wallMat, wallMat, wallMat, wallMat, white, wallMat]);
 			mesh = new THREE.Mesh(geometry, mat);
 			mesh.geometry.computeBoundingBox();
 			var max = mesh.geometry.boundingBox.max;
@@ -1564,7 +1574,7 @@ function placeBoundaries(boundaries) {
 			wallTexture.repeat.set(width / 75, height / 52);
 			// wallTexture.needsUpdate = true;
 		} else {
-			mesh = new THREE.Mesh(geometry, mat);
+			mesh = new THREE.Mesh(geometry, boundary.color);
 		}
 		mesh.castShadow = true;
 		mesh.receiveShadow = true;

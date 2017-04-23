@@ -3555,7 +3555,7 @@ var DPDB_CACHE = {
     "bw": 3,
     "ac": 1000
   },
-    
+
   {
     "type": "android",
     "rules": [

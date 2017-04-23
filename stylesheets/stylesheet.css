@@ -1264,10 +1264,28 @@ dl dd {
 	transform: translate(-50%, -50%);
 	text-align: center;
 }
+
 a#magic-window {
   display: block;
   color: white;
   margin-top: 1em;
+}
+
+.webvr-ui-title {
+	user-select: none;
+}
+
+.vr-active .gui {
+	width: 50%;
+	transform: scale(0.5) translateY(-50%);
+	transform-origin: left top;
+	top: 59%;
+	left: 12.5%;
+	height: 100%;
+}
+
+.vr-active .gui-r {
+	transform-origin: center top;
 }
 
 @keyframes fadeIn {

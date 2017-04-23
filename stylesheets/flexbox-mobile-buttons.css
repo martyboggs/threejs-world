@@ -27,6 +27,7 @@
 	cursor: pointer;
 	color: black;
 	font-weight: bold;
+	user-select: none;
 }
 
 .fmb-container svg {

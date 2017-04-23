@@ -31,6 +31,7 @@ function FlexboxMobileButtons(args) {
 	}
 
 	function isButton(target) {
+console.log(target);
 		return target.className.indexOf('fmb-button') !== -1;
 	}
 
@@ -73,6 +74,7 @@ function FlexboxMobileButtons(args) {
 
 FlexboxMobileButtons.prototype = {
 	button: function (value, display, type) {
+		if (this.args.mobileOnly && !this.isMobile) return;
 		if (!value) return;
 		this.clicking[value] = false;
 		var button = document.createElement('button');
@@ -93,6 +95,7 @@ FlexboxMobileButtons.prototype = {
 		return this;
 	},
 	fullscreen: function (element, display) {
+		if (this.args.mobileOnly && !this.isMobile) return;
 		this.clicking.fullscreen = false;
 		var button = document.createElement('button');
 		button.className = 'fmb-button fmb-fullscreen';
@@ -149,6 +152,7 @@ FlexboxMobileButtons.prototype = {
 	},
 
 	pointerLock: function (element, display) {
+		if (this.args.mobileOnly && !this.isMobile) return;
 		this.clicking.pointerLock = false;
 		var button = document.createElement('button');
 		button.className = 'fmb-button fmb-pointerLock';
@@ -192,14 +196,7 @@ FlexboxMobileButtons.prototype = {
 	row: function () {
 		this.container = document.createElement('div');
 		this.container.className = 'fmb-row';
-		this.containers.push(this.container);
-		return this;
-	},
-	init: function () {
-		if (this.args.mobileOnly && !this.isMobile) return;
-		for (var i = 0; i < this.containers.length; i += 1) {
-			this.element.appendChild(this.containers[i]);
-		}
+		this.element.appendChild(this.container);
 		return this;
 	}
 };

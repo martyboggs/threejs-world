@@ -107,34 +107,34 @@ THREE.VRControls = function ( object, onError ) {
 
 			}
 
-			if ( pose.position !== null ) {
+			// if ( pose.position !== null ) {
 
-				object.position.fromArray( pose.position );
+			// 	object.position.fromArray( pose.position );
 
-			} else {
+			// } else {
 
-				object.position.set( 0, 0, 0 );
+			// 	object.position.set( 0, 0, 0 );
 
-			}
+			// }
 
-			if ( this.standing ) {
+			// if ( this.standing ) {
 
-				if ( vrDisplay.stageParameters ) {
+			// 	if ( vrDisplay.stageParameters ) {
 
-					object.updateMatrix();
+			// 		object.updateMatrix();
 
-					standingMatrix.fromArray( vrDisplay.stageParameters.sittingToStandingTransform );
-					object.applyMatrix( standingMatrix );
+			// 		standingMatrix.fromArray( vrDisplay.stageParameters.sittingToStandingTransform );
+			// 		object.applyMatrix( standingMatrix );
 
-				} else {
+			// 	} else {
 
-					object.position.setY( object.position.y + this.userHeight );
+			// 		object.position.setY( object.position.y + this.userHeight );
 
-				}
+			// 	}
 
-			}
+			// }
 
-			object.position.multiplyScalar( scope.scale );
+			// object.position.multiplyScalar( scope.scale );
 
 		}
 
